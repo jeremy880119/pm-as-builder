@@ -20,26 +20,40 @@ prd → user-story → wireframe → ac
 - 無「建議」「可選」分類，全部必須
 - MASTER.md 不在依賴鏈中（屬 wireframe command 內部的設計系統參考）
 
-## 2. 版本規則（通用）
+## 2. 標準檔名與版本追蹤
 
-- v1.0：初版
-- +0.1：局部調整（文案、細節）
-- +1.0：結構改動（範圍、流程、架構）
-- 檔名格式：`{type}-v{version}-{YYYYMMDD}.md`（wireframe 為 .html）
+每個 feature 目錄下，產物使用固定檔名：
+
+| 產物 | 檔名 |
+|------|------|
+| PRD | `prd.md` |
+| User Story | `user-story.md` |
+| Wireframe | `wireframe.html` |
+| Acceptance Criteria | `acceptance-criteria.md` |
+
 - Feature slug：kebab-case
+- 版本歷史由 git commit 追蹤，不在檔名加版號
+- 檔案內的版本/日期欄位保留（方便閱讀），修改時一併更新
 
 ## 3. 修改任何 SDD 產物的必要流程
 
 無論是否透過 command，修改 `features/{slug}/` 下產物時必須執行：
 
-0. 備份原檔到 `features/{slug}/.archive/`
-1. 分類修改：局部 → +0.1 / 結構 → +1.0
-2. 更新版本號 + 日期 + 重新命名檔案
+1. 直接編輯檔案（不備份、不重命名）
+2. 更新檔案內的版本號 + 日期欄位
 3. 追加變更紀錄
 4. Glob 掃描同 slug 下其他產物，判斷下游影響
-5. 若結構調整：下游產物也備份 + 升版 +0.1 + 追加變更紀錄
+5. 若結構調整：下游產物也更新版本欄位 + 追加變更紀錄
 6. 更新所有產物的「相關檔案」版本號
 7. 列出需手動確認的下游檔案
+8. `git add` 所有變更檔案 + `git commit`
+
+**Commit message 格式：** `{type}({slug}): {描述}`
+
+範例：
+- `prd(active-subscribers-enhancements): 新增定價表章節`
+- `wireframe(saas-plan-upgrade-downgrade): 調整降級流程 UI`
+- `ac(living-spec): 補充邊界條件測試案例`
 
 ## 4. 委派前檢查
 
