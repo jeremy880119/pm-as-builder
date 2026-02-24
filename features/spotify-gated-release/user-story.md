@@ -165,6 +165,7 @@ flowchart LR
 
 ### 技術備註
 - 名單寫死在 config 或程式碼中，不需後台 UI
+- 灰階名單（User ID）：[Google Sheets](https://docs.google.com/spreadsheets/d/1IQWb0c2Ja_021jIRtwD1WbGs_-_veQt5motOV2OyO54/edit?resourcekey=&gid=1401026215#gid=1401026215)
 - 未來全量釋出時直接移除 feature flag 即可
 
 ---
