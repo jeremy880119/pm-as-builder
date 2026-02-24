@@ -206,6 +206,6 @@ flowchart LR
 |------|------|------|
 | PRD | `prd.md` | ⬜ 尚未產出 |
 | User Story | `user-story.md` | ✅ 本文件 |
-| Wireframe | `wireframe.html` | ⬜ 尚未產出 |
+| Wireframe | `wireframe.html` | ✅ 已存在 |
 | Prototype | `prototype.html` | ⬜ 尚未產出 |
-| AC | `acceptance-criteria.md` | ⬜ 尚未產出 |
+| AC | `acceptance-criteria.md` | ✅ 已存在 |
