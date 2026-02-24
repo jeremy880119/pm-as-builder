@@ -2,7 +2,7 @@
 
 **Feature Slug：** spotify-gated-release
 **對應 PRD：** ⬜ 尚未產出（最速模式）
-**總 Story Points：** 16
+**總 Story Points：** 12
 
 ---
 
@@ -13,10 +13,9 @@
 | **EP-01: Gated Access 權限控制** | | **P0** | **4** | |
 | US-01 | 以寫死名單控制灰階釋出權限 | P0 | 1 | — |
 | US-02 | Analytics Overview 頁面根據權限切換指標顯示 | P0 | 3 | US-01 |
-| **EP-02: 收聽數指標整合** | | **P0** | **12** | |
+| **EP-02: 收聽數指標整合** | | **P0** | **8** | |
 | US-03 | API 整合 RSS 下載數與 Spotify 串流數為「收聽數」 | P0 | 5 | — |
 | US-04 | Analytics Overview 顯示收聽數取代下載數 | P0 | 3 | US-02, US-03 |
-| US-05 | 數據載入狀態與錯誤處理 | P1 | 4 | US-04 |
 
 ---
 
@@ -35,7 +34,6 @@ flowchart LR
     subgraph "EP-02: 收聽數指標整合"
         C -->|"US-03 API 請求"| E["取得合併指標"]
         E -->|"US-04 渲染"| F["顯示收聽數/重複收聽數"]
-        E -->|"US-05 失敗"| G["顯示錯誤/重試"]
     end
 ```
 
@@ -130,6 +128,16 @@ flowchart LR
   - 「收聽數」= Apple 等 RSS 平台不重複下載數（unique downloads）+ Spotify 串流數（streams）
   - 「重複收聽數」= Apple 等 RSS 平台下載數（downloads）+ Spotify 播放數（plays）
 
+**Scenario: 成功取得單集平均收聽數**
+- Given: 用戶有灰階權限且資料庫中有 RSS 下載數據與 Spotify 數據
+- When: 前端呼叫收聽數 API
+- Then: API 回傳「單集平均收聽數」= 收聽數 ÷ 集數
+
+**Scenario: 成功取得單集平均重複收聽數**
+- Given: 用戶有灰階權限且資料庫中有 RSS 下載數據與 Spotify 數據
+- When: 前端呼叫收聽數 API
+- Then: API 回傳「單集平均重複收聽數」= 重複收聽數 ÷ 集數
+
 **Scenario: 無權限用戶被拒絕**
 - Given: 用戶不在灰階名單中
 - When: 嘗試呼叫收聽數 API
@@ -166,39 +174,19 @@ flowchart LR
 - When: 用戶進入 `/podcast/analytics/overview`
 - Then: 原本顯示「重複下載數」的位置改為顯示「重複收聽數」，數值為 downloads + plays
 
+**Scenario: 單集平均收聽數取代單集平均下載數**
+- Given: 灰階用戶已登入且 API 成功回傳合併指標
+- When: 用戶進入 `/podcast/analytics/overview`
+- Then: 原本顯示「單集平均下載數」的位置改為顯示「單集平均收聽數」，數值為收聽數 ÷ 集數
+
+**Scenario: 單集平均重複收聽數取代單集平均重複下載數**
+- Given: 灰階用戶已登入且 API 成功回傳合併指標
+- When: 用戶進入 `/podcast/analytics/overview`
+- Then: 原本顯示「單集平均重複下載數」的位置改為顯示「單集平均重複收聽數」，數值為重複收聽數 ÷ 集數
+
 ### 技術備註
 - 僅替換指標名稱與數據來源，頁面佈局與圖表維持不變
 - 數據呈現格式（趨勢圖、數字卡片等）沿用現有元件
-
----
-
-### US-05: 數據載入狀態與錯誤處理
-
-**Epic:** EP-02
-**Priority:** P1
-**Story Points:** 4
-**依賴：** US-04
-
-### Use Case
-- **As a** 灰階用戶,
-- **I want to** 在數據載入中或發生錯誤時看到明確的狀態提示,
-- **so that** 我知道系統正在處理或出了什麼問題。
-
-### Acceptance Criteria（Smoke-test 級別）
-
-**Scenario: 數據載入中顯示 loading 狀態**
-- Given: 用戶進入 Analytics Overview
-- When: 收聽數 API 正在回傳數據（尚未完成）
-- Then: 顯示載入中的骨架屏或 spinner
-
-**Scenario: API 錯誤時 fallback 到舊版指標**
-- Given: 用戶進入 Analytics Overview
-- When: 收聽數 API 回傳錯誤
-- Then: 自動 fallback 顯示原本的下載數指標，並顯示提示訊息
-
-### 技術備註
-- 錯誤處理策略：API 失敗時 graceful fallback 到舊版指標，而非顯示空白
-- 區分 403（無權限，不應發生）與 5xx（系統錯誤，需 fallback）
 
 ---
 
