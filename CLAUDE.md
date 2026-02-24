@@ -1,4 +1,4 @@
-# SDD 產物版本管理（全域規則）
+# SDD 產物管理（全域規則）
 
 所有 SDD command（/prd、/user-story、/wireframe、/acceptance-criteria）及手動修改均遵循本規則。
 
@@ -20,7 +20,18 @@ prd → user-story → wireframe → ac
 - 無「建議」「可選」分類，全部必須
 - MASTER.md 不在依賴鏈中（屬 wireframe command 內部的設計系統參考）
 
-## 2. 標準檔名與版本追蹤
+### 下游影響查表
+
+改了上游產物後，**機械式查表**列出需檢查的下游：
+
+| 改了什麼 | 需檢查 |
+|----------|--------|
+| prd | user-story, wireframe, ac |
+| user-story | wireframe, ac |
+| wireframe | ac |
+| ac | （無下游） |
+
+## 2. 標準檔名
 
 每個 feature 目錄下，產物使用固定檔名：
 
@@ -32,21 +43,17 @@ prd → user-story → wireframe → ac
 | Acceptance Criteria | `acceptance-criteria.md` |
 
 - Feature slug：kebab-case
-- 版本歷史由 git commit 追蹤，不在檔名加版號
-- 檔案內的版本/日期欄位保留（方便閱讀），修改時一併更新
+- 版本歷史完全由 git commit 追蹤，檔案內不寫版本號、日期、changelog
 
 ## 3. 修改任何 SDD 產物的必要流程
 
 無論是否透過 command，修改 `features/{slug}/` 下產物時必須執行：
 
 1. 直接編輯檔案（不備份、不重命名）
-2. 更新檔案內的版本號 + 日期欄位
-3. 追加變更紀錄
-4. Glob 掃描同 slug 下其他產物，判斷下游影響
-5. 若結構調整：下游產物也更新版本欄位 + 追加變更紀錄
-6. 更新所有產物的「相關檔案」版本號
-7. 列出需手動確認的下游檔案
-8. `git add` 所有變更檔案 + `git commit`
+2. 查表列出受影響的下游產物（見§1 下游影響查表）
+3. 列出需手動確認的下游檔案
+4. `git add` 所有變更檔案 + `git commit`
+5. 若變更已 commit，提示用戶：「本地產物已更新。如需同步 GitHub，請執行 `/sync-github {slug}`」
 
 **Commit message 格式：** `{type}({slug}): {描述}`
 
