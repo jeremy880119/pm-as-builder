@@ -1,0 +1,6 @@
+.wiki/           # 已是獨立 git repo
+.DS_Store
+**/.DS_Store
+features/*/.github-issues.json   # sync-github 快取
+features/*/.archive/             # 遷移後不再需要
+features/old/                    # 舊檔案

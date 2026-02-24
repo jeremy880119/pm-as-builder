@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:libsyn.com)",
+      "WebSearch",
+      "WebFetch(domain:www.buzzsprout.com)",
+      "WebFetch(domain:creators.spotify.com)",
+      "WebFetch(domain:www.spreaker.com)",
+      "WebFetch(domain:www.podbean.com)",
+      "WebFetch(domain:megaphone.spotify.com)",
+      "WebFetch(domain:help.spreaker.com)",
+      "WebFetch(domain:help.podbean.com)",
+      "WebFetch(domain:www.podbean.eu)",
+      "WebFetch(domain:five.libsynsupport.com)",
+      "WebFetch(domain:support.spotify.com)",
+      "WebFetch(domain:firstory.me)",
+      "WebFetch(domain:www.g2.com)",
+      "WebFetch(domain:onehourprofessor.com)",
+      "WebFetch(domain:firstory.medium.com)",
+      "WebFetch(domain:www.youtube.com)"
+    ]
+  }
+}

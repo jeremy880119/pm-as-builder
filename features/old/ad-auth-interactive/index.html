@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>廣告授權全域設定 - PRD 分析介面</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', 'Noto Sans TC', sans-serif; }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .question-card {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            border-left-color: #667eea;
+        }
+
+        .question-card.answered {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .progress-ring {
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .typing-indicator span {
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        textarea:focus, input:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #667eea;
+        }
+
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="fade-in">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-sm mb-4">PRD v1.1</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 slide-up">廣告授權全域設定</h1>
+            <p class="text-xl text-white/80 slide-up delay-1">與列表優化功能規格分析</p>
+            <div class="flex items-center gap-4 mt-8 slide-up delay-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-yellow-400 rounded-full pulse-dot"></div>
+                    <span class="text-sm">Draft</span>
+                </div>
+                <span class="text-white/40">|</span>
+                <span class="text-sm text-white/80">更新日期：2026-02-04</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-6 -mt-8">
+        <!-- Summary Card -->
+        <section class="glass rounded-2xl shadow-xl p-8 mb-8 slide-up delay-3">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-white text-sm">📋</span>
+                PRD 摘要
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 mb-1">核心問題</h3>
+                        <p class="text-gray-800">用戶無法區分「已開啟」代表「已授權投放」還是「實際投放中」，導致困惑與大量客服諮詢。</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 mb-1">解決方案</h3>
+                        <ul class="text-gray-800 space-y-1">
+                            <li>• 新增 4 種全域策略選項</li>
+                            <li>• 狀態欄位拆分為「廣告授權」與「廣告狀態」</li>
+                            <li>• 支援例外處理與恢復連動機制</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 mb-1">目標指標</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">客服諮詢量</span>
+                                <span class="text-green-600 font-medium">↓ 30%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">開啟廣告集數</span>
+                                <span class="text-green-600 font-medium">↑ 15%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">設定頁停留時間</span>
+                                <span class="text-green-600 font-medium">↓ 降低</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Questions Section -->
+        <section class="mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white text-sm">❓</span>
+                    開放問題
+                </h2>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-gray-500">完成進度</span>
+                    <div class="relative w-12 h-12">
+                        <svg class="w-12 h-12 -rotate-90">
+                            <circle cx="24" cy="24" r="20" fill="none" stroke="#e5e7eb" stroke-width="4"/>
+                            <circle id="progressCircle" cx="24" cy="24" r="20" fill="none" stroke="#667eea" stroke-width="4"
+                                stroke-dasharray="125.6" stroke-dashoffset="125.6" class="progress-ring"/>
+                        </svg>
+                        <span id="progressText" class="absolute inset-0 flex items-center justify-center text-xs font-medium">0/5</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4" id="questionsContainer">
+                <!-- Question 1 -->
+                <div class="question-card glass rounded-xl p-6 card-hover" data-question="1">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium mb-2">技術架構</span>
+                            <h3 class="text-lg font-medium text-gray-800">30 天長尾判斷是後端排程還是前端即時計算？</h3>
+                        </div>
+                        <span class="question-status text-gray-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="options-container space-y-2">
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="backend">
+                            <span class="font-medium">後端排程</span>
+                            <p class="text-sm text-gray-500 mt-1">由後端每日排程檢查，自動更新授權狀態</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="frontend">
+                            <span class="font-medium">前端即時計算</span>
+                            <p class="text-sm text-gray-500 mt-1">前端根據發布日期即時判斷，後端僅記錄授權結果</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="hybrid">
+                            <span class="font-medium">混合模式</span>
+                            <p class="text-sm text-gray-500 mt-1">前端顯示預估，後端排程執行實際切換</p>
+                        </button>
+                    </div>
+                    <div class="answer-display hidden mt-4 p-3 bg-green-50 rounded-lg">
+                        <span class="text-green-700 font-medium">已選擇：</span>
+                        <span class="answer-text text-green-800"></span>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-card glass rounded-xl p-6 card-hover" data-question="2">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium mb-2">API 設計</span>
+                            <h3 class="text-lg font-medium text-gray-800">後端 API 哪些欄位需要新增或修改？</h3>
+                        </div>
+                        <span class="question-status text-gray-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <p class="text-sm text-gray-600">請描述您認為需要的 API 變更：</p>
+                        <textarea class="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:border-purple-400 transition-colors"
+                            rows="4" placeholder="例如：新增 strategyType 欄位、isManualOverride 標記..."></textarea>
+                        <button class="submit-text-btn px-4 py-2 gradient-bg text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
+                            確認回答
+                        </button>
+                    </div>
+                    <div class="answer-display hidden mt-4 p-3 bg-green-50 rounded-lg">
+                        <span class="text-green-700 font-medium">已回答：</span>
+                        <p class="answer-text text-green-800 mt-1"></p>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card glass rounded-xl p-6 card-hover" data-question="3">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium mb-2">功能範圍</span>
+                            <h3 class="text-lg font-medium text-gray-800">是否需要廣告收益預估功能？</h3>
+                            <p class="text-sm text-gray-500 mt-1">切換策略時顯示對收益的影響預估</p>
+                        </div>
+                        <span class="question-status text-gray-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="options-container space-y-2">
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="yes-mvp">
+                            <span class="font-medium">是，納入 MVP</span>
+                            <p class="text-sm text-gray-500 mt-1">第一版就提供收益預估，幫助用戶做出決策</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="yes-later">
+                            <span class="font-medium">是，但後續迭代</span>
+                            <p class="text-sm text-gray-500 mt-1">功能有價值，但可以在 v1.1 或 v2 加入</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="no">
+                            <span class="font-medium">否，不需要</span>
+                            <p class="text-sm text-gray-500 mt-1">增加複雜度，目前無明確需求</p>
+                        </button>
+                    </div>
+                    <div class="answer-display hidden mt-4 p-3 bg-green-50 rounded-lg">
+                        <span class="text-green-700 font-medium">已選擇：</span>
+                        <span class="answer-text text-green-800"></span>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="question-card glass rounded-xl p-6 card-hover" data-question="4">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium mb-2">產品邏輯</span>
+                            <h3 class="text-lg font-medium text-gray-800">「自訂設定」模式下，新發布的集數預設授權為何？</h3>
+                        </div>
+                        <span class="question-status text-gray-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="options-container space-y-2">
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="authorized">
+                            <span class="font-medium">預設已授權</span>
+                            <p class="text-sm text-gray-500 mt-1">最大化收益，用戶可手動關閉特定集</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="unauthorized">
+                            <span class="font-medium">預設未授權</span>
+                            <p class="text-sm text-gray-500 mt-1">用戶完全掌控，需手動開啟每一集</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="ask">
+                            <span class="font-medium">發布時詢問</span>
+                            <p class="text-sm text-gray-500 mt-1">在發布流程中加入授權選項</p>
+                        </button>
+                    </div>
+                    <div class="answer-display hidden mt-4 p-3 bg-green-50 rounded-lg">
+                        <span class="text-green-700 font-medium">已選擇：</span>
+                        <span class="answer-text text-green-800"></span>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="question-card glass rounded-xl p-6 card-hover" data-question="5">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium mb-2">驗證策略</span>
+                            <h3 class="text-lg font-medium text-gray-800">此功能是否需要 A/B Test？</h3>
+                        </div>
+                        <span class="question-status text-gray-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="options-container space-y-2">
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="yes">
+                            <span class="font-medium">是，需要 A/B Test</span>
+                            <p class="text-sm text-gray-500 mt-1">先對部分用戶測試，驗證假設後再全量發布</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="no">
+                            <span class="font-medium">否，直接全量</span>
+                            <p class="text-sm text-gray-500 mt-1">需求明確，直接上線並監控指標</p>
+                        </button>
+                        <button class="option-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300" data-value="partial">
+                            <span class="font-medium">部分功能 A/B Test</span>
+                            <p class="text-sm text-gray-500 mt-1">核心功能直接上，進階功能（如收益預估）做測試</p>
+                        </button>
+                    </div>
+                    <div class="answer-display hidden mt-4 p-3 bg-green-50 rounded-lg">
+                        <span class="text-green-700 font-medium">已選擇：</span>
+                        <span class="answer-text text-green-800"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submit Section -->
+        <section id="submitSection" class="glass rounded-2xl shadow-xl p-8 mb-12 hidden">
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-2">感謝您的回覆！</h3>
+                <p class="text-gray-600 mb-6">您已完成所有開放問題的回答</p>
+                <button id="downloadBtn" class="px-6 py-3 gradient-bg text-white rounded-lg font-medium hover:opacity-90 transition-opacity inline-flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    下載決策摘要
+                </button>
+            </div>
+        </section>
+
+        <!-- Additional Notes -->
+        <section class="mb-12">
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center gap-2">
+                    <span>💬</span> 有其他想法嗎？
+                </h3>
+                <textarea id="additionalNotes" class="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:border-purple-400 transition-colors"
+                    rows="3" placeholder="如果有任何其他建議、疑慮或想討論的點，請在這裡留言..."></textarea>
+                <div class="flex justify-end mt-3">
+                    <button id="saveNotes" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                        儲存備註
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-gray-500 text-sm">
+        <p>由 Claude 生成的互動式 PRD 分析介面</p>
+    </footer>
+
+    <script>
+        // State management
+        const answers = {};
+        let answeredCount = 0;
+        const totalQuestions = 5;
+
+        // Option button handlers
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.question-card');
+                const questionId = card.dataset.question;
+                const value = this.dataset.value;
+
+                // Remove selected state from siblings
+                card.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+
+                // Add selected state
+                this.classList.add('selected');
+
+                // Update answer display
+                const answerDisplay = card.querySelector('.answer-display');
+                const answerText = card.querySelector('.answer-text');
+                answerText.textContent = this.querySelector('.font-medium').textContent;
+                answerDisplay.classList.remove('hidden');
+
+                // Mark as answered
+                if (!answers[questionId]) {
+                    answeredCount++;
+                }
+                answers[questionId] = value;
+                card.classList.add('answered');
+
+                // Update status icon
+                const statusIcon = card.querySelector('.question-status');
+                statusIcon.innerHTML = `<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>`;
+
+                updateProgress();
+            });
+        });
+
+        // Text submit handlers
+        document.querySelectorAll('.submit-text-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.question-card');
+                const questionId = card.dataset.question;
+                const textarea = card.querySelector('textarea');
+                const value = textarea.value.trim();
+
+                if (!value) {
+                    textarea.classList.add('border-red-400');
+                    setTimeout(() => textarea.classList.remove('border-red-400'), 2000);
+                    return;
+                }
+
+                // Update answer display
+                const answerDisplay = card.querySelector('.answer-display');
+                const answerText = card.querySelector('.answer-text');
+                answerText.textContent = value;
+                answerDisplay.classList.remove('hidden');
+
+                // Hide input area
+                card.querySelector('.space-y-3').classList.add('hidden');
+
+                // Mark as answered
+                if (!answers[questionId]) {
+                    answeredCount++;
+                }
+                answers[questionId] = value;
+                card.classList.add('answered');
+
+                // Update status icon
+                const statusIcon = card.querySelector('.question-status');
+                statusIcon.innerHTML = `<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>`;
+
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            const circle = document.getElementById('progressCircle');
+            const text = document.getElementById('progressText');
+            const circumference = 125.6;
+            const offset = circumference - (answeredCount / totalQuestions) * circumference;
+
+            circle.style.strokeDashoffset = offset;
+            text.textContent = `${answeredCount}/${totalQuestions}`;
+
+            if (answeredCount === totalQuestions) {
+                document.getElementById('submitSection').classList.remove('hidden');
+                document.getElementById('submitSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Download summary
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const labels = {
+                '1': '30 天長尾判斷',
+                '2': 'API 變更建議',
+                '3': '收益預估功能',
+                '4': '自訂模式預設值',
+                '5': 'A/B Test 策略'
+            };
+
+            let content = '# 廣告授權全域設定 - 決策摘要\n\n';
+            content += '生成時間：' + new Date().toLocaleString('zh-TW') + '\n\n';
+            content += '---\n\n';
+
+            Object.keys(answers).forEach(key => {
+                content += `## ${labels[key]}\n\n`;
+                content += `**回答：** ${answers[key]}\n\n`;
+            });
+
+            const notes = document.getElementById('additionalNotes').value.trim();
+            if (notes) {
+                content += '---\n\n## 其他備註\n\n' + notes + '\n';
+            }
+
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ad-auth-decisions-' + new Date().toISOString().slice(0, 10) + '.md';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Save notes
+        document.getElementById('saveNotes').addEventListener('click', function() {
+            const notes = document.getElementById('additionalNotes').value;
+            localStorage.setItem('ad-auth-notes', notes);
+            this.textContent = '已儲存 ✓';
+            setTimeout(() => this.textContent = '儲存備註', 2000);
+        });
+
+        // Load saved notes
+        const savedNotes = localStorage.getItem('ad-auth-notes');
+        if (savedNotes) {
+            document.getElementById('additionalNotes').value = savedNotes;
+        }
+    </script>
+</body>
+</html>
