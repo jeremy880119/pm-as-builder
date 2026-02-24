@@ -1,252 +1,658 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wireframe - Analytics Overview (Gated Version)</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', 'Noto Sans TC', sans-serif; background: #f5f5f5; color: #1a1a1a; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify Gated Release Wireframe</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --wf-bg: #F5F5F5;
+      --wf-card: #FFFFFF;
+      --wf-border: #CCCCCC;
+      --wf-text: #333333;
+      --wf-text-muted: #888888;
+      --wf-placeholder: #E0E0E0;
+      --wf-btn-primary: #666666;
+      --wf-btn-secondary: #999999;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
+      --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--wf-bg); color: var(--wf-text); line-height: 1.5; padding: var(--space-8); padding-bottom: 80px; }
+    h1, h2, h3 { margin-bottom: var(--space-4); }
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; border-bottom: 1px solid var(--wf-border); padding-bottom: var(--space-2); }
+    h3 { font-size: 16px; color: var(--wf-text-muted); }
+    section { background: var(--wf-card); border: 1px solid var(--wf-border); border-radius: var(--radius-md); padding: var(--space-6); margin-bottom: var(--space-6); }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .screen-frame { border: 2px dashed var(--wf-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; background: var(--wf-card); }
+    .screen-meta { color: var(--wf-text-muted); font-size: 13px; margin-bottom: var(--space-3); }
+    .mermaid { background: var(--wf-card); padding: var(--space-4); border-radius: var(--radius-md); }
+    table { width: 100%; border-collapse: collapse; margin: var(--space-4) 0; }
+    th, td { border: 1px solid var(--wf-border); padding: var(--space-2) var(--space-3); text-align: left; font-size: 13px; }
+    th { background: var(--wf-placeholder); font-weight: 600; }
+    code { background: #f3f4f6; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    .no-ui { text-align: center; padding: var(--space-8); color: var(--wf-text-muted); font-size: 14px; }
+    .no-ui-icon { width: 48px; height: 48px; background: var(--wf-placeholder); border-radius: 50%; margin: 0 auto var(--space-4); display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
-  /* Layout */
-  .layout { display: flex; min-height: 100vh; }
-  .sidebar { width: 220px; background: #fff; border-right: 1px solid #e5e7eb; padding: 24px 16px; flex-shrink: 0; }
-  .sidebar-logo { font-weight: 700; font-size: 18px; color: oklch(0.6493 0.2297 15.7); margin-bottom: 32px; }
-  .sidebar-item { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #6b7280; margin-bottom: 4px; cursor: pointer; }
-  .sidebar-item.active { background: #fef2f2; color: oklch(0.6493 0.2297 15.7); font-weight: 600; }
-  .main { flex: 1; padding: 24px 32px; max-width: 960px; }
+    /* Wireframe 內嵌畫面樣式 */
+    .wf-layout { display: flex; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; min-height: 480px; background: #fff; }
+    .wf-sidebar { width: 180px; background: #fafafa; border-right: 1px solid #e5e7eb; padding: 16px 12px; flex-shrink: 0; }
+    .wf-sidebar-logo { font-weight: 700; font-size: 14px; color: #666; margin-bottom: 20px; }
+    .wf-sidebar-item { padding: 8px 10px; border-radius: 6px; font-size: 13px; color: #888; margin-bottom: 2px; }
+    .wf-sidebar-item.active { background: #eee; color: #333; font-weight: 600; }
+    .wf-main { flex: 1; padding: 20px 24px; }
+    .wf-banner { background: #e5e7eb; border-radius: 6px; height: 40px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 11px; }
+    .wf-page-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: #333; }
+    .wf-tabs { display: flex; gap: 0; border-bottom: 1px solid #e5e7eb; margin-bottom: 12px; }
+    .wf-tab { padding: 8px 16px; font-size: 13px; color: #888; border-bottom: 2px solid transparent; }
+    .wf-tab.active { color: #333; border-bottom-color: #666; font-weight: 600; }
+    .wf-alert { border-left: 3px solid #ccc; background: #f9f9f9; padding: 10px 14px; border-radius: 0 6px 6px 0; margin-bottom: 16px; font-size: 12px; color: #666; }
+    .wf-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .wf-metric-row { display: flex; gap: 24px; align-items: flex-end; margin-bottom: 16px; }
+    .wf-metric-label { font-size: 12px; color: #888; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
+    .wf-metric-value { font-size: 24px; font-weight: 700; }
+    .wf-metric-value.secondary { font-size: 18px; color: #888; }
+    .wf-tooltip { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; border: 1px solid #ccc; font-size: 9px; color: #999; cursor: help; }
+    .wf-controls { display: flex; gap: 8px; align-items: center; }
+    .wf-toggle { display: flex; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden; }
+    .wf-toggle-btn { padding: 4px 8px; background: #fff; border: none; font-size: 11px; color: #888; }
+    .wf-toggle-btn.active { background: #eee; }
+    .wf-select { padding: 4px 8px; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 12px; }
+    .wf-chart { background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 6px; height: 160px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px; margin-bottom: 8px; }
+    .wf-chart-footer { display: flex; justify-content: space-between; font-size: 11px; color: #999; }
+    .wf-legend { display: flex; gap: 12px; }
+    .wf-legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; }
+    .wf-section-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .wf-section-desc { font-size: 12px; color: #888; margin-bottom: 12px; }
+    .wf-lifetime-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .wf-lifetime-item { text-align: center; padding: 14px 8px; background: #f9fafb; border-radius: 6px; }
+    .wf-lifetime-label { font-size: 12px; color: #888; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .wf-lifetime-value { font-size: 20px; font-weight: 700; }
+    .wf-timezone { font-size: 10px; color: #bbb; margin-top: 6px; }
+    .wf-csv { color: #666; text-decoration: none; font-size: 11px; }
+    .wf-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .wf-badge-old { background: #e5e7eb; color: #666; }
+    .wf-badge-new { background: #333; color: #fff; }
+    .wf-dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px; }
+    .wf-dash-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
+    .wf-dash-card-label { font-size: 12px; color: #888; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; }
+    .wf-dash-card-value { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .wf-dash-chart { background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 4px; height: 80px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 10px; }
+    .wf-dash-link { font-size: 11px; color: #666; margin-top: 8px; display: block; text-align: right; }
+    .wf-dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .wf-dash-subtitle { font-size: 13px; font-weight: 600; color: #333; }
+    .wf-dash-tz { font-size: 11px; color: #bbb; }
 
-  /* Banner placeholder */
-  .banner { background: #e5e7eb; border-radius: 8px; height: 56px; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 13px; }
-
-  /* Page title */
-  .page-title { font-size: 24px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .page-title .info-icon { width: 18px; height: 18px; color: #9ca3af; }
-
-  /* Tabs */
-  .tabs { display: flex; gap: 0; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; }
-  .tab { padding: 10px 20px; font-size: 14px; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 500; }
-  .tab.active { color: oklch(0.6493 0.2297 15.7); border-bottom-color: oklch(0.6493 0.2297 15.7); font-weight: 600; }
-
-  /* Alert */
-  .alert-warning { border-left: 3px solid #f59e0b; background: #fffbeb; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 24px; font-size: 13px; color: #92400e; line-height: 1.6; }
-
-  /* Card */
-  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); padding: 24px; margin-bottom: 24px; }
-
-  /* Metric header row */
-  .metric-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
-  .metric-group { display: flex; gap: 32px; align-items: flex-end; }
-  .metric-block {}
-  .metric-label { font-size: 13px; color: #6b7280; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-  .metric-value { font-size: 30px; font-weight: 700; line-height: 1.2; }
-  .metric-value.secondary { font-size: 20px; color: #6b7280; }
-
-  /* Tooltip */
-  .tooltip-wrap { position: relative; display: inline-flex; }
-  .tooltip-icon { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #9ca3af; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: #9ca3af; cursor: help; font-weight: 600; flex-shrink: 0; }
-  .tooltip-box { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 8px 12px; font-size: 12px; color: #374151; width: 280px; line-height: 1.5; z-index: 10; pointer-events: none; }
-  .tooltip-wrap:hover .tooltip-box { display: block; }
-
-  /* Controls row */
-  .controls { display: flex; align-items: center; gap: 12px; }
-  .toggle-group { display: flex; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; }
-  .toggle-btn { padding: 6px 10px; background: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .toggle-btn.active { background: #f3f4f6; }
-  .toggle-btn svg { width: 16px; height: 16px; color: #6b7280; }
-  .date-select { padding: 6px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; background: #fff; color: #374151; }
-
-  /* Chart placeholder */
-  .chart-area { background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 8px; height: 240px; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 13px; margin-bottom: 12px; }
-  .chart-footer { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #9ca3af; }
-  .chart-legend { display: flex; gap: 16px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
-  .legend-dot.rss { background: oklch(0.6493 0.2297 15.7); }
-  .legend-dot.spotify { background: #1DB954; }
-  .csv-link { color: oklch(0.6493 0.2297 15.7); text-decoration: none; font-size: 12px; font-weight: 500; }
-  .csv-link:hover { text-decoration: underline; }
-  .timezone-note { font-size: 11px; color: #9ca3af; margin-top: 8px; }
-
-  /* Lifetime section */
-  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
-  .section-desc { font-size: 13px; color: #6b7280; margin-bottom: 16px; }
-  .lifetime-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .lifetime-item { text-align: center; padding: 20px 12px; background: #f9fafb; border-radius: 8px; }
-  .lifetime-label { font-size: 13px; color: #6b7280; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 4px; }
-  .lifetime-value { font-size: 24px; font-weight: 700; }
-
-  /* UX Writing reference table */
-  .ref-section { max-width: 1140px; margin: 48px auto; padding: 0 32px 48px; }
-  .ref-section h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
-  .ref-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .ref-table th { text-align: left; padding: 8px 12px; background: #f3f4f6; font-weight: 600; border-bottom: 1px solid #e5e7eb; }
-  .ref-table td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }
-  .ref-table code { background: #f3f4f6; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-</style>
+    /* Nav */
+    .nav-container { position: fixed; bottom: var(--space-4); left: 50%; transform: translateX(-50%); background: var(--wf-card); border: 1px solid var(--wf-border); border-radius: var(--radius-lg); padding: var(--space-2) var(--space-4); display: flex; gap: var(--space-2); box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 100; }
+    .nav-btn { padding: var(--space-2) var(--space-3); border: 1px solid var(--wf-border); border-radius: var(--radius-sm); background: var(--wf-card); cursor: pointer; font-size: 12px; }
+    .nav-btn:hover { background: var(--wf-placeholder); }
+    .nav-btn.active { background: var(--wf-btn-primary); color: white; border-color: var(--wf-btn-primary); }
+  </style>
 </head>
 <body>
+  <h1>Spotify Gated Release Wireframe</h1>
+  <p style="color: var(--wf-text-muted); margin-bottom: var(--space-6);">
+    Feature Slug：spotify-gated-release | 類型：低保真灰階
+  </p>
 
-<div class="layout">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">Firstory Studio</div>
-    <div class="sidebar-item">Podcast 管理</div>
-    <div class="sidebar-item">單集管理</div>
-    <div class="sidebar-item active">成效分析</div>
-    <div class="sidebar-item">互動功能</div>
-    <div class="sidebar-item">營利功能</div>
-    <div class="sidebar-item">設定</div>
-  </aside>
+  <!-- ===== User Flow ===== -->
+  <section class="screen active" id="user-flow">
+    <h2>User Flow</h2>
+    <div class="mermaid">
+      flowchart LR
+        subgraph "EP-01: 收聽數指標整合"
+          A["收聽數 API 請求"] -->|"US-01 合併指標"| B["取得合併指標"]
+          B -->|"US-02 渲染"| C["顯示收聽數/重複收聽數"]
+        end
+        subgraph "EP-02: Gated Access 權限控制"
+          D["用戶登入 Studio"] -->|"US-03 權限檢查"| E{"在灰階名單中？"}
+          E -->|"是"| C
+          E -->|"否"| F["載入舊版指標"]
+        end
+    </div>
+  </section>
 
-  <!-- Main content -->
-  <main class="main">
-    <!-- Banner placeholder -->
-    <div class="banner">[Promotional Banner Placeholder]</div>
-
-    <!-- Page title -->
-    <div class="page-title">
-      成效分析
-      <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+  <!-- ===== US-01: API 整合（原 US-03） ===== -->
+  <section class="screen" id="us-01">
+    <h2>US-01: API 整合 RSS 下載數與 Spotify 串流數為「收聽數」</h2>
+    <p class="screen-meta">EP-01 | 後端 API 邏輯，無前端畫面</p>
+    <div class="no-ui">
+      <div class="no-ui-icon">⚙</div>
+      <p>本 Story 為 API 層級的指標合併邏輯，無對應前端 UI。<br>前端呈現見 US-02。</p>
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
-      <div class="tab active">管理總覽</div>
-      <div class="tab">單集表現</div>
-      <div class="tab">受眾輪廓</div>
-    </div>
+    <h3>API 回傳指標對照</h3>
+    <table>
+      <thead><tr><th>指標名稱</th><th>計算公式</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>收聽數</td><td>RSS unique downloads + Spotify streams</td><td>不重複收聽</td></tr>
+        <tr><td>重複收聽數</td><td>RSS downloads + Spotify plays</td><td>含重複收聽</td></tr>
+        <tr><td>單集平均收聽數</td><td>收聽數 ÷ 集數 <strong>⚠ 待確認：集數 or 公開集數</strong></td><td>每集平均不重複收聽</td></tr>
+        <tr><td>單集平均重複收聽數</td><td>重複收聽數 ÷ 集數 <strong>⚠ 待確認：集數 or 公開集數</strong></td><td>每集平均含重複收聽</td></tr>
+      </tbody>
+    </table>
 
-    <!-- Warning alert -->
-    <div class="alert-warning">
-      收聽數每 3 小時更新。此指標整合 Apple 等 RSS 平台不重複下載數與 Spotify 串流數。
-    </div>
+    <h3>本 Story UX Writing</h3>
+    <table>
+      <thead><tr><th>元件</th><th>文字類型</th><th>文字內容</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td colspan="4" style="text-align:center; color: var(--wf-text-muted);">無前端文字</td></tr>
+      </tbody>
+    </table>
+  </section>
 
-    <!-- Main metric card -->
-    <div class="card">
-      <div class="metric-header">
-        <div class="metric-group">
-          <!-- Primary metric -->
-          <div class="metric-block">
-            <div class="metric-label">
-              收聽數
-              <span class="tooltip-wrap">
-                <span class="tooltip-icon">?</span>
-                <span class="tooltip-box">Apple 等其他 RSS 平台不重複下載數(unique downloads) + Spotify 串流數(streams)</span>
-              </span>
+  <!-- ===== US-02: Dashboard + Analytics Overview 顯示（原 US-04） ===== -->
+  <section class="screen" id="us-02">
+    <h2>US-02: Dashboard + Analytics Overview 顯示收聽數取代下載數</h2>
+    <p class="screen-meta">EP-01 | 涉及畫面：Dashboard、Analytics Overview（灰階用戶完整畫面）</p>
+
+    <!-- Dashboard 新版 -->
+    <h3>畫面 A：Dashboard — 收聽數取代下載數</h3>
+    <div class="screen-frame">
+      <div class="wf-layout">
+        <aside class="wf-sidebar">
+          <div class="wf-sidebar-logo">Firstory Studio</div>
+          <div class="wf-sidebar-item active">首頁</div>
+          <div class="wf-sidebar-item">Podcast 管理</div>
+          <div class="wf-sidebar-item">單集管理</div>
+          <div class="wf-sidebar-item">成效分析</div>
+        </aside>
+        <div class="wf-main">
+          <div class="wf-banner">[Banner]</div>
+          <div class="wf-dash-header">
+            <div class="wf-dash-tz">資料時區：UTC+0</div>
+            <select class="wf-select">
+              <option>最近 7 天</option>
+            </select>
+          </div>
+          <div class="wf-dash-subtitle">數據</div>
+          <div class="wf-dash-grid">
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">收聽數 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">1</div>
+              <div class="wf-dash-chart">[折線圖]</div>
+              <a href="#" class="wf-dash-link">查看詳情 →</a>
             </div>
-            <div class="metric-value">12,345</div>
-          </div>
-          <!-- Secondary metric -->
-          <div class="metric-block">
-            <div class="metric-label">
-              重複收聽數
-              <span class="tooltip-wrap">
-                <span class="tooltip-icon">?</span>
-                <span class="tooltip-box">Apple 等其他 RSS 平台下載數(downloads) + Spotify 播放數(plays)</span>
-              </span>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">重複收聽數 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">1</div>
+              <div class="wf-dash-chart">[折線圖]</div>
             </div>
-            <div class="metric-value secondary">15,678</div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">節目表現 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">124</div>
+              <div class="wf-dash-chart">[長條圖 — 你/後段/中段/前段]</div>
+            </div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">類別節目表現 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">124</div>
+              <div class="wf-dash-chart">[長條圖 — 你/後段/中段/前段]</div>
+            </div>
           </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls">
-          <div class="toggle-group">
-            <button class="toggle-btn active" title="Line chart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </button>
-            <button class="toggle-btn" title="Bar chart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            </button>
-          </div>
-          <select class="date-select">
-            <option>最近7天</option>
-            <option>當日</option>
-            <option>累積</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Chart placeholder -->
-      <div class="chart-area">[Chart Placeholder - Line/Bar Chart]</div>
-
-      <!-- Legend + CSV -->
-      <div class="chart-footer">
-        <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot rss"></span>Apple / 其他 RSS</span>
-          <span class="legend-item"><span class="legend-dot spotify"></span>Spotify 串流</span>
-        </div>
-        <a href="#" class="csv-link">下載 CSV</a>
-      </div>
-      <div class="timezone-note">資料時區：UTC+8</div>
-    </div>
-
-    <!-- Lifetime section -->
-    <div class="card">
-      <div class="section-title">生涯累計表現</div>
-      <div class="section-desc">統計自開播以來的核心指標</div>
-      <div class="lifetime-grid">
-        <div class="lifetime-item">
-          <div class="lifetime-label">
-            收聽數
-            <span class="tooltip-wrap">
-              <span class="tooltip-icon">?</span>
-              <span class="tooltip-box">Apple 等其他 RSS 平台不重複下載數(unique downloads) + Spotify 串流數(streams)</span>
-            </span>
-          </div>
-          <div class="lifetime-value">98,765</div>
-        </div>
-        <div class="lifetime-item">
-          <div class="lifetime-label">
-            重複收聽數
-            <span class="tooltip-wrap">
-              <span class="tooltip-icon">?</span>
-              <span class="tooltip-box">Apple 等其他 RSS 平台下載數(downloads) + Spotify 播放數(plays)</span>
-            </span>
-          </div>
-          <div class="lifetime-value">123,456</div>
-        </div>
-        <div class="lifetime-item">
-          <div class="lifetime-label">單集平均收聽數</div>
-          <div class="lifetime-value">1,234</div>
         </div>
       </div>
     </div>
 
-  </main>
-</div>
+    <!-- Analytics Overview 新版 -->
+    <h3>畫面 B：Analytics Overview — 收聽數取代下載數</h3>
+    <div class="screen-frame">
+      <div class="wf-layout">
+        <aside class="wf-sidebar">
+          <div class="wf-sidebar-logo">Firstory Studio</div>
+          <div class="wf-sidebar-item">Podcast 管理</div>
+          <div class="wf-sidebar-item">單集管理</div>
+          <div class="wf-sidebar-item active">成效分析</div>
+          <div class="wf-sidebar-item">互動功能</div>
+          <div class="wf-sidebar-item">營利功能</div>
+          <div class="wf-sidebar-item">設定</div>
+        </aside>
+        <div class="wf-main">
+          <div class="wf-banner">[Banner]</div>
+          <div class="wf-page-title">成效分析</div>
+          <div class="wf-tabs">
+            <div class="wf-tab active">管理總覽</div>
+            <div class="wf-tab">單集表現</div>
+            <div class="wf-tab">受眾輪廓</div>
+          </div>
 
-<!-- UX Writing Reference Table -->
-<section class="ref-section">
-  <h2>UX Writing Reference</h2>
-  <table class="ref-table">
-    <thead>
-      <tr>
-        <th>元素</th>
-        <th>中文</th>
-        <th>英文 Key</th>
-        <th>說明</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>主指標標題</td><td>收聽數</td><td><code>listens</code></td><td>取代原「下載數」</td></tr>
-      <tr><td>主指標 Tooltip</td><td>Apple 等其他 RSS 平台不重複下載數(unique downloads) + Spotify 串流數(streams)</td><td><code>listens_tooltip</code></td><td>hover 問號顯示</td></tr>
-      <tr><td>次指標標題</td><td>重複收聽數</td><td><code>duplicate_listens</code></td><td>取代原「重複下載數」</td></tr>
-      <tr><td>次指標 Tooltip</td><td>Apple 等其他 RSS 平台下載數(downloads) + Spotify 播放數(plays)</td><td><code>duplicate_listens_tooltip</code></td><td>hover 問號顯示</td></tr>
-      <tr><td>生涯區塊標題</td><td>生涯累計表現</td><td><code>lifetime_performance</code></td><td>合併後統一標題</td></tr>
-      <tr><td>生涯說明</td><td>統計自開播以來的核心指標</td><td><code>lifetime_description</code></td><td>副標題說明</td></tr>
-      <tr><td>生涯收聽數</td><td>收聽數</td><td><code>lifetime_listens</code></td><td>生涯總收聽數</td></tr>
-      <tr><td>生涯重複收聽數</td><td>重複收聽數</td><td><code>lifetime_duplicate_listens</code></td><td>生涯總重複收聽數</td></tr>
-      <tr><td>生涯平均</td><td>單集平均收聽數</td><td><code>avg_listens_per_episode</code></td><td>新增指標</td></tr>
-      <tr><td>警告提示</td><td>收聽數每 3 小時更新。此指標整合 Apple 等 RSS 平台不重複下載數與 Spotify 串流數。</td><td><code>data_update_notice</code></td><td>更新提示文字</td></tr>
-      <tr><td>圖表圖例-RSS</td><td>Apple / 其他 RSS</td><td><code>chart_legend_rss</code></td><td>圖表圖例</td></tr>
-      <tr><td>圖表圖例-Spotify</td><td>Spotify 串流</td><td><code>chart_legend_spotify</code></td><td>圖表圖例</td></tr>
-      <tr><td>時區說明</td><td>資料時區：UTC+8</td><td><code>timezone_note</code></td><td>圖表下方</td></tr>
-      <tr><td>CSV 下載</td><td>下載 CSV</td><td><code>download_csv</code></td><td>圖表右下方連結</td></tr>
-    </tbody>
-  </table>
-</section>
+          <!-- Main metric card -->
+          <div class="wf-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div class="wf-metric-row" style="margin-bottom: 0;">
+                <div>
+                  <div class="wf-metric-label">收聽數 <span class="wf-tooltip">?</span></div>
+                  <div class="wf-metric-value">12,345</div>
+                </div>
+                <div>
+                  <div class="wf-metric-label">重複收聽數 <span class="wf-tooltip">?</span></div>
+                  <div class="wf-metric-value secondary">15,678</div>
+                </div>
+              </div>
+              <div class="wf-controls">
+                <div class="wf-toggle">
+                  <button class="wf-toggle-btn active">折線</button>
+                  <button class="wf-toggle-btn">長條</button>
+                </div>
+                <select class="wf-select">
+                  <option>最近7天</option>
+                  <option>當日</option>
+                  <option>累積</option>
+                </select>
+              </div>
+            </div>
 
+            <div class="wf-chart" style="flex-direction:column; gap:4px;">
+              <span>[趨勢圖 — Spotify + Apple / 其他 RSS]</span>
+              <span style="font-size:10px;">圖例：■ Apple / 其他 RSS &nbsp; ■ Spotify</span>
+              <span style="font-size:10px;">Tooltip：Apple / 其他 RSS 45 ｜ Spotify 70 ｜ 總計 115</span>
+            </div>
+            <div class="wf-chart-footer">
+              <div class="wf-legend">
+                <span><span class="wf-legend-dot" style="background:#999;"></span>Apple / 其他 RSS</span>
+                <span><span class="wf-legend-dot" style="background:#666;"></span>Spotify</span>
+              </div>
+              <a href="#" class="wf-csv">下載 CSV</a>
+            </div>
+            <div class="wf-timezone">資料時區：UTC+8</div>
+          </div>
+
+          <!-- Lifetime section -->
+          <div class="wf-card">
+            <div class="wf-section-title">生涯累計表現</div>
+            <div class="wf-section-desc">統計自開播以來的核心指標</div>
+            <div class="wf-lifetime-grid">
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">98,765</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">重複收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">123,456</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">單集平均收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">1,234</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">單集平均重複收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">1,543</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>本 Story UX Writing</h3>
+    <table>
+      <thead><tr><th>元件</th><th>文字類型</th><th>英文 Key</th><th>文字內容</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td colspan="5" style="background:#f3f4f6; font-weight:600;">Dashboard（/dashboard）</td></tr>
+        <tr><td>Dashboard 收聽數</td><td>Label</td><td><code>dashboard_listens</code></td><td>收聽數</td><td>取代原「下載數」</td></tr>
+        <tr><td>Dashboard 收聽數 Tooltip</td><td>Tooltip</td><td><code>dashboard_listens_tooltip</code></td><td>Apple 等其他 RSS 平台不重複下載數(unique downloads) + Spotify 串流數(streams)</td><td>hover ? 顯示</td></tr>
+        <tr><td>Dashboard 重複收聽數</td><td>Label</td><td><code>dashboard_duplicate_listens</code></td><td>重複收聽數</td><td>取代原「重複下載數」</td></tr>
+        <tr><td>Dashboard 重複收聽數 Tooltip</td><td>Tooltip</td><td><code>dashboard_duplicate_listens_tooltip</code></td><td>Apple 等其他 RSS 平台下載數(downloads) + Spotify 播放數(plays)</td><td>hover ? 顯示</td></tr>
+        <tr><td colspan="5" style="background:#f3f4f6; font-weight:600;">Analytics Overview（/podcast/analytics/overview）</td></tr>
+        <tr><td>主指標標題</td><td>Label</td><td><code>listens</code></td><td>收聽數</td><td>取代原「下載數」</td></tr>
+        <tr><td>主指標 Tooltip</td><td>Tooltip</td><td><code>listens_tooltip</code></td><td>Apple 等其他 RSS 平台不重複下載數(unique downloads) + Spotify 串流數(streams)</td><td>hover ? 顯示</td></tr>
+        <tr><td>次指標標題</td><td>Label</td><td><code>duplicate_listens</code></td><td>重複收聽數</td><td>取代原「重複下載數」</td></tr>
+        <tr><td>次指標 Tooltip</td><td>Tooltip</td><td><code>duplicate_listens_tooltip</code></td><td>Apple 等其他 RSS 平台下載數(downloads) + Spotify 播放數(plays)</td><td>hover ? 顯示</td></tr>
+        <tr><td>生涯區塊標題</td><td>Heading</td><td><code>lifetime_performance</code></td><td>生涯累計表現</td><td></td></tr>
+        <tr><td>生涯說明</td><td>Help Text</td><td><code>lifetime_description</code></td><td>統計自開播以來的核心指標</td><td></td></tr>
+        <tr><td>生涯收聽數</td><td>Label</td><td><code>lifetime_listens</code></td><td>收聽數</td><td></td></tr>
+        <tr><td>生涯重複收聽數</td><td>Label</td><td><code>lifetime_duplicate_listens</code></td><td>重複收聽數</td><td></td></tr>
+        <tr><td>生涯平均收聽</td><td>Label</td><td><code>avg_listens_per_episode</code></td><td>單集平均收聽數</td><td>收聽數 ÷ 集數</td></tr>
+        <tr><td>生涯平均收聽 Tooltip</td><td>Tooltip</td><td><code>avg_listens_per_episode_tooltip</code></td><td>⚠ 待確認：收聽數 ÷ 集數 or 公開集數</td><td>hover ? 顯示</td></tr>
+        <tr><td>生涯平均重複收聽</td><td>Label</td><td><code>avg_duplicate_listens_per_episode</code></td><td>單集平均重複收聽數</td><td>重複收聽數 ÷ 集數</td></tr>
+        <tr><td>生涯平均重複收聽 Tooltip</td><td>Tooltip</td><td><code>avg_duplicate_listens_per_episode_tooltip</code></td><td>⚠ 待確認：重複收聽數 ÷ 集數 or 公開集數</td><td>hover ? 顯示</td></tr>
+        <tr><td>圖表圖例 RSS</td><td>Legend</td><td><code>chart_legend_rss</code></td><td>Apple / 其他 RSS</td><td></td></tr>
+        <tr><td>圖表圖例 Spotify</td><td>Legend</td><td><code>chart_legend_spotify</code></td><td>Spotify</td><td>舊版為「Spotify (即將推出)」</td></tr>
+        <tr><td>圖表 Tooltip</td><td>Tooltip</td><td><code>chart_tooltip</code></td><td>Apple / 其他 RSS {N} ｜ Spotify {N} ｜ 總計 {N}</td><td>舊版 Spotify 無數字；新版顯示數字+加總</td></tr>
+        <tr><td>時區說明</td><td>Help Text</td><td><code>timezone_note</code></td><td>資料時區：UTC+8</td><td></td></tr>
+        <tr><td>CSV 下載</td><td>Link</td><td><code>download_csv</code></td><td>下載 CSV</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== US-03: 寫死名單 flag（原 US-01） ===== -->
+  <section class="screen" id="us-03">
+    <h2>US-03: 以寫死名單控制灰階釋出權限</h2>
+    <p class="screen-meta">EP-02 | 後端邏輯，無前端畫面</p>
+    <div class="no-ui">
+      <div class="no-ui-icon">⚙</div>
+      <p>本 Story 為後端 config 層級的權限控制，<br>無對應前端 UI。名單寫死在程式碼中。</p>
+    </div>
+
+    <h3>本 Story UX Writing</h3>
+    <table>
+      <thead><tr><th>元件</th><th>文字類型</th><th>文字內容</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td colspan="4" style="text-align:center; color: var(--wf-text-muted);">無前端文字</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== US-04: 條件式切換（原 US-02） ===== -->
+  <section class="screen" id="us-04">
+    <h2>US-04: 頁面根據權限切換指標顯示</h2>
+    <p class="screen-meta">EP-02 | 涉及畫面：Dashboard、Analytics Overview（條件式渲染）</p>
+
+    <!-- Dashboard 舊版 -->
+    <h3>畫面 A：非灰階用戶 — Dashboard 舊版</h3>
+    <div class="screen-frame">
+      <div class="wf-layout">
+        <aside class="wf-sidebar">
+          <div class="wf-sidebar-logo">Firstory Studio</div>
+          <div class="wf-sidebar-item active">首頁</div>
+          <div class="wf-sidebar-item">Podcast 管理</div>
+          <div class="wf-sidebar-item">單集管理</div>
+          <div class="wf-sidebar-item">成效分析</div>
+        </aside>
+        <div class="wf-main">
+          <div class="wf-banner">[Banner]</div>
+          <div class="wf-alert">下載數每 3 小時更新一次，重複下載數每 24 小時更新一次。Spotify 因計算方式不同，數據獨立列出，請至 Spotify 後台 查看最新統計。</div>
+          <div class="wf-dash-header">
+            <div class="wf-dash-tz">資料時區：UTC+0</div>
+            <select class="wf-select">
+              <option>最近 7 天</option>
+            </select>
+          </div>
+          <div class="wf-dash-subtitle">數據</div>
+          <div class="wf-dash-grid">
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">下載數 <span class="wf-tooltip">?</span> <span class="wf-badge wf-badge-old">舊版</span></div>
+              <div class="wf-dash-card-value">1</div>
+              <div class="wf-dash-chart">[折線圖]</div>
+              <a href="#" class="wf-dash-link">查看詳情 →</a>
+            </div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">重複下載數 <span class="wf-tooltip">?</span> <span class="wf-badge wf-badge-old">舊版</span></div>
+              <div class="wf-dash-card-value">1</div>
+              <div class="wf-dash-chart">[折線圖]</div>
+            </div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">節目表現 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">124</div>
+              <div class="wf-dash-chart">[長條圖 — 你/後段/中段/前段]</div>
+            </div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">類別節目表現 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">124</div>
+              <div class="wf-dash-chart">[長條圖 — 你/後段/中段/前段]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard 新版 -->
+    <h3>畫面 B：灰階用戶 — Dashboard 新版</h3>
+    <div class="screen-frame">
+      <div class="wf-layout">
+        <aside class="wf-sidebar">
+          <div class="wf-sidebar-logo">Firstory Studio</div>
+          <div class="wf-sidebar-item active">首頁</div>
+          <div class="wf-sidebar-item">Podcast 管理</div>
+          <div class="wf-sidebar-item">單集管理</div>
+          <div class="wf-sidebar-item">成效分析</div>
+        </aside>
+        <div class="wf-main">
+          <div class="wf-banner">[Banner]</div>
+          <div class="wf-dash-header">
+            <div class="wf-dash-tz">資料時區：UTC+0</div>
+            <select class="wf-select">
+              <option>最近 7 天</option>
+            </select>
+          </div>
+          <div class="wf-dash-subtitle">數據</div>
+          <div class="wf-dash-grid">
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">收聽數 <span class="wf-tooltip">?</span> <span class="wf-badge wf-badge-new">新版</span></div>
+              <div class="wf-dash-card-value">1</div>
+              <div class="wf-dash-chart">[折線圖]</div>
+              <a href="#" class="wf-dash-link">查看詳情 →</a>
+            </div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">重複收聽數 <span class="wf-tooltip">?</span> <span class="wf-badge wf-badge-new">新版</span></div>
+              <div class="wf-dash-card-value">1</div>
+              <div class="wf-dash-chart">[折線圖]</div>
+            </div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">節目表現 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">124</div>
+              <div class="wf-dash-chart">[長條圖 — 你/後段/中段/前段]</div>
+            </div>
+            <div class="wf-dash-card">
+              <div class="wf-dash-card-label">類別節目表現 <span class="wf-tooltip">?</span></div>
+              <div class="wf-dash-card-value">124</div>
+              <div class="wf-dash-chart">[長條圖 — 你/後段/中段/前段]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Overview 舊版 -->
+    <h3>畫面 C：非灰階用戶 — Analytics Overview 舊版指標</h3>
+    <div class="screen-frame">
+      <div class="wf-layout">
+        <aside class="wf-sidebar">
+          <div class="wf-sidebar-logo">Firstory Studio</div>
+          <div class="wf-sidebar-item">Podcast 管理</div>
+          <div class="wf-sidebar-item">單集管理</div>
+          <div class="wf-sidebar-item active">成效分析</div>
+          <div class="wf-sidebar-item">互動功能</div>
+          <div class="wf-sidebar-item">營利功能</div>
+          <div class="wf-sidebar-item">設定</div>
+        </aside>
+        <div class="wf-main">
+          <div class="wf-banner">[Banner]</div>
+          <div class="wf-page-title">成效分析</div>
+          <div class="wf-tabs">
+            <div class="wf-tab active">管理總覽</div>
+            <div class="wf-tab">單集表現</div>
+            <div class="wf-tab">受眾輪廓</div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-metric-row">
+              <div>
+                <div class="wf-metric-label">下載數 <span class="wf-badge wf-badge-old">舊版</span></div>
+                <div class="wf-metric-value">12,345</div>
+              </div>
+              <div>
+                <div class="wf-metric-label">重複下載數 <span class="wf-badge wf-badge-old">舊版</span></div>
+                <div class="wf-metric-value secondary">15,678</div>
+              </div>
+            </div>
+            <div class="wf-chart" style="flex-direction:column; gap:4px;">
+              <span>[趨勢圖 — 僅 Apple / 其他 RSS]</span>
+              <span style="font-size:10px;">圖例：■ Apple / 其他 RSS &nbsp; ■ Spotify (即將推出)</span>
+              <span style="font-size:10px;">Tooltip：Apple / 其他 RSS 0 ｜ Spotify (即將推出) 無數字</span>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-section-title">生涯累計表現</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px;">
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">下載數</div>
+                <div class="wf-lifetime-value">98,765</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">重複下載數</div>
+                <div class="wf-lifetime-value">123,456</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">單集平均下載數</div>
+                <div class="wf-lifetime-value">1,234</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Overview 新版 -->
+    <h3>畫面 D：灰階用戶 — Analytics Overview 新版指標</h3>
+    <div class="screen-frame">
+      <div class="wf-layout">
+        <aside class="wf-sidebar">
+          <div class="wf-sidebar-logo">Firstory Studio</div>
+          <div class="wf-sidebar-item">Podcast 管理</div>
+          <div class="wf-sidebar-item">單集管理</div>
+          <div class="wf-sidebar-item active">成效分析</div>
+          <div class="wf-sidebar-item">互動功能</div>
+          <div class="wf-sidebar-item">營利功能</div>
+          <div class="wf-sidebar-item">設定</div>
+        </aside>
+        <div class="wf-main">
+          <div class="wf-banner">[Banner]</div>
+          <div class="wf-page-title">成效分析</div>
+          <div class="wf-tabs">
+            <div class="wf-tab active">管理總覽</div>
+            <div class="wf-tab">單集表現</div>
+            <div class="wf-tab">受眾輪廓</div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-metric-row">
+              <div>
+                <div class="wf-metric-label">收聽數 <span class="wf-tooltip">?</span> <span class="wf-badge wf-badge-new">新版</span></div>
+                <div class="wf-metric-value">12,345</div>
+              </div>
+              <div>
+                <div class="wf-metric-label">重複收聽數 <span class="wf-tooltip">?</span> <span class="wf-badge wf-badge-new">新版</span></div>
+                <div class="wf-metric-value secondary">15,678</div>
+              </div>
+            </div>
+            <div class="wf-chart" style="flex-direction:column; gap:4px;">
+              <span>[趨勢圖 — Spotify + Apple / 其他 RSS]</span>
+              <span style="font-size:10px;">圖例：■ Apple / 其他 RSS &nbsp; ■ Spotify</span>
+              <span style="font-size:10px;">Tooltip：Apple / 其他 RSS 45 ｜ Spotify 70 ｜ 總計 115</span>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-section-title">生涯累計表現</div>
+            <div class="wf-lifetime-grid" style="margin-top: 12px;">
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">98,765</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">重複收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">123,456</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">單集平均收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">1,234</div>
+              </div>
+              <div class="wf-lifetime-item">
+                <div class="wf-lifetime-label">單集平均重複收聽數 <span class="wf-tooltip">?</span></div>
+                <div class="wf-lifetime-value">1,543</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>本 Story UX Writing</h3>
+    <table>
+      <thead><tr><th>畫面</th><th>元件</th><th>文字類型</th><th>文字內容</th></tr></thead>
+      <tbody>
+        <tr><td>A（Dashboard 舊版）</td><td>主指標標題</td><td>Label</td><td>下載數</td></tr>
+        <tr><td>A（Dashboard 舊版）</td><td>次指標標題</td><td>Label</td><td>重複下載數</td></tr>
+        <tr><td>A（Dashboard 舊版）</td><td>更新提示</td><td>Alert</td><td>下載數每 3 小時更新一次，重複下載數每 24 小時更新一次…</td></tr>
+        <tr><td>B（Dashboard 新版）</td><td>主指標標題</td><td>Label</td><td>收聽數</td></tr>
+        <tr><td>B（Dashboard 新版）</td><td>次指標標題</td><td>Label</td><td>重複收聽數</td></tr>
+        <tr><td>C（Overview 舊版）</td><td>主指標標題</td><td>Label</td><td>下載數</td></tr>
+        <tr><td>C（Overview 舊版）</td><td>次指標標題</td><td>Label</td><td>重複下載數</td></tr>
+        <tr><td>C（Overview 舊版）</td><td>生涯平均</td><td>Label</td><td>單集平均下載數</td></tr>
+        <tr><td>D（Overview 新版）</td><td>主指標標題</td><td>Label</td><td>收聽數</td></tr>
+        <tr><td>D（Overview 新版）</td><td>次指標標題</td><td>Label</td><td>重複收聽數</td></tr>
+        <tr><td>D（Overview 新版）</td><td>生涯平均 1</td><td>Label</td><td>單集平均收聽數</td></tr>
+        <tr><td>D（Overview 新版）</td><td>生涯平均 2</td><td>Label</td><td>單集平均重複收聽數</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== UX Writing 總表 ===== -->
+  <section class="screen" id="ux-writing">
+    <h2>UX Writing 文字清單</h2>
+    <table>
+      <thead><tr><th>User Story</th><th>元件</th><th>文字類型</th><th>英文 Key</th><th>文字內容</th></tr></thead>
+      <tbody>
+        <tr><td>US-02</td><td>Dashboard 收聽數</td><td>Label</td><td><code>dashboard_listens</code></td><td>收聽數</td></tr>
+        <tr><td>US-02</td><td>Dashboard 收聽數 Tooltip</td><td>Tooltip</td><td><code>dashboard_listens_tooltip</code></td><td>Apple 等其他 RSS 平台不重複下載數(unique downloads) + Spotify 串流數(streams)</td></tr>
+        <tr><td>US-02</td><td>Dashboard 重複收聽數</td><td>Label</td><td><code>dashboard_duplicate_listens</code></td><td>重複收聽數</td></tr>
+        <tr><td>US-02</td><td>Dashboard 重複收聽數 Tooltip</td><td>Tooltip</td><td><code>dashboard_duplicate_listens_tooltip</code></td><td>Apple 等其他 RSS 平台下載數(downloads) + Spotify 播放數(plays)</td></tr>
+        <tr><td>US-02</td><td>主指標標題</td><td>Label</td><td><code>listens</code></td><td>收聽數</td></tr>
+        <tr><td>US-02</td><td>主指標 Tooltip</td><td>Tooltip</td><td><code>listens_tooltip</code></td><td>Apple 等其他 RSS 平台不重複下載數(unique downloads) + Spotify 串流數(streams)</td></tr>
+        <tr><td>US-02</td><td>次指標標題</td><td>Label</td><td><code>duplicate_listens</code></td><td>重複收聽數</td></tr>
+        <tr><td>US-02</td><td>次指標 Tooltip</td><td>Tooltip</td><td><code>duplicate_listens_tooltip</code></td><td>Apple 等其他 RSS 平台下載數(downloads) + Spotify 播放數(plays)</td></tr>
+        <tr><td>US-02</td><td>生涯區塊標題</td><td>Heading</td><td><code>lifetime_performance</code></td><td>生涯累計表現</td></tr>
+        <tr><td>US-02</td><td>生涯說明</td><td>Help Text</td><td><code>lifetime_description</code></td><td>統計自開播以來的核心指標</td></tr>
+        <tr><td>US-02</td><td>生涯收聽數</td><td>Label</td><td><code>lifetime_listens</code></td><td>收聽數</td></tr>
+        <tr><td>US-02</td><td>生涯重複收聽數</td><td>Label</td><td><code>lifetime_duplicate_listens</code></td><td>重複收聽數</td></tr>
+        <tr><td>US-02</td><td>生涯平均收聽</td><td>Label</td><td><code>avg_listens_per_episode</code></td><td>單集平均收聽數</td></tr>
+        <tr><td>US-02</td><td>生涯平均收聽 Tooltip</td><td>Tooltip</td><td><code>avg_listens_per_episode_tooltip</code></td><td>⚠ 待確認：收聽數 ÷ 集數 or 公開集數</td></tr>
+        <tr><td>US-02</td><td>生涯平均重複收聽</td><td>Label</td><td><code>avg_duplicate_listens_per_episode</code></td><td>單集平均重複收聽數</td></tr>
+        <tr><td>US-02</td><td>生涯平均重複收聽 Tooltip</td><td>Tooltip</td><td><code>avg_duplicate_listens_per_episode_tooltip</code></td><td>⚠ 待確認：重複收聽數 ÷ 集數 or 公開集數</td></tr>
+        <tr><td>US-02</td><td>圖表圖例 RSS</td><td>Legend</td><td><code>chart_legend_rss</code></td><td>Apple / 其他 RSS</td></tr>
+        <tr><td>US-02</td><td>圖表圖例 Spotify</td><td>Legend</td><td><code>chart_legend_spotify</code></td><td>Spotify</td></tr>
+        <tr><td>US-02</td><td>圖表 Tooltip</td><td>Tooltip</td><td><code>chart_tooltip</code></td><td>Apple / 其他 RSS {N} ｜ Spotify {N} ｜ 總計 {N}</td></tr>
+        <tr><td>US-02</td><td>時區說明</td><td>Help Text</td><td><code>timezone_note</code></td><td>資料時區：UTC+8</td></tr>
+        <tr><td>US-02</td><td>CSV 下載</td><td>Link</td><td><code>download_csv</code></td><td>下載 CSV</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== 相關檔案 ===== -->
+  <section class="screen" id="related-files">
+    <h2>相關檔案</h2>
+    <table>
+      <thead><tr><th>類型</th><th>檔案</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr><td>PRD</td><td>prd.md</td><td>⬜ 尚未產出（最速模式）</td></tr>
+        <tr><td>User Story</td><td>user-story.md</td><td>✅ 已存在</td></tr>
+        <tr><td>Wireframe</td><td>wireframe.html</td><td>✅ 本文件</td></tr>
+        <tr><td>Prototype</td><td>prototype.html</td><td>⬜ 尚未產出</td></tr>
+        <tr><td>AC</td><td>acceptance-criteria.md</td><td>⬜ 尚未產出</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 底部導航 -->
+  <nav class="nav-container">
+    <button class="nav-btn active" data-screen="user-flow" onclick="goToScreen('user-flow')">總覽</button>
+    <button class="nav-btn" data-screen="us-01" onclick="goToScreen('us-01')">US-01</button>
+    <button class="nav-btn" data-screen="us-02" onclick="goToScreen('us-02')">US-02</button>
+    <button class="nav-btn" data-screen="us-03" onclick="goToScreen('us-03')">US-03</button>
+    <button class="nav-btn" data-screen="us-04" onclick="goToScreen('us-04')">US-04</button>
+    <button class="nav-btn" data-screen="ux-writing" onclick="goToScreen('ux-writing')">UX Writing</button>
+    <button class="nav-btn" data-screen="related-files" onclick="goToScreen('related-files')">相關檔案</button>
+  </nav>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+      document.querySelector(`[data-screen="${screenId}"]`).classList.add('active');
+      window.scrollTo(0, 0);
+      history.pushState(null, '', '#' + screenId);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.slice(1);
+      if (hash) goToScreen(hash);
+    });
+    window.addEventListener('popstate', () => {
+      const hash = window.location.hash.slice(1) || 'user-flow';
+      goToScreen(hash);
+    });
+  </script>
 </body>
 </html>
