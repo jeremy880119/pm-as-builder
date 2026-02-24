@@ -2,7 +2,7 @@
 
 **Feature Slug：** spotify-gated-release
 **對應 PRD：** ⬜ 尚未產出（最速模式）
-**總 Story Points：** 21
+**總 Story Points：** 16
 
 ---
 
@@ -10,14 +10,13 @@
 
 | ID | Title | Priority | Points | 依賴 |
 |----|-------|----------|--------|------|
-| **EP-01: Gated Access 權限控制** | | **P0** | **10** | |
-| US-01 | 後台設定灰階釋出名單 | P0 | 3 | — |
-| US-02 | 前端根據權限顯示/隱藏 Spotify 區塊 | P0 | 3 | US-01 |
-| US-03 | 管理員批次匯入/移除灰階用戶 | P1 | 4 | US-01 |
-| **EP-02: Spotify 數據串接** | | **P0** | **11** | |
-| US-04 | API 端點提供 Spotify 聚合數據 | P0 | 5 | — |
-| US-05 | 前端顯示 Spotify 數據儀表板 | P0 | 3 | US-02, US-04 |
-| US-06 | 數據載入狀態與錯誤處理 | P1 | 3 | US-05 |
+| **EP-01: Gated Access 權限控制** | | **P0** | **4** | |
+| US-01 | 以寫死名單控制灰階釋出權限 | P0 | 1 | — |
+| US-02 | Analytics Overview 頁面根據權限切換指標顯示 | P0 | 3 | US-01 |
+| **EP-02: 收聽數指標整合** | | **P0** | **12** | |
+| US-03 | API 整合 RSS 下載數與 Spotify 串流數為「收聽數」 | P0 | 5 | — |
+| US-04 | Analytics Overview 顯示收聽數取代下載數 | P0 | 3 | US-02, US-03 |
+| US-05 | 數據載入狀態與錯誤處理 | P1 | 4 | US-04 |
 
 ---
 
@@ -28,18 +27,15 @@
 ```mermaid
 flowchart LR
     subgraph "EP-01: Gated Access 權限控制"
-        A["管理員開啟後台"] -->|"US-01 設定名單"| B["選擇用戶加入灰階"]
-        B -->|"US-03 批次匯入"| C["上傳 CSV / 批次選取"]
-        B --> D["儲存灰階名單"]
+        A["用戶登入 Studio"] -->|"US-01 權限檢查"| B{"在灰階名單中？"}
+        B -->|"是"| C["載入新版 Analytics"]
+        B -->|"否"| D["載入舊版 Analytics"]
     end
 
-    subgraph "EP-02: Spotify 數據串接"
-        E["灰階用戶登入"] -->|"US-02 權限檢查"| F{"有灰階權限？"}
-        F -->|"是"| G["請求 Spotify 數據"]
-        F -->|"否"| H["隱藏 Spotify 區塊"]
-        G -->|"US-04 API 回傳"| I["取得聚合數據"]
-        I -->|"US-05 渲染"| J["顯示數據儀表板"]
-        G -->|"US-06 失敗"| K["顯示錯誤/重試"]
+    subgraph "EP-02: 收聽數指標整合"
+        C -->|"US-03 API 請求"| E["取得合併指標"]
+        E -->|"US-04 渲染"| F["顯示收聽數/重複收聽數"]
+        E -->|"US-05 失敗"| G["顯示錯誤/重試"]
     end
 ```
 
@@ -49,37 +45,37 @@ flowchart LR
 
 ---
 
-### US-01: 後台設定灰階釋出名單
+### US-01: 以寫死名單控制灰階釋出權限
 
 **Epic:** EP-01
 **Priority:** P0
-**Story Points:** 3
+**Story Points:** 1
 **依賴：** 無
 
 ### Use Case
-- **As a** 管理員,
-- **I want to** 在後台將特定用戶加入灰階釋出名單,
-- **so that** 只有被選定的用戶能看到 Spotify 數據功能。
+- **As a** 開發團隊,
+- **I want to** 用寫死的用戶名單控制誰能看到新版 Analytics 指標,
+- **so that** 能在正式全量釋出前讓特定用戶先行驗證。
 
 ### Acceptance Criteria（Smoke-test 級別）
 
-**Scenario: 成功加入灰階名單**
-- Given: 管理員在後台的灰階管理頁面
-- When: 搜尋並選擇一位用戶，點擊加入灰階
-- Then: 該用戶出現在灰階名單中，狀態為「已啟用」
+**Scenario: 名單內的用戶獲得灰階權限**
+- Given: 用戶 ID 在寫死的灰階名單中
+- When: 系統檢查該用戶的灰階權限
+- Then: 回傳「已啟用」
 
-**Scenario: 從灰階名單移除用戶**
-- Given: 灰階名單中有一位已啟用的用戶
-- When: 管理員點擊移除該用戶
-- Then: 該用戶不再出現在灰階名單中，且立即失去存取權限
+**Scenario: 名單外的用戶無灰階權限**
+- Given: 用戶 ID 不在寫死的灰階名單中
+- When: 系統檢查該用戶的灰階權限
+- Then: 回傳「未啟用」
 
 ### 技術備註
-- 需要一個 feature flag 機制來控制灰階狀態（可用現有 flag 系統或新建）
-- 灰階名單需持久化儲存，支援快速查詢某用戶是否在名單中
+- 名單寫死在 config 或程式碼中，不需後台 UI
+- 未來全量釋出時直接移除 feature flag 即可
 
 ---
 
-### US-02: 前端根據權限顯示/隱藏 Spotify 區塊
+### US-02: Analytics Overview 頁面根據權限切換指標顯示
 
 **Epic:** EP-01
 **Priority:** P0
@@ -88,62 +84,32 @@ flowchart LR
 
 ### Use Case
 - **As a** 灰階用戶,
-- **I want to** 登入後自動看到 Spotify 數據區塊,
-- **so that** 我能在不需額外操作的情況下存取新功能。
+- **I want to** 在 Analytics Overview 頁面看到新版指標介面,
+- **so that** 我能提前體驗整合 Spotify 數據後的正式介面。
 
 ### Acceptance Criteria（Smoke-test 級別）
 
-**Scenario: 灰階用戶看到 Spotify 區塊**
-- Given: 用戶已被加入灰階名單
-- When: 用戶登入並進入相關頁面
-- Then: 頁面顯示 Spotify 數據區塊
+**Scenario: 灰階用戶看到新版指標**
+- Given: 用戶在灰階名單中
+- When: 用戶進入 `/podcast/analytics/overview`
+- Then: 頁面顯示「收聽數」與「重複收聽數」取代原本的「下載數」與「重複下載數」
 
-**Scenario: 非灰階用戶看不到 Spotify 區塊**
+**Scenario: 非灰階用戶看到舊版指標**
 - Given: 用戶不在灰階名單中
-- When: 用戶登入並進入相同頁面
-- Then: 頁面不顯示 Spotify 數據區塊，且無任何殘留 UI 元素
+- When: 用戶進入 `/podcast/analytics/overview`
+- Then: 頁面維持顯示原本的「下載數」與「重複下載數」，無任何變化
 
 ### 技術備註
-- 前端需在頁面載入時檢查用戶的灰階權限
-- 權限檢查結果應可快取，避免每次頁面切換重新請求
+- 影響頁面：https://studio.firstory.me/podcast/analytics/overview
+- 灰階用戶看到的是未來正式介面，非臨時 UI
 
 ---
 
-### US-03: 管理員批次匯入/移除灰階用戶
-
-**Epic:** EP-01
-**Priority:** P1
-**Story Points:** 4
-**依賴：** US-01
-
-### Use Case
-- **As a** 管理員,
-- **I want to** 透過批次操作一次匯入或移除多位灰階用戶,
-- **so that** 大規模調整灰階名單時不需逐一手動操作。
-
-### Acceptance Criteria（Smoke-test 級別）
-
-**Scenario: CSV 批次匯入用戶**
-- Given: 管理員準備了一份包含用戶識別資訊的 CSV 檔案
-- When: 上傳 CSV 並確認匯入
-- Then: 檔案中的所有有效用戶被加入灰階名單，無效的用戶列出錯誤明細
-
-**Scenario: 批次移除用戶**
-- Given: 灰階名單中有多位用戶
-- When: 管理員勾選多位用戶並執行批次移除
-- Then: 被勾選的用戶全部從灰階名單移除
-
-### 技術備註
-- CSV 格式需定義明確的欄位規範（如 email 或 user ID）
-- 批次操作應為非同步處理，避免大量資料時 timeout
+## EP-02: 收聽數指標整合
 
 ---
 
-## EP-02: Spotify 數據串接
-
----
-
-### US-04: API 端點提供 Spotify 聚合數據
+### US-03: API 整合 RSS 下載數與 Spotify 串流數為「收聽數」
 
 **Epic:** EP-02
 **Priority:** P0
@@ -152,64 +118,66 @@ flowchart LR
 
 ### Use Case
 - **As a** 前端應用,
-- **I want to** 呼叫 API 取得當前用戶的 Spotify 聚合數據,
-- **so that** 前端能渲染數據儀表板。
+- **I want to** 呼叫 API 取得合併後的收聽指標,
+- **so that** 前端能顯示整合 Spotify 數據的新版指標。
 
 ### Acceptance Criteria（Smoke-test 級別）
 
-**Scenario: 成功取得 Spotify 數據**
-- Given: 用戶有灰階權限且資料庫中有該用戶的 Spotify 數據
-- When: 前端呼叫 Spotify 數據 API
-- Then: API 回傳結構化的聚合數據（包含播放次數、聽眾數等關鍵指標）
+**Scenario: 成功取得合併指標**
+- Given: 用戶有灰階權限且資料庫中有 RSS 下載數據與 Spotify 數據
+- When: 前端呼叫收聽數 API
+- Then: API 回傳：
+  - 「收聽數」= Apple 等 RSS 平台不重複下載數（unique downloads）+ Spotify 串流數（streams）
+  - 「重複收聽數」= Apple 等 RSS 平台下載數（downloads）+ Spotify 播放數（plays）
 
 **Scenario: 無權限用戶被拒絕**
 - Given: 用戶不在灰階名單中
-- When: 嘗試呼叫 Spotify 數據 API
+- When: 嘗試呼叫收聽數 API
 - Then: API 回傳 403 Forbidden
 
 ### 技術備註
-- API 需整合灰階權限檢查（middleware 層級）
-- 聚合數據的欄位需與資料庫現有 Spotify 數據表對應
+- 需整合灰階權限檢查（middleware 層級）
+- 指標合併邏輯：unique downloads + streams = 收聽數；downloads + plays = 重複收聽數
 - 考慮回應快取策略，Spotify 數據不需即時更新
 
 ---
 
-### US-05: 前端顯示 Spotify 數據儀表板
+### US-04: Analytics Overview 顯示收聽數取代下載數
 
 **Epic:** EP-02
 **Priority:** P0
 **Story Points:** 3
-**依賴：** US-02, US-04
+**依賴：** US-02, US-03
 
 ### Use Case
 - **As a** 灰階用戶,
-- **I want to** 在頁面上看到我的 Spotify 整合數據儀表板,
-- **so that** 我能了解我的內容在 Spotify 上的表現。
+- **I want to** 在 Analytics Overview 頁面看到收聽數與重複收聽數,
+- **so that** 我能了解包含 Spotify 在內的完整收聽表現。
 
 ### Acceptance Criteria（Smoke-test 級別）
 
-**Scenario: 儀表板顯示關鍵指標**
-- Given: 灰階用戶已登入且 API 成功回傳數據
-- When: 用戶進入 Spotify 數據頁面
-- Then: 儀表板顯示播放次數、聽眾數等關鍵指標
+**Scenario: 收聽數取代下載數**
+- Given: 灰階用戶已登入且 API 成功回傳合併指標
+- When: 用戶進入 `/podcast/analytics/overview`
+- Then: 原本顯示「下載數」的位置改為顯示「收聽數」，數值為 unique downloads + streams
 
-**Scenario: 無數據時顯示空狀態**
-- Given: 灰階用戶已登入但尚無 Spotify 數據
-- When: 用戶進入 Spotify 數據頁面
-- Then: 顯示友善的空狀態提示，引導用戶了解數據何時會出現
+**Scenario: 重複收聽數取代重複下載數**
+- Given: 灰階用戶已登入且 API 成功回傳合併指標
+- When: 用戶進入 `/podcast/analytics/overview`
+- Then: 原本顯示「重複下載數」的位置改為顯示「重複收聽數」，數值為 downloads + plays
 
 ### 技術備註
-- 儀表板元件需配合 US-02 的權限控制條件渲染
-- 數據呈現格式需與設計團隊對齊（最速模式無 Wireframe，需另行確認）
+- 僅替換指標名稱與數據來源，頁面佈局與圖表維持不變
+- 數據呈現格式（趨勢圖、數字卡片等）沿用現有元件
 
 ---
 
-### US-06: 數據載入狀態與錯誤處理
+### US-05: 數據載入狀態與錯誤處理
 
 **Epic:** EP-02
 **Priority:** P1
-**Story Points:** 3
-**依賴：** US-05
+**Story Points:** 4
+**依賴：** US-04
 
 ### Use Case
 - **As a** 灰階用戶,
@@ -219,18 +187,18 @@ flowchart LR
 ### Acceptance Criteria（Smoke-test 級別）
 
 **Scenario: 數據載入中顯示 loading 狀態**
-- Given: 用戶進入 Spotify 數據頁面
-- When: API 正在回傳數據（尚未完成）
+- Given: 用戶進入 Analytics Overview
+- When: 收聽數 API 正在回傳數據（尚未完成）
 - Then: 顯示載入中的骨架屏或 spinner
 
-**Scenario: API 錯誤時顯示重試選項**
-- Given: 用戶進入 Spotify 數據頁面
-- When: API 回傳 5xx 錯誤
-- Then: 顯示錯誤訊息與「重試」按鈕，點擊後重新請求
+**Scenario: API 錯誤時 fallback 到舊版指標**
+- Given: 用戶進入 Analytics Overview
+- When: 收聽數 API 回傳錯誤
+- Then: 自動 fallback 顯示原本的下載數指標，並顯示提示訊息
 
 ### 技術備註
-- 錯誤處理需區分 403（無權限）與 5xx（系統錯誤）的不同呈現
-- 考慮加入自動重試機制（如 exponential backoff）
+- 錯誤處理策略：API 失敗時 graceful fallback 到舊版指標，而非顯示空白
+- 區分 403（無權限，不應發生）與 5xx（系統錯誤，需 fallback）
 
 ---
 
