@@ -26,7 +26,10 @@
 | US-12: D2 攔截 Modal | 5 | Happy + Edge + Error |
 | US-13: D3 暫停上傳 | 6 | Happy + Edge + Error |
 
-**合計：67 個場景**
+| US-14: 註冊頁方案選擇整合 | 4 | Happy + Edge + Error |
+| US-15: 全站升級按鈕 | 4 | Happy + Edge + Error |
+
+**合計：75 個場景**
 
 ---
 
@@ -565,6 +568,71 @@
 
 ---
 
+## US-14: 註冊頁方案選擇整合
+
+### Happy Path
+
+**Scenario: 註冊頁顯示方案比較表**
+- Given: 用戶進入註冊頁（/signup）
+- When: 頁面載入完成
+- Then: 左側應顯示與方案選擇頁相同的價目表元件，含 Free/Lite/Pro/Enterprise 四個方案
+- And: 預設選中 Pro 年繳方案
+- And: 顯示各方案定價與功能差異
+
+**Scenario: 選擇付費方案後完成註冊並進入 Checkout**
+- Given: 用戶在註冊頁左側選擇了 Pro 方案
+- When: 用戶填寫右側表單並點擊「註冊」完成註冊
+- Then: 註冊成功後應跳轉至 Stripe Checkout 頁面
+- And: Checkout 應帶入 14 天免費試用（新用戶必定符合資格）
+
+### Edge Cases
+
+**Scenario: 未選方案直接註冊（使用 Free 方案）**
+- Given: 用戶在註冊頁未在左側選擇任何付費方案
+- When: 用戶點擊「註冊」完成註冊
+- Then: 應以 Free 方案完成註冊，直接進入 Dashboard
+- And: 不應跳轉至 Stripe Checkout
+
+### Error Handling
+
+**Scenario: 方案資料載入失敗時可降級處理**
+- Given: 用戶進入註冊頁，方案定價 API 回傳錯誤
+- When: 頁面載入完成
+- Then: 左側方案比較表應顯示錯誤提示或隱藏，不應阻擋右側註冊流程
+- And: 用戶仍可以 Free 方案完成註冊
+
+---
+
+## US-15: 全站升級按鈕
+
+### Happy Path
+
+**Scenario: 非最高方案用戶看到升級按鈕**
+- Given: 用戶目前為 Free、Lite 或 Pro 方案
+- When: 用戶在任何頁面
+- Then: Header 右上角應顯示「升級」按鈕
+
+**Scenario: 點擊升級按鈕導向方案選擇頁**
+- Given: 用戶目前為 Free 方案，Header 顯示「升級」按鈕
+- When: 用戶點擊「升級」按鈕
+- Then: 應導向方案選擇頁（/account/subscription/plans）
+
+### Edge Cases
+
+**Scenario: Enterprise 用戶不顯示升級按鈕**
+- Given: 用戶目前為 Enterprise 方案
+- When: 用戶在任何頁面
+- Then: Header 右上角不應顯示「升級」按鈕
+
+### Error Handling
+
+**Scenario: 方案狀態查詢失敗時預設顯示升級按鈕**
+- Given: 用戶已登入，方案狀態 API 暫時不可用
+- When: 用戶在任何頁面
+- Then: 應預設顯示「升級」按鈕（fail-open，避免遮蔽升級入口）
+
+---
+
 ## UI 驗證清單
 
 基於 Wireframe v4.0 產出：
@@ -660,3 +728,4 @@
 | 版本 | 日期 | 變更內容 | 影響範圍 |
 |------|------|----------|----------|
 | v1.0 | 2026-02-12 | 初版：13 個 Story、67 個場景（Happy + Edge + Error），含 UI 驗證清單與非功能性需求 | AC |
+| v1.1 | 2026-02-25 | 補充 US-14（註冊頁方案選擇整合）與 US-15（全站升級按鈕）AC，共新增 8 個場景（67→75） | AC |
