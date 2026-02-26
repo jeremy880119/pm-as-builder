@@ -35,10 +35,12 @@ prd → user-story → ac
 
 | 產物 | 檔名 | 必要性 |
 |------|------|--------|
-| PRD | `prd.md` | 必須 |
-| User Story | `user-story.md` | 必須 |
-| Acceptance Criteria | `acceptance-criteria.md` | 必須 |
+| PRD | `prd.md` | 必須（一份，含所有 Phase） |
+| User Story | `user-story-phase-{N}.md` | 必須（每 Phase 一份） |
+| Acceptance Criteria | `acceptance-criteria-phase-{N}.md` | 必須（每 Phase 一份） |
 | Wireframe | `wireframe.html` | 可選 |
+
+**向後相容：** 若 PRD 無 `Current Phase` 標記（舊 PRD），下游產物使用原檔名 `user-story.md`、`acceptance-criteria.md`。
 
 - Feature slug：kebab-case
 - 版本歷史完全由 git commit 追蹤，檔案內不寫版本號、日期、changelog
