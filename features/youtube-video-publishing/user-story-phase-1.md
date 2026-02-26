@@ -76,24 +76,24 @@ flowchart TD
 **依賴：** 無
 
 ### Use Case
-- **As a** 付費方案的 Podcast 主持人，
+- **As a** Podcast 主持人，
 - **I want to** 透過 OAuth 授權連接我的 YouTube 頻道，
 - **so that** 我可以直接從平台發布集數到 YouTube，不需要手動上傳。
 
 ### Acceptance Criteria（Smoke-test 級別）
 
 **Scenario: 成功連接 YouTube 頻道**
-- Given: 用戶已登入且使用付費方案，目前 Podcast 設定頁尚未連接任何 YouTube 頻道
+- Given: 用戶已登入，目前 Podcast 設定頁尚未連接任何 YouTube 頻道
 - When: 用戶點擊「連接 YouTube 頻道」按鈕，完成 Google OAuth 授權流程
 - Then: 系統顯示已連接頻道名稱、頻道頭像及訂閱人數，並出現「中斷連接」選項
 
-**Scenario: 免費方案用戶嘗試連接**
-- Given: 用戶已登入且使用免費方案
-- When: 用戶進入 Podcast 設定頁的 YouTube 連接區塊
-- Then: 系統顯示升級提示，連接按鈕為停用狀態
+**Scenario: 免費方案用戶連接**
+- Given: 用戶已登入且使用免費方案，目前 Podcast 設定頁尚未連接任何 YouTube 頻道
+- When: 用戶點擊「連接 YouTube 頻道」按鈕，完成 Google OAuth 授權流程
+- Then: 系統顯示已連接頻道名稱、頻道頭像及訂閱人數，並出現「中斷連接」選項
 
 **Scenario: OAuth 授權失敗**
-- Given: 用戶已登入且使用付費方案，點擊「連接 YouTube 頻道」後進入 Google OAuth 頁面
+- Given: 用戶已登入，點擊「連接 YouTube 頻道」後進入 Google OAuth 頁面
 - When: 用戶在 Google 授權頁面點擊「拒絕」或關閉彈窗
 - Then: 系統顯示授權失敗錯誤訊息，頻道連接狀態維持未連接
 
@@ -411,7 +411,7 @@ flowchart TD
 
 | PRD 開放問題 # | 問題 | 當前假設 | 影響的 Story |
 |---|---|---|---|
-| 1 | YouTube 功能是否與特定付費方案綁定？ | 所有付費方案可用，免費方案不可用，免費用戶看到升級提示 | US-01 |
+| 1 | YouTube 功能是否與特定付費方案綁定？ | 開放給所有用戶（含免費方案） | US-01 |
 | 2 | 從影片提取的音訊品質是否足夠用於 RSS？ | 系統預設提取最高品質音軌，不提供品質選項 | US-05 |
 | 3 | 影片儲存策略為何？ | 影片暫存至上傳 YouTube 成功後刪除，不永久保存 | US-04 |
 | 4 | YouTube Data API 每日配額是否充足？ | Phase 1 不設排隊機制，但顯示每日上傳上限提示 | US-04 |
