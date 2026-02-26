@@ -16,15 +16,15 @@
 | US-03 | 多頻道選擇 | P2 | 3 | US-01 |
 | **EP-02: 影片上傳** | | | **13** | |
 | US-04 | 上傳影片檔案（含進度指示） | P0 | 5 | US-01 |
-| US-05 | Video-first 路徑：從影片提取音軌 | P0 | 5 | US-04 |
-| US-06 | Audio+Video 路徑：分別上傳音訊與影片 | P1 | 3 | US-04 |
+| US-05 | Video-first 路徑：從影片提取音軌 | P1 | 5 | US-04 |
+| US-06 | Audio+Video 路徑：分別上傳音訊與影片 | P0 | 3 | US-04 |
 | **EP-03: YouTube 發布** | | | **13** | |
 | US-07 | YouTube Metadata 設定 | P1 | 3 | US-04 |
-| US-08 | 即時發布與排程發布 | P0 | 3 | US-05 |
+| US-08 | 即時發布與排程發布 | P0 | 3 | US-06 |
 | US-09 | 發布預覽 | P2 | 3 | US-07, US-08 |
-| US-10 | 集數列表 YouTube 發布狀態顯示 | P1 | 2 | US-08 |
+| US-10 | 集數列表 YouTube 發布狀態顯示 | P0 | 2 | US-08 |
 
-**總計：34 Story Points（P0: 16 pts / P1: 10 pts / P2: 6 pts）**
+**總計：32 Story Points（P0: 16 pts / P1: 10 pts / P2: 6 pts）**
 
 ---
 
@@ -213,7 +213,7 @@ flowchart TD
 ### US-05: Video-first 路徑：從影片提取音軌
 
 **Epic:** EP-02
-**Priority:** P0
+**Priority:** P1
 **Story Points:** 5
 **依賴：** US-04
 
@@ -244,7 +244,7 @@ flowchart TD
 ### US-06: Audio+Video 路徑：分別上傳音訊與影片
 
 **Epic:** EP-02
-**Priority:** P1
+**Priority:** P0
 **Story Points:** 3
 **依賴：** US-04
 
@@ -317,7 +317,7 @@ flowchart TD
 **Epic:** EP-03
 **Priority:** P0
 **Story Points:** 3
-**依賴：** US-05
+**依賴：** US-06
 
 ### Use Case
 - **As a** 已完成 YouTube Metadata 設定的 Podcast 主持人，
@@ -380,7 +380,7 @@ flowchart TD
 ### US-10: 集數列表 YouTube 發布狀態顯示
 
 **Epic:** EP-03
-**Priority:** P1
+**Priority:** P0
 **Story Points:** 2
 **依賴：** US-08
 
