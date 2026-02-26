@@ -17,7 +17,21 @@
       "WebFetch(domain:www.g2.com)",
       "WebFetch(domain:onehourprofessor.com)",
       "WebFetch(domain:firstory.medium.com)",
-      "WebFetch(domain:www.youtube.com)"
+      "WebFetch(domain:www.youtube.com)",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "Bash(brew list:*)",
+      "Bash(brew install:*)",
+      "WebFetch(domain:developers.google.com)",
+      "WebFetch(domain:support.google.com)",
+      "WebFetch(domain:podnews.net)",
+      "Bash(code:*)",
+      "Bash(open:*)",
+      "Bash(git:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(npx playwright:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)"
     ]
   }
 }

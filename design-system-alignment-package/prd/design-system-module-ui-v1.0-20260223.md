@@ -34,6 +34,7 @@
 | 產品介面規範覆蓋率 | 3–5 個頁面 100% 文件化 | 涵蓋高使用頻率頁面 |
 | SCAN_RULES 更新 | 納入模組 + 產品介面規則 | 可機器掃描 |
 | MASTER.md 更新 | 新增 Section 7 + Section 8 | 版本升至 v2.1.0 |
+| Phase 2 收斂完成率 | 收斂目標達標百分比 ≥ 90% | Phase 2 各層指標達標比例 |
 | 工程師反饋 | 下次新頁面開發不需再問設計師確認組合方式 | 定性指標 |
 
 ---
@@ -47,7 +48,10 @@
 | **設計對齊（Alignment）** | 確保程式碼實作與設計規範（MASTER.md）的值一致，消除 "documented but not coded" 和 "coded but not documented" 兩種漂移 |
 | **MASTER.md** | 設計系統主規範文件，目前為 v2.1.0，包含 Section 0–6 |
 | **SCAN_RULES.md** | 定義自動掃描規則的文件，用於 Phase 1 健康檢查 |
-| **Phase 1–4** | 設計對齊執行流程的四個階段（健康檢查、文件補全、代碼對齊、驗證收尾） |
+| **Phase 1–5** | 設計對齊執行流程的五個階段（健康檢查、收斂與精簡、文件補全、代碼對齊、驗證收尾） |
+| **收斂與精簡（Converge & Simplify）** | Phase 1 掃描後，對設計系統全部五層（原則、Token、元件、模組、產品介面）進行冗餘偵測與精簡，確立乾淨基線後再擴張 |
+| **Deprecation Manifest** | 由 PRUNE 掃描自動產生的廢棄/合併/保留動作清單，PM + 設計師一次性會簽，不逐項審批 |
+| **PRUNE 規則** | SCAN_RULES 的擴充類別，專門偵測冗餘（vs. 現有規則偵測違規），規則 ID 格式 `PRUNE-{LAYER}-{NNN}` |
 | **Token** | 設計系統的最小決策單元，如 `--primary`、`--space-4`、`--radius-md` |
 
 ---
@@ -81,9 +85,9 @@
 4. **設定頁（Settings）**：分類設定 section + 表單區塊 + 操作區
 5. **廣告管理頁（Ad Management）**：廣告列表 + 版位設定 + 狀態篩選
 
-**流程（Phase 1–4）**
+**流程（Phase 1–5）**
 
-工程師需跑完整四個階段（細節見「用戶旅程」章節）。
+工程師需跑完整五個階段（細節見「用戶旅程」章節）。
 
 ### 明確不做
 
@@ -107,7 +111,7 @@
 
 **入口**：工程師收到本 PRD，進入 `design-system-alignment-package/` 目錄，從現有 MASTER.md 和 SCAN_RULES.md 出發
 
-**Happy Path（Phase 1–4 執行流程）：**
+**Happy Path（Phase 1–5 執行流程）：**
 
 1. **Phase 1：健康檢查（Scan & Audit）**
    - 工程師更新 `SCAN_RULES.md`，加入模組組合規則和產品介面佈局規則
@@ -117,18 +121,88 @@
    - 更新 `SYNC_STATUS.md`，填入模組層和產品介面層的 Section E（Undocumented）
    - 更新 `design-system.html`，新增模組 Gallery 預覽區
 
-2. **Phase 2：文件補全（Document）**
+2. **Phase 2：收斂與精簡（Converge & Simplify）**
+
+   執行原則：**偵測自動化、決策一次性、傳播自動化**
+
+   - **Step 1 — 執行 PRUNE 掃描（自動）**
+     - 對五層各執行 PRUNE 規則，輸出 `pruning-report.json`
+     - 五層掃描範圍：
+
+     | 層 | PRUNE 規則 | 偵測什麼 |
+     |----|-----------|---------|
+     | 設計原則 | PRUNE-PRINCIPLE-001/002 | 無法追溯到下游決策的原則、語義重疊的原則 |
+     | Token — 顏色 | PRUNE-TOKEN-001~005 | 感知相似色（ΔE < 5）、值完全相同的 token、未被引用的 token、新舊雙系統重疊、無下游引用的 primitive |
+     | Token — 字型/陰影/間距 | PRUNE-TOKEN-010/011/020/021/030/031 | 重複定義、未被引用 |
+     | 元件 | PRUNE-COMP-001~003 | prop 重疊的元件、差異 < 2 屬性的 variant、引用已廢棄 token |
+     | 模組 / 產品介面 | PRUNE-MOD-001/002, PRUNE-LAYOUT-001/002 | 結構相似可合併的模組、佈局規則中未 tokenize 的值 |
+
+   - **Step 2 — 生成 Deprecation Manifest（自動）**
+     - 根據 pruning-report 自動分配動作：
+       - `MERGE(target)` — 合併至目標 token/元件
+       - `DELETE` — 移除（零引用項）
+       - `ALIAS` — 舊名指向新名（過渡期）
+       - `KEEP` — 低於閾值，保留
+     - 輸出 `deprecation-manifest.json`
+
+   - **Step 3 — 會簽（唯一人工決策點）**
+     - PM + 設計師審閱整份 manifest
+     - 批准/駁回整份清單，可附最多 5 項 override（將 MERGE→KEEP 或 DELETE→KEEP）
+     - 不逐項審批
+
+   - **Step 4 — 執行清理（自動）**
+     - 根據已批准 manifest 更新 MASTER.md、TOKEN_REGISTRY.md
+     - 提交 `git commit` per batch
+     - 在 SCAN_RULES.md 加入「禁用已廢棄 token」規則，防止未來誤用
+
+   - **Step 5 — 驗證（自動）**
+     - 重跑 PRUNE 掃描，確認收斂目標達成
+     - 產出 before/after 比較報告
+     - 未達標 → 回到 Step 2 重新產生 manifest
+
+   **收斂目標：**
+
+   | 層 | 指標 | 現況 | 目標 | 理由 |
+   |----|------|------|------|------|
+   | 設計原則 | 原則數 | 4 | ≤ 5，每條可追溯 | — |
+   | 顏色 Token（語義） | 背景+文字+邊框+品牌 | ~35 | **≤ 20** | bg 5 + text 6 + border 4 + brand 4 = 19 已覆蓋全場景 |
+   | 顏色 Token（狀態/圖表/音訊） | 領域特定色 | ~30 | **≤ 15** | 4 狀態 × 3 variant = 12 + 圖表 3（主/次/網格）|
+   | 顏色 Token（primitive） | 灰階+黑白 | 14 | **≤ 6** | 僅保留被語義 token 直接引用的灰階，其餘刪除 |
+   | 顏色 Token（品牌/第三方） | 第三方品牌色 | 4 | 4（不可變） | — |
+   | 顏色 Token 總計 | 所有色彩 | ~97 | **≤ 50** | 20 + 15 + 6 + 4 + 餘量 5 |
+   | 新舊雙系統 Token | TOKEN_REGISTRY 舊命名 | ~97 | 0（全遷移至 MASTER.md v2） | — |
+   | 字型大小 | font-size 級距 | 8 | **≤ 6** | 砍掉 text-4xl (36px) 和 text-3xl (30px) 中的一個，合併相鄰級距 |
+   | 字型粗細 | font-weight | 4 (400/500/600/700) | **≤ 3** | semibold (600) 與 bold (700) 語義重疊，保留一個 |
+   | 字型家族 | font-family | 3 (sans/serif/mono) | **≤ 2** | Serif 在元件/模組規範中零引用，SaaS 後台無 Serif 場景，建議刪除 |
+   | 字型 Token 總計 | 大小+粗細+家族 | 14 | **≤ 11** | 6 size + 3 weight + 2 family |
+   | 陰影 Token | 命名陰影 | 12 | ≤ 10 | — |
+   | 元件 Variant | 所有元件的 variant 總和 | ~15 | 每元件 ≤ 4 variant | — |
+
+   **收斂原則：每層都要能用一頁白紙寫完。寫不完就是還沒收斂。**
+
+   **已知冗餘（供 Phase 2 驗證）：**
+
+   基於現有文件的初步審計，以下項目應被 PRUNE 掃描偵測：
+   1. `--secondary` === `--muted`（值完全相同）→ MERGE
+   2. `--secondary-foreground` === `--accent-foreground`（值完全相同）→ MERGE
+   3. `--card-foreground` === `--popover-foreground`（值完全相同）→ MERGE
+   4. TOKEN_REGISTRY 整個舊命名系統 → ALIAS 後廢棄
+   5. `--status-*` 與語義 alert token 完全重疊 → DELETE
+   6. `--shadow-2xs` vs `--shadow-xs` 差異僅 0.02 opacity → MERGE 候選
+   7. `--font-serif` (`Noto Serif`) — CSS variables 有定義但元件/模組規範零引用，SaaS 後台無 Serif 場景 → DELETE
+
+3. **Phase 3：文件補全（Document）**
    - 在 `MASTER.md` 中新增 Section 7（模組層）：為每個確認的模組定義組合規則、使用場景、禁止組合
    - 在 `MASTER.md` 中新增 Section 8（產品介面層）：為每個確認的頁面定義佈局模式、模組使用規則
    - 更新 `SCAN_RULES.md`，加入新增的規則項目（Section 8 模組規則、Section 9 產品介面規則）
    - 更新 `MAINTENANCE.md`，納入模組和產品介面的維護指南
 
-3. **Phase 3：代碼對齊（Code）**
+4. **Phase 4：代碼對齊（Code）**
    - 提交 **PR: Modules**（模組層代碼補全或修正）
    - 提交 **PR: Product UI**（產品介面層代碼補全或修正）
    - 兩個 PR 需包含：對應 MASTER.md Section 7/8 的規範文件引用
 
-4. **Phase 4：驗證收尾（Verify & Wrap）**
+5. **Phase 5：驗證收尾（Verify & Wrap）**
    - 重新執行掃描，確認 SYNC_STATUS.md 的 Section E 已清零（無 Undocumented 項目）
    - 更新 `CHANGELOG.md`，新增版本條目
    - MASTER.md 版本從 v2.0.0 升至 v2.1.0
@@ -136,8 +210,10 @@
 **分支路徑：**
 
 - 掃描發現模組超過 8 個 → 工程師與 PM 確認，決定哪些納入此次範圍，剩餘列入 backlog
-- 掃描發現某頁面模組組合違反現有反模式規範 → 標記為高優先修正，在 Phase 3 PR 中處理
+- 掃描發現某頁面模組組合違反現有反模式規範 → 標記為高優先修正，在 Phase 4 PR 中處理
 - MASTER.md Section 7/8 文件化後發現現有 Token 不足以描述模組狀態 → 走 Token 補充流程（新增至 TOKEN_REGISTRY.md），但不得引入設計系統外的值
+- Phase 2 manifest 被駁回 → PM 標注駁回原因，工程師調整 PRUNE 閾值後重跑 Step 1–2
+- Phase 2 廢棄 Token 已在未納入範圍的頁面使用 → 標記為 `ALIAS`（保留舊名指向新名），不阻塞 Phase 2 完成
 
 ---
 
@@ -175,7 +251,7 @@
 | 產品介面 | 3 個頁面 | 5 個頁面 | 全部頁面（10+ 頁） |
 | 掃描規則 | 基礎模組組合規則（5 條） | 完整模組 + 產品介面規則（15+ 條） | 可 CI 自動執行的掃描腳本 |
 | 文件格式 | Markdown 條列規範 | Markdown + ASCII 示意圖 | 互動式 Gallery + Storybook |
-| 時程 | 1–2 週 | 3–4 週 | 6–8 週 |
+| 時程 | 1.5–2.5 週 | 4–5 週 | 7–9 週 |
 | 風險 | 低（文件為主） | 低–中（有代碼 PR） | 中（架構決策多） |
 
 ---
@@ -192,19 +268,22 @@
 
 ## 交付物清單
 
-工程師完成 Phase 1–4 後，需交付以下所有檔案（路徑相對於 `design-system/` 目錄）：
+工程師完成 Phase 1–5 後，需交付以下所有檔案（路徑相對於 `design-system/` 目錄）：
 
 | 檔案 | 說明 | Phase | 狀態 |
 |------|------|-------|------|
 | `TOKEN_REGISTRY.md` | 更新：加入模組語義 token（如有新增） | 1 | ⬜ 待執行 |
-| `SYNC_STATUS.md` | 更新：含模組層、產品介面層的差異報告 | 1, 4 | ⬜ 待執行 |
+| `SYNC_STATUS.md` | 更新：含模組層、產品介面層的差異報告 | 1, 5 | ⬜ 待執行 |
 | `design-system.html` | 更新：新增模組預覽 Gallery 區塊 | 1 | ⬜ 待執行 |
-| `MASTER.md` | 更新：新增 Section 7（模組）、Section 8（產品介面） | 2 | ⬜ 待執行 |
-| `SCAN_RULES.md` | 更新：加入模組組合規則、產品介面佈局規則 | 2 | ⬜ 待執行 |
-| `MAINTENANCE.md` | 新建：納入模組和產品介面的維護指南 | 2 | ⬜ 待執行 |
-| `CHANGELOG.md` | 新建：新增 v2.1.0 版本條目 | 4 | ⬜ 待執行 |
-| PR: Modules | 模組層相關程式碼補全或修正 | 3 | ⬜ 待執行 |
-| PR: Product UI | 產品介面層相關程式碼補全或修正 | 3 | ⬜ 待執行 |
+| `pruning-report.json` | PRUNE 掃描自動產出 | 2 | ⬜ 待執行 |
+| `deprecation-manifest.json` | 廢棄/合併動作清單（需會簽） | 2 | ⬜ 待執行 |
+| `SCAN_RULES.md` | 更新：加入 PRUNE-* 規則 + 禁用廢棄 token 規則 | 2 | ⬜ 待執行 |
+| `MASTER.md` | 更新：新增 Section 7（模組）、Section 8（產品介面） | 3 | ⬜ 待執行 |
+| `SCAN_RULES.md` | 更新：加入模組組合規則、產品介面佈局規則 | 3 | ⬜ 待執行 |
+| `MAINTENANCE.md` | 新建：納入模組和產品介面的維護指南 | 3 | ⬜ 待執行 |
+| PR: Modules | 模組層相關程式碼補全或修正 | 4 | ⬜ 待執行 |
+| PR: Product UI | 產品介面層相關程式碼補全或修正 | 4 | ⬜ 待執行 |
+| `CHANGELOG.md` | 新建：新增 v2.1.0 版本條目 | 5 | ⬜ 待執行 |
 
 ---
 
@@ -235,3 +314,4 @@
 | 版本 | 日期 | 變更內容 | 影響範圍 |
 |------|------|----------|----------|
 | v1.0 | 2026-02-23 | 初版：定義模組層和產品介面層補全範圍 | PRD |
+| v1.1 | 2026-02-25 | 新增 Phase 2「收斂與精簡」，原 Phase 2–4 順移為 Phase 3–5；新增名詞定義、收斂目標、PRUNE 規則、已知冗餘清單 | PRD 全文 |
