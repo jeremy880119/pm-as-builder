@@ -36,14 +36,18 @@
 ### Step 1：上傳媒體
 
 ```
-[ 音訊上傳區塊（必填）]     [ 影片上傳區塊（選填）]
-  進度條                      進度條
-                              （未連接 YouTube 顯示小提示，不阻擋上傳）
+[🎵 音訊  必填]  [🎬 影片  選填]    ← TabsList（pill style，靠左）
+─────────────────────────────────
+  (AudioEditor 或 VideoEditor)      ← TabsContent
+─────────────────────────────────
 ```
 
-- 音訊與影片各自獨立上傳，可同時進行
+- 音訊與影片以 **Tab** 切換（非並排），預設顯示音訊 tab
+- `AudioEditor`：現有 segment editor（toolbar + 卡片區 + playback bar）
+- `VideoEditor`：外觀與 AudioEditor 一致（toolbar「新增影片」+ 卡片區 + playback bar）
 - 未上傳影片：Step 3 的 YouTube accordion 不顯示
-- 未連接 YouTube：影片上傳區顯示小提示，但不阻擋上傳流程
+- 未連接 YouTube：影片 tab 底部顯示小提示，不阻擋上傳流程
+- 「影片已就緒」狀態**僅顯示於下方 badge**，不顯示 banner
 
 ### Step 2：基本資訊
 

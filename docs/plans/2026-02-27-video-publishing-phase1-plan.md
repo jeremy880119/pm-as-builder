@@ -72,7 +72,7 @@ grep -r "youtubeConnected\|youtube.*connect\|integrat" src/ --include="*.ts" -il
 grep -r "audio.*upload\|AudioUpload" src/pages/EpisodeUpload/ --include="*.tsx" -l
 ```
 
-**Step 2: 新增 `VideoUploadBlock` 元件（複製音訊上傳邏輯）**
+**Step 2: 新增 `VideoEditor` 元件（外觀與 AudioEditor 一致）**
 
 元件 props：
 ```typescript
@@ -87,9 +87,9 @@ interface VideoUploadBlockProps {
 - `youtubeConnected === false` 時顯示小提示（不阻擋）
 - 上傳完成後呼叫 `onUploadComplete(videoId)`
 
-**Step 3: 在 Step 1 的佈局中加入 `VideoUploadBlock`**
+**Step 3: 在 Step 1 用 Tabs 包住 AudioEditor 與 VideoEditor**
 
-排版：音訊與影片並排（flex row），各佔一半寬度。
+排版：音訊/影片以 Tab 切換（pill style，`w-fit` 靠左），不並排。
 
 **Step 4: 在 wizard state 加入 `videoId: string | null`**
 
