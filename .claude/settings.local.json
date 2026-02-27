@@ -33,7 +33,11 @@
       "Bash(grep:*)",
       "Bash(cat:*)",
       "Bash(done)",
-      "Skill(commit-commands:commit)"
+      "Skill(commit-commands:commit)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(claude:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }
