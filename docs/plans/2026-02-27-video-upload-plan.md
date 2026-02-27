@@ -2,150 +2,128 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 產出「影音上傳與多平台發布」功能的完整 PM 交付物，供工程團隊啟動開發。
+**Goal:** 產出完整的影音上傳功能 PM 文件，涵蓋 PRD、User Stories、Acceptance Criteria。
 
-**Architecture:** 音訊必填走 RSS，影片選填同步至影音平台（Phase 1：YouTube）。集數建立採 4 步驟 wizard，Step 3 以 accordion 管理各平台設定。未來新增平台只需加一個 accordion section。
+**Architecture:** 以 `docs/plans/2026-02-27-video-upload-design.md` 為設計基礎，依序產出 PRD → User Stories → AC。各文件放在 `features/video-upload/` 目錄下。
 
-**Deliverables:** PRD → User Stories → Acceptance Criteria → Wireframe
-
-**Design Doc:** `docs/plans/2026-02-27-video-upload-design.md`
+**Tech Stack:** Markdown、Mermaid（flowchart）、Gherkin（AC）
 
 ---
 
-## Task 1：寫 PRD
+## Task 1：建立 feature 目錄結構
 
 **Files:**
-- Create: `features/video-upload-multi-platform/prd.md`
+- Create: `features/video-upload/` 目錄
 
-**Step 1: 建立目錄與檔案**
-
-```bash
-mkdir -p features/video-upload-multi-platform
-```
-
-**Step 2: 寫 PRD**
-
-使用 `/prd` skill，內容涵蓋：
-- 問題陳述（音訊限制、影音趨勢）
-- 目標用戶（撞牆期專業創作者）
-- 成功指標（YouTube 連接率、發布率、留存率）
-- 功能範圍 Phase 1（YouTube）/ Phase 2（Apple Video、Spotify Video）
-- 名詞定義（Audio+Video 路徑、badge、accordion）
-- 用戶旅程（首次連接 YouTube、建立含影片的集數、僅音訊集數）
-- 限制與邊界
-- 依賴關係（Google OAuth、YouTube Data API、影片儲存）
-- 開放問題（見設計文件「待確認項目」）
-
-**Step 3: Commit**
+**Step 1: 建立目錄**
 
 ```bash
-git add features/video-upload-multi-platform/prd.md
-git commit -m "feat(video-upload): add PRD"
+mkdir -p features/video-upload
 ```
-
----
-
-## Task 2：寫 User Stories（Phase 1）
-
-**Files:**
-- Create: `features/video-upload-multi-platform/user-story.md`
-
-**Step 1: 規劃 Epic 結構**
-
-| Epic | 內容 |
-|------|------|
-| EP-01 | YouTube 頻道連接（OAuth） |
-| EP-02 | 影片上傳（Step 1 媒體上傳） |
-| EP-03 | YouTube 發布設定（Step 3 accordion） |
-| EP-04 | 集數列表 Badge 顯示 |
-
-**Step 2: 寫 User Stories**
-
-使用 `/user-story` skill，每個 story 包含：
-- As a / I want to / So that
-- Use Case
-- Acceptance Criteria 摘要（詳細 AC 在 Task 3）
-- Priority（P0/P1/P2）、Story Points、依賴
-
-**關鍵 Stories 清單：**
-
-| ID | Title | Priority |
-|----|-------|----------|
-| US-01 | OAuth 連接 YouTube 頻道 | P0 |
-| US-02 | 顯示已連接頻道資訊 | P1 |
-| US-03 | 多 YouTube 頻道選擇 | P2 |
-| US-04 | 上傳影片檔案（含進度指示） | P0 |
-| US-05 | Audio+Video 路徑：分別上傳音訊與影片 | P0 |
-| US-06 | YouTube Metadata 設定（標題、說明、縮圖、Playlist、能見度、Made for Kids、AI 旗標） | P1 |
-| US-07 | 即時發布與排程發布至 YouTube | P0 |
-| US-08 | 集數列表 Badge 顯示（RSS / YouTube） | P0 |
-
-**Step 3: Commit**
-
-```bash
-git add features/video-upload-multi-platform/user-story.md
-git commit -m "feat(video-upload): add user stories phase 1"
-```
-
----
-
-## Task 3：寫 Acceptance Criteria（P0 Stories）
-
-**Files:**
-- Create: `features/video-upload-multi-platform/acceptance-criteria.md`
-
-**Step 1: 寫 AC**
-
-使用 `/acceptance-criteria` skill，針對所有 P0 stories 寫 Gherkin 格式 AC：
-
-- **US-01**：Given 未連接 / When OAuth 完成 / Then 顯示頻道資訊
-- **US-04**：Given 已連接 YouTube / When 上傳影片 / Then 顯示進度條與縮圖預覽
-- **US-05**：Given 已上傳音訊與影片 / When 進入 Step 3 / Then YouTube accordion 展開顯示
-- **US-07**：Given YouTube 設定完成 / When 選擇即時發布並確認 / Then 影片推送至 YouTube
-- **US-08**：Given 集數有 YouTube 設定 / When 查看集數列表 / Then YouTube badge 亮起
-
-**邊界條件必須涵蓋：**
-- 未上傳影片 → YouTube accordion 不顯示
-- YouTube 授權過期 → 顯示警告，RSS 發布不受阻
-- 影片格式不支援 → 顯示錯誤，metadata 不丟失
 
 **Step 2: Commit**
 
 ```bash
-git add features/video-upload-multi-platform/acceptance-criteria.md
-git commit -m "feat(video-upload): add acceptance criteria for P0 stories"
+git add features/video-upload
+git commit -m "chore: init video-upload feature directory"
 ```
 
 ---
 
-## Task 4：製作 Wireframe
+## Task 2：撰寫 PRD
 
 **Files:**
-- Create: `features/video-upload-multi-platform/wireframe.html`
+- Create: `features/video-upload/prd.md`
+- Reference: `docs/plans/2026-02-27-video-upload-design.md`
 
-**Step 1: 製作 Wireframe**
+**Step 1: 撰寫 PRD**
 
-使用 `/wireframe` skill，涵蓋以下畫面：
+內容結構：
+1. 概述（問題陳述、目標用戶、成功指標、策略對齊）
+2. 名詞定義
+3. Roadmap 總覽（Phase 1 / 2 / 3）
+4. Phase 1 功能範圍（核心功能 + 明確不做）
+5. Phase 1 用戶旅程（旅程 A/B/C）
+6. 限制與邊界
+7. 依賴關係
+8. 開放問題
 
-1. **Step 1 上傳媒體**：音訊（必填）+ 影片（選填）並排，各自進度條
-2. **Step 3 發布設定**：RSS accordion（展開）+ YouTube accordion（展開，含所有欄位）
-3. **Step 3 無影片狀態**：只顯示 RSS accordion，YouTube 完全不顯示
-4. **集數列表**：badge 組合示意（RSS 亮 + YouTube 亮 / 只 RSS 亮 / 兩者皆暗）
+關鍵設計決策（來自 design doc）：
+- 音訊必填、影片選填；兩者獨立上傳
+- Phase 1 不支援從影片提取音軌
+- Step 3 accordion 結構；各平台設定獨立
+- YouTube 顯示條件：有影片 AND 已連接
+- 集數列表：badge 模式（有設定就亮）
+- MVP：YouTube 發布時間跟 RSS 同步
 
 **Step 2: Commit**
 
 ```bash
-git add features/video-upload-multi-platform/wireframe.html
-git commit -m "feat(video-upload): add wireframe"
+git add features/video-upload/prd.md
+git commit -m "feat(prd): 影音上傳與多平台發布 Phase 1"
 ```
 
 ---
 
-## 待確認項目（阻擋工程啟動前需決策）
+## Task 3：撰寫 User Stories
 
-| # | 問題 | 決策者 |
-|---|------|--------|
-| 1 | 影片上傳至 Firstory 後是永久保存還是推送至 YouTube 後刪除？ | Engineering / 商業 |
-| 2 | YouTube 連接功能是否限定特定付費方案？ | 商業 / PM |
-| 3 | YouTube API 配額是否需要排隊機制？ | Engineering |
-| 4 | 未驗證 YouTube 頻道的上傳時長限制如何在 UI 提示？ | Product |
+**Files:**
+- Create: `features/video-upload/user-story.md`
+- Reference: `features/video-upload/prd.md`
+
+**Step 1: 規劃 Epic 與 Story 結構**
+
+預期 Epic：
+- EP-01：媒體上傳（音訊 + 影片）
+- EP-02：YouTube 連接
+- EP-03：YouTube 發布設定
+- EP-04：集數列表 Badge 顯示
+
+每個 Story 包含：Use Case、Acceptance Criteria 摘要、Priority、Story Points、依賴。
+
+**Step 2: 撰寫 User Stories**
+
+依 `/user-story` skill 格式撰寫。
+
+**Step 3: Commit**
+
+```bash
+git add features/video-upload/user-story.md
+git commit -m "feat(user-story): 影音上傳與多平台發布 Phase 1"
+```
+
+---
+
+## Task 4：撰寫 Acceptance Criteria
+
+**Files:**
+- Create: `features/video-upload/acceptance-criteria.md`
+- Reference: `features/video-upload/user-story.md`
+
+**Step 1: 撰寫 AC**
+
+依 `/acceptance-criteria` skill 格式，用 Gherkin Given/When/Then 撰寫每個 Story 的 AC。
+
+重點涵蓋：
+- 影片上傳進度指示與錯誤處理
+- YouTube accordion 顯示 / 隱藏條件
+- Badge 亮暗邏輯
+- YouTube 授權過期的 fallback 行為
+
+**Step 2: Commit**
+
+```bash
+git add features/video-upload/acceptance-criteria.md
+git commit -m "feat(ac): 影音上傳與多平台發布 Phase 1"
+```
+
+---
+
+## 開放問題（需在 PRD 中標註）
+
+| # | 問題 | 影響 |
+|---|------|------|
+| 1 | 影片暫存策略：上傳至 YouTube 後是否刪除原始檔？ | 儲存成本 |
+| 2 | YouTube API 配額是否需要排隊機制？ | Phase 1 上線規模 |
+| 3 | 未驗證 YouTube 頻道的時長限制如何在 UI 提示？ | UX |
+| 4 | 影音功能是否限定付費方案？ | 商業決策 |
