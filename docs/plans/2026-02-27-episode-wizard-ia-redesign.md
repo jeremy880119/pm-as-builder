@@ -21,18 +21,29 @@
 
 ### YouTube 專屬
 - 影片上傳
-- YouTube 標題（可覆寫集數標題）
-- YouTube 說明（可覆寫集數說明）
 - YouTube 縮圖
 - YouTube Playlist
 - 能見度（公開 / 不公開列出 / 私人）
 - Made for Kids
 - AI 生成內容聲明
 
+> **Phase 1 決策：** YouTube 標題、說明直接沿用集數預設值，不提供覆寫入口。發布後可至 YouTube Studio 修改。
+
+### RSS 專屬
+- 封面圖片（RSS / Podcast app 顯示用；YouTube 有獨立縮圖欄位）
+- Explicit 標記
+- 集數類型（完整集 / 預告 / 特別集）
+- 季數 / 集數
+- 標籤
+- Firstory Playlist
+- 發布類型（公開 / 訂閱者限定 / 免費+訂閱）
+- Apple Podcast 訂閱者音檔、提前公開
+- 廣告位置設定（Pre-roll / Mid-roll）
+- AI 自動生成 Transcript
+
 ### 共用（跨平台預設值或聯動）
-- 標題（各平台可獨立覆寫）
-- 說明（各平台可獨立覆寫）
-- 封面圖片（RSS 用；YouTube 有獨立縮圖）
+- 標題（各平台沿用，Phase 1 不提供覆寫）
+- 說明（各平台沿用，Phase 1 不提供覆寫）
 - **發布時間**（Phase 1：RSS 與 YouTube 同步觸發；未來預留獨立操作）
 
 ---
@@ -51,12 +62,11 @@
 
 ### Step 2：基本資訊
 
-集數層級的內容設定，作為各平台的預設值。
+集數層級的內容，作為各平台的預設值（Phase 1 不提供平台覆寫）。
 
 ```
 標題（必填）
 說明（必填）
-封面圖片
 
 ── RSS 專屬 ──
 Explicit
@@ -77,19 +87,19 @@ Firstory Playlist
 ────────────────────────────────
 
 ▼ RSS（永遠展開）
+  封面圖片（Podcast app 顯示用）
   發布類型：公開 / 訂閱者限定 / 免費+訂閱
   └─ 訂閱者限定：Firstory 訂閱層級選擇
   └─ 免費+訂閱：訂閱者專屬音檔、Apple 設定
   Apple Podcast 提前公開
 
 ▼ YouTube（有影片才顯示）
-  標題（預帶集數標題，可獨立修改）
-  說明（預帶集數說明，可獨立修改）
   縮圖（選填）
   Playlist（下拉）
   能見度：公開 / 不公開列出 / 私人
   Made for Kids：是 / 否
   AI 生成內容：是 / 否
+  （標題、說明沿用集數預設值，不提供覆寫）
 
 ▼ 廣告（有廣告設定才顯示）
   廣告位置設定（Pre-roll / Mid-roll）
@@ -118,10 +128,12 @@ Firstory Playlist
 
 | 項目 | 現有 | 新架構 |
 |------|------|--------|
-| Ad Campaign | 獨立第 3 步驟 | 收進 Step 3 RSS accordion |
+| 封面圖片 | Step 2（Details） | Step 3 RSS accordion |
+| Ad Campaign | 獨立第 3 步驟 | Step 3 RSS accordion |
 | YouTube 設定 | 分散在 Details + Review | 集中在 Step 3 YouTube accordion |
+| YouTube 標題/說明 | 在 Step 3 可覆寫 | 不提供覆寫，沿用集數預設（Phase 1）|
 | 發布時間 | 在 Review 表單內 | 獨立在 accordion 之上（全局） |
-| 發布類型（公開/訂閱） | 在 Review | 在 Step 3 RSS accordion |
+| 發布類型（公開/訂閱） | 在 Review | Step 3 RSS accordion |
 
 ---
 
