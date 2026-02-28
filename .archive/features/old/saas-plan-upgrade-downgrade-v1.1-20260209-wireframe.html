@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS 方案升降級 Wireframe v1.1</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --wf-bg: #F5F5F5;
+      --wf-card: #FFFFFF;
+      --wf-border: #CCCCCC;
+      --wf-text: #333333;
+      --wf-text-muted: #888888;
+      --wf-placeholder: #E0E0E0;
+      --wf-btn-primary: #666666;
+      --wf-btn-secondary: #999999;
+      --wf-success-bg: #E8F5E9;
+      --wf-success-text: #2E7D32;
+      --wf-warning-bg: #FFF8E1;
+      --wf-warning-text: #F57F17;
+      --wf-error-bg: #FFEBEE;
+      --wf-error-text: #C62828;
+      --wf-info-bg: #E3F2FD;
+      --wf-info-text: #1565C0;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--wf-bg);
+      color: var(--wf-text);
+      line-height: 1.5;
+      padding: var(--space-8);
+      padding-bottom: 80px;
+    }
+    h1 { font-size: 24px; margin-bottom: var(--space-2); }
+    h2 { font-size: 20px; border-bottom: 1px solid var(--wf-border); padding-bottom: var(--space-2); margin-bottom: var(--space-4); }
+    h3 { font-size: 16px; color: var(--wf-text-muted); margin-bottom: var(--space-3); }
+    section {
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .screen-frame {
+      border: 2px dashed var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin: var(--space-4) 0;
+      background: var(--wf-card);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      gap: var(--space-2);
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--wf-btn-primary); color: white; }
+    .btn-secondary { background: transparent; border: 1px solid var(--wf-btn-secondary); color: var(--wf-text); }
+    .btn-ghost { background: transparent; border: none; color: var(--wf-text-muted); text-decoration: underline; }
+    .btn-disabled { background: var(--wf-placeholder); color: var(--wf-text-muted); cursor: default; pointer-events: none; }
+    .btn-lg { padding: var(--space-3) var(--space-6); font-size: 16px; height: 48px; }
+    .btn-full { width: 100%; }
+    .card {
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+    }
+    .card-elevated {
+      background: var(--wf-card);
+      border: 2px solid var(--wf-btn-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      gap: 4px;
+    }
+    .badge-success { background: var(--wf-success-bg); color: var(--wf-success-text); }
+    .badge-warning { background: var(--wf-warning-bg); color: var(--wf-warning-text); }
+    .badge-popular { background: #F0F0F0; color: var(--wf-btn-primary); font-weight: 600; }
+    .alert {
+      padding: var(--space-3) var(--space-4);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      border-left: 3px solid;
+      font-size: 14px;
+      margin: var(--space-4) 0;
+    }
+    .alert-info { background: var(--wf-info-bg); border-color: var(--wf-info-text); color: var(--wf-info-text); }
+    .alert-warning { background: var(--wf-warning-bg); border-color: var(--wf-warning-text); color: var(--wf-warning-text); }
+    .plan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin: var(--space-6) 0; }
+    .plan-card { display: flex; flex-direction: column; min-height: 420px; }
+    .plan-card .plan-header { margin-bottom: var(--space-4); }
+    .plan-card .plan-name { font-size: 18px; font-weight: 600; margin-bottom: var(--space-1); }
+    .plan-card .plan-price { font-size: 28px; font-weight: 700; margin-bottom: var(--space-2); }
+    .plan-card .plan-price span { font-size: 14px; font-weight: 400; color: var(--wf-text-muted); }
+    .plan-card .plan-features { flex: 1; margin-bottom: var(--space-4); }
+    .plan-card .plan-features li { list-style: none; padding: var(--space-1) 0; font-size: 13px; display: flex; align-items: center; gap: var(--space-2); }
+    .plan-card .plan-features .check { color: var(--wf-btn-primary); }
+    .plan-card .plan-features .cross { color: var(--wf-text-muted); }
+    .plan-card .plan-cta { margin-top: auto; }
+    table { width: 100%; border-collapse: collapse; margin: var(--space-4) 0; font-size: 13px; }
+    th, td { border: 1px solid var(--wf-border); padding: var(--space-2) var(--space-3); text-align: center; }
+    th { background: var(--wf-placeholder); font-weight: 600; font-size: 12px; }
+    td:first-child, th:first-child { text-align: left; }
+    .modal-overlay {
+      background: rgba(0,0,0,0.12);
+      border: 2px dashed var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-8) var(--space-6);
+      display: flex;
+      justify-content: center;
+      margin: var(--space-4) 0;
+    }
+    .modal-box {
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      width: 480px;
+      max-width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      color: var(--wf-text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+    .modal-close:hover { background: var(--wf-placeholder); }
+    .modal-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: var(--space-4);
+    }
+    .icon-lock { background: var(--wf-placeholder); color: var(--wf-btn-primary); }
+    .icon-warning { background: var(--wf-warning-bg); color: var(--wf-warning-text); }
+    .icon-success { background: var(--wf-success-bg); color: var(--wf-success-text); }
+    .loss-list {
+      background: var(--wf-error-bg);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin: var(--space-3) 0;
+    }
+    .loss-list li {
+      list-style: none;
+      padding: var(--space-1) 0;
+      font-size: 13px;
+      color: var(--wf-error-text);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .unlock-list {
+      background: var(--wf-success-bg);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin: var(--space-3) 0;
+    }
+    .unlock-list li {
+      list-style: none;
+      padding: var(--space-1) 0;
+      font-size: 13px;
+      color: var(--wf-success-text);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .state-toggle {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .state-btn {
+      padding: var(--space-1) var(--space-3);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-sm);
+      background: var(--wf-card);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .state-btn:hover { background: var(--wf-placeholder); }
+    .state-btn.active { background: var(--wf-btn-primary); color: white; border-color: var(--wf-btn-primary); }
+    .state-view { display: none; }
+    .state-view.active { display: block; }
+    .mermaid { background: var(--wf-card); padding: var(--space-4); border-radius: var(--radius-md); }
+    .nav-container {
+      position: fixed;
+      bottom: var(--space-4);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2) var(--space-4);
+      display: flex;
+      gap: var(--space-2);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+      flex-wrap: wrap;
+      max-width: 90vw;
+      justify-content: center;
+    }
+    .nav-btn {
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-sm);
+      background: var(--wf-card);
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .nav-btn:hover { background: var(--wf-placeholder); }
+    .nav-btn.active { background: var(--wf-btn-primary); color: white; border-color: var(--wf-btn-primary); }
+    .annotation {
+      font-size: 11px;
+      color: var(--wf-text-muted);
+      font-style: italic;
+      margin-top: var(--space-1);
+    }
+    .flex-row { display: flex; align-items: center; gap: var(--space-2); }
+    .flex-col { display: flex; flex-direction: column; gap: var(--space-2); }
+    .gap-4 { gap: var(--space-4); }
+    .gap-6 { gap: var(--space-6); }
+    .mt-4 { margin-top: var(--space-4); }
+    .mt-6 { margin-top: var(--space-6); }
+    .mb-2 { margin-bottom: var(--space-2); }
+    .mb-4 { margin-bottom: var(--space-4); }
+    .text-muted { color: var(--wf-text-muted); }
+    .text-sm { font-size: 14px; }
+    .text-xs { font-size: 12px; }
+    @media (max-width: 900px) {
+      .plan-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .plan-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>SaaS 方案升降級 Wireframe</h1>
+<p class="text-muted mb-4">版本：v1.1 | 日期：2026-02-09 | 類型：低保真灰階</p>
+
+<!-- ==================== USER FLOW ==================== -->
+<section id="flow">
+  <h2>User Flow</h2>
+  <div class="mermaid">
+    graph TD
+      A["A 帳戶資訊頁"] -- 變更方案 --> B["B 方案選擇頁"]
+      Content["內容頁 / 紅鎖頭 🔒"] -- 點擊紅鎖頭 --> C["C Paywall Modal"]
+      C -- 查看所有方案 --> B
+      C -- 點擊升級 --> Stripe(("Stripe Checkout"))
+      B -- 點擊升級 --> Stripe
+      B -- 點擊降級 --> D1["D1 軟邊界勸退"]
+      D1 -- 取消 --> B
+      D1 -- 仍要降級 --> Check{"硬邊界檢核"}
+      Forced["系統強制降級"] -- 硬邊界檢核 --> Check
+      Check -- 全部通過（用戶降級）--> Stripe
+      Check -- 全部通過（強制降級）--> A
+      Check -- 有觸發（用戶降級）--> D2["D2 硬邊界攔截"]
+      Check -- 有觸發（強制降級）--> D3["D3 暫停上傳"]
+      D2 -- 保留目前方案 --> B
+      D2 -- 已截圖傳客服 --> B
+      D3 -- 客服處理完成 --> A
+      Stripe -- 升級成功 --> E["E 升級成功 Modal"]
+      Stripe -- 降級成功 --> A
+      Stripe -- 取消/失敗 --> B
+      E -- 關閉/立即體驗 --> Homepage["首頁"]
+  </div>
+</section>
+
+<!-- ==================== SCREEN A ==================== -->
+<section class="screen active" id="screen-a">
+  <h2>A — 帳戶資訊頁</h2>
+  <h3>狀態切換</h3>
+  <div class="state-toggle" data-group="a">
+    <button class="state-btn active" onclick="toggleState('a','a-normal')">正常</button>
+    <button class="state-btn" onclick="toggleState('a','a-trial')">試用中</button>
+    <button class="state-btn" onclick="toggleState('a','a-pending')">待生效降級</button>
+    <button class="state-btn" onclick="toggleState('a','a-forced')">系統強制降級（全通過）</button>
+    <button class="state-btn" onclick="toggleState('a','a-forced-suspended')">系統強制降級（暫停中）</button>
+  </div>
+
+  <!-- 正常 -->
+  <div class="state-view active" id="a-normal">
+    <div class="screen-frame">
+      <div class="card">
+        <div class="flex-row mb-4">
+          <div>
+            <div style="font-size:20px;font-weight:600;">Pro 方案</div>
+          </div>
+          <span class="badge badge-success">● 活躍</span>
+        </div>
+        <div class="text-sm text-muted mb-4">
+          <div>下次扣款日：2026-03-09</div>
+          <div>金額：$19/mo</div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="goToScreen('screen-b')">變更方案</button>
+      </div>
+      <p class="annotation">Card default → Button Primary (lg) → Badge success</p>
+    </div>
+  </div>
+
+  <!-- 試用中 -->
+  <div class="state-view" id="a-trial">
+    <div class="screen-frame">
+      <div class="card">
+        <div class="flex-row mb-4">
+          <div>
+            <div style="font-size:20px;font-weight:600;">Pro 方案</div>
+          </div>
+          <span class="badge" style="background:var(--wf-info-bg);color:var(--wf-info-text);">● 試用中</span>
+        </div>
+        <div class="text-sm text-muted mb-4">
+          <div>試用開始日：2026-02-10</div>
+          <div>金額：$19/mo（試用期間免費）</div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="goToScreen('screen-b')">變更方案</button>
+      </div>
+      <div class="alert alert-info">
+        ℹ 試用將於 2026-02-24 到期，届時以年繳方案開始收費
+      </div>
+      <p class="annotation">Card default → Badge info「試用中」→ Alert Info（試用到期提示）</p>
+    </div>
+  </div>
+
+  <!-- 待生效降級 -->
+  <div class="state-view" id="a-pending">
+    <div class="screen-frame">
+      <div class="card">
+        <div class="flex-row mb-4">
+          <div>
+            <div style="font-size:20px;font-weight:600;">Pro 方案</div>
+          </div>
+          <span class="badge badge-warning">● 待降級</span>
+        </div>
+        <div class="text-sm text-muted mb-4">
+          <div>下次扣款日：2026-03-09</div>
+          <div>金額：$19/mo</div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="goToScreen('screen-b')">變更方案</button>
+      </div>
+      <div class="alert alert-info">
+        ℹ 您的方案將於 2026-03-09 變更為 Lite
+      </div>
+      <p class="annotation">Card default → Badge warning → Alert Info (left-border)</p>
+    </div>
+  </div>
+
+  <!-- 系統強制降級 -->
+  <div class="state-view" id="a-forced">
+    <div class="screen-frame">
+      <div class="card">
+        <div class="flex-row mb-4">
+          <div>
+            <div style="font-size:20px;font-weight:600;">Free 方案</div>
+          </div>
+          <span class="badge badge-success">● 活躍</span>
+        </div>
+        <div class="text-sm text-muted mb-4">
+          <div>免費方案</div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="goToScreen('screen-b')">變更方案</button>
+      </div>
+      <div class="alert alert-warning">
+        ⚠ 您的付款失敗，方案已降級為 Free。請更新付款方式。
+      </div>
+      <p class="annotation">Card default → Alert Warning (left-border)。硬邊界全通過，權限已立即變更。</p>
+    </div>
+  </div>
+
+  <!-- 系統強制降級（暫停中） -->
+  <div class="state-view" id="a-forced-suspended">
+    <div class="screen-frame">
+      <!-- 全站 Error Banner -->
+      <div style="background:var(--wf-error-bg);color:var(--wf-error-text);padding:var(--space-3) var(--space-4);font-size:14px;font-weight:600;text-align:center;cursor:pointer;border-radius:var(--radius-sm);margin-bottom:var(--space-4);border:2px solid var(--wf-error-text);">
+        ❌ 上傳功能已暫停，請點此聯繫客服處理
+        <div class="annotation" style="margin-top:var(--space-1)">全站 Error Banner — 固定於所有 studio.firstory.me/* 頁面頂部，不可關閉，onclick 開啟 D3 Modal</div>
+      </div>
+      <div class="card">
+        <div class="flex-row mb-4">
+          <div>
+            <div style="font-size:20px;font-weight:600;">Pro 方案</div>
+          </div>
+          <span class="badge" style="background:var(--wf-error-bg);color:var(--wf-error-text);">● 暫停中</span>
+        </div>
+        <div class="text-sm text-muted mb-4">
+          <div>下次扣款日：2026-03-09</div>
+          <div>金額：$19/mo</div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="goToScreen('screen-b')">變更方案</button>
+      </div>
+      <p class="annotation">硬邊界有觸發 → 權限暫不變更（仍顯示原方案 Pro）+ Badge「暫停中」(error) + 全站 Error Banner</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCREEN B ==================== -->
+<section class="screen" id="screen-b">
+  <h2>B — 方案選擇頁</h2>
+  <h3>用戶視角切換</h3>
+  <div class="state-toggle" data-group="b">
+    <button class="state-btn active" onclick="toggleState('b','b-free-trial')">Free 用戶（首次）</button>
+    <button class="state-btn" onclick="toggleState('b','b-free')">Free 用戶（非首次）</button>
+    <button class="state-btn" onclick="toggleState('b','b-lite')">Lite 用戶</button>
+    <button class="state-btn" onclick="toggleState('b','b-pro')">Pro 用戶</button>
+    <button class="state-btn" onclick="toggleState('b','b-enterprise')">Enterprise 用戶</button>
+    <button class="state-btn" onclick="toggleState('b','b-legacy')">Legacy 用戶</button>
+  </div>
+
+  <!-- Free 用戶（首次）視角 -->
+  <div class="state-view active" id="b-free-trial">
+    <div class="screen-frame">
+      <div style="margin-bottom:var(--space-6)">
+        <div style="font-size:24px;font-weight:700;margin-bottom:var(--space-2)">選擇最適合你的方案</div>
+        <div class="text-sm text-muted">隨時升級或降級，靈活調整</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-bottom:var(--space-6)">
+        <span class="text-sm" style="color:var(--wf-text-muted)">月繳</span>
+        <div style="width:44px;height:24px;background:var(--wf-btn-primary);border-radius:12px;position:relative;cursor:pointer">
+          <div style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;right:2px"></div>
+        </div>
+        <span class="text-sm" style="font-weight:600">年繳</span>
+        <span class="text-sm" style="color:var(--wf-success-text);font-weight:600">省下最多 22%</span>
+      </div>
+      <div class="plan-grid">
+        <!-- Free -->
+        <div class="card plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Free</div>
+            <div class="plan-price">$0<span>/mo</span></div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目 1 檔</li>
+            <li><span class="check">✓</span> AI 內容萃取 1 集/月</li>
+            <li><span class="cross">✗</span> 進階數據分析</li>
+            <li><span class="cross">✗</span> 下載數據報表</li>
+            <li><span class="cross">✗</span> 單集 Flink</li>
+            <li><span class="cross">✗</span> 移除動態廣告</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-disabled btn-full">目前方案</button>
+          </div>
+        </div>
+        <!-- Lite -->
+        <div class="card plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Lite</div>
+            <div class="plan-price">$7<span>/mo</span></div>
+            <div class="text-xs text-muted">(月繳 $9) 省 22%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目 1 檔</li>
+            <li><span class="check">✓</span> AI 內容萃取 3 集/月</li>
+            <li><span class="cross">✗</span> 下載數據報表</li>
+            <li><span class="check">✓</span> 單集 Flink</li>
+            <li><span class="cross">✗</span> 進階數據分析</li>
+            <li><span class="cross">✗</span> 移除動態廣告</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">14 天免費試用</button>
+          </div>
+        </div>
+        <!-- Pro -->
+        <div class="card-elevated plan-card">
+          <div class="plan-header">
+            <span class="badge badge-popular">最多人選擇</span>
+            <div class="plan-name" style="margin-top:var(--space-2)">Pro</div>
+            <div class="plan-price">$15<span>/mo</span></div>
+            <div class="text-xs text-muted">(月繳 $19) 省 21%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目 1 檔</li>
+            <li><span class="check">✓</span> AI 內容萃取 6 集/月</li>
+            <li><span class="check">✓</span> 進階數據分析</li>
+            <li><span class="check">✓</span> 下載數據報表</li>
+            <li><span class="check">✓</span> 單集 Flink</li>
+            <li><span class="check">✓</span> 移除動態廣告</li>
+            <li><span class="check">✓</span> 抽成調降 3%</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">14 天免費試用</button>
+          </div>
+        </div>
+        <!-- Enterprise -->
+        <div class="card plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Enterprise</div>
+            <div class="plan-price">$159<span>/mo</span></div>
+            <div class="text-xs text-muted">(月繳 $199) 省 20%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目<strong>無限</strong></li>
+            <li><span class="check">✓</span> AI 內容萃取 25 集/月</li>
+            <li><span class="check">✓</span> 全部功能</li>
+            <li><span class="check">✓</span> 廣告分潤 100%</li>
+            <li><span class="check">✓</span> 抽成調降 5%</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">14 天免費試用</button>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:var(--space-4)">
+        <button class="btn btn-ghost">完整比較 ↗</button>
+      </div>
+      <p class="annotation">Free 用戶（首次，has_ever_subscribed=false）：所有升級按鈕文案為「14 天免費試用」Primary Button</p>
+    </div>
+  </div>
+
+  <!-- Free 用戶（非首次）視角 -->
+  <div class="state-view" id="b-free">
+    <div class="screen-frame">
+      <div style="margin-bottom:var(--space-6)">
+        <div style="font-size:24px;font-weight:700;margin-bottom:var(--space-2)">選擇最適合你的方案</div>
+        <div class="text-sm text-muted">隨時升級或降級，靈活調整</div>
+      </div>
+      <!-- NOTE: same as before but with regular "升級" buttons -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-bottom:var(--space-6)">
+        <span class="text-sm" style="color:var(--wf-text-muted)">月繳</span>
+        <div style="width:44px;height:24px;background:var(--wf-btn-primary);border-radius:12px;position:relative;cursor:pointer">
+          <div style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;right:2px"></div>
+        </div>
+        <span class="text-sm" style="font-weight:600">年繳</span>
+        <span class="text-sm" style="color:var(--wf-success-text);font-weight:600">省下最多 22%</span>
+      </div>
+      <div class="plan-grid">
+        <!-- Free -->
+        <div class="card plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Free</div>
+            <div class="plan-price">$0<span>/mo</span></div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目 1 檔</li>
+            <li><span class="check">✓</span> AI 內容萃取 1 集/月</li>
+            <li><span class="cross">✗</span> 進階數據分析</li>
+            <li><span class="cross">✗</span> 下載數據報表</li>
+            <li><span class="cross">✗</span> 單集 Flink</li>
+            <li><span class="cross">✗</span> 移除動態廣告</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-disabled btn-full">目前方案</button>
+          </div>
+        </div>
+        <!-- Lite -->
+        <div class="card plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Lite</div>
+            <div class="plan-price">$7<span>/mo</span></div>
+            <div class="text-xs text-muted">(月繳 $9) 省 22%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目 1 檔</li>
+            <li><span class="check">✓</span> AI 內容萃取 3 集/月</li>
+            <li><span class="cross">✗</span> 下載數據報表</li>
+            <li><span class="check">✓</span> 單集 Flink</li>
+            <li><span class="cross">✗</span> 進階數據分析</li>
+            <li><span class="cross">✗</span> 移除動態廣告</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">升級</button>
+          </div>
+        </div>
+        <!-- Pro -->
+        <div class="card-elevated plan-card">
+          <div class="plan-header">
+            <span class="badge badge-popular">最多人選擇</span>
+            <div class="plan-name" style="margin-top:var(--space-2)">Pro</div>
+            <div class="plan-price">$15<span>/mo</span></div>
+            <div class="text-xs text-muted">(月繳 $19) 省 21%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目 1 檔</li>
+            <li><span class="check">✓</span> AI 內容萃取 6 集/月</li>
+            <li><span class="check">✓</span> 進階數據分析</li>
+            <li><span class="check">✓</span> 下載數據報表</li>
+            <li><span class="check">✓</span> 單集 Flink</li>
+            <li><span class="check">✓</span> 移除動態廣告</li>
+            <li><span class="check">✓</span> 抽成調降 3%</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">升級</button>
+          </div>
+        </div>
+        <!-- Enterprise -->
+        <div class="card plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Enterprise</div>
+            <div class="plan-price">$159<span>/mo</span></div>
+            <div class="text-xs text-muted">(月繳 $199) 省 20%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目<strong>無限</strong></li>
+            <li><span class="check">✓</span> AI 內容萃取 25 集/月</li>
+            <li><span class="check">✓</span> 全部功能</li>
+            <li><span class="check">✓</span> 廣告分潤 100%</li>
+            <li><span class="check">✓</span> 抽成調降 5%</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">升級</button>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:var(--space-4)">
+        <button class="btn btn-ghost">完整比較 ↗</button>
+      </div>
+      <p class="annotation">Free 用戶：所有其他方案顯示「升級」Primary Button，無降級選項</p>
+    </div>
+  </div>
+
+  <!-- Lite 用戶視角 -->
+  <div class="state-view" id="b-lite">
+    <div class="screen-frame">
+      <div style="margin-bottom:var(--space-6)">
+        <div style="font-size:24px;font-weight:700;margin-bottom:var(--space-2)">選擇最適合你的方案</div>
+        <div class="text-sm text-muted">隨時升級或降級，靈活調整</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-bottom:var(--space-6)">
+        <span class="text-sm" style="color:var(--wf-text-muted)">月繳</span>
+        <div style="width:44px;height:24px;background:var(--wf-btn-primary);border-radius:12px;position:relative;cursor:pointer">
+          <div style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;right:2px"></div>
+        </div>
+        <span class="text-sm" style="font-weight:600">年繳</span>
+        <span class="text-sm" style="color:var(--wf-success-text);font-weight:600">省下最多 22%</span>
+      </div>
+      <div class="plan-grid">
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Free</div><div class="plan-price">$0<span>/mo</span></div></div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 創立節目 1 檔</li>
+            <li><span class="check">✓</span> AI 內容萃取 1 集/月</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-ghost btn-full" onclick="goToScreen('screen-d1')">降級</button>
+          </div>
+        </div>
+        <div class="card plan-card" style="border:2px solid var(--wf-btn-secondary);">
+          <div class="plan-header"><div class="plan-name">Lite</div><div class="plan-price">$7<span>/mo</span></div><div class="text-xs text-muted">(月繳 $9) 省 22%</div></div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> AI 內容萃取 3 集/月</li>
+            <li><span class="cross">✗</span> 下載數據報表</li>
+            <li><span class="check">✓</span> 單集 Flink</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-disabled btn-full">目前方案</button>
+          </div>
+        </div>
+        <div class="card-elevated plan-card">
+          <div class="plan-header">
+            <span class="badge badge-popular">最多人選擇</span>
+            <div class="plan-name" style="margin-top:var(--space-2)">Pro</div><div class="plan-price">$15<span>/mo</span></div><div class="text-xs text-muted">(月繳 $19) 省 21%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 全部 Lite 功能</li>
+            <li><span class="check">✓</span> 進階數據分析</li>
+            <li><span class="check">✓</span> 移除動態廣告</li>
+            <li><span class="check">✓</span> 抽成調降 3%</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">升級</button>
+          </div>
+        </div>
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Enterprise</div><div class="plan-price">$159<span>/mo</span></div><div class="text-xs text-muted">(月繳 $199) 省 20%</div></div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 全部功能 + 無限節目</li>
+          </ul>
+          <div class="plan-cta">
+            <button class="btn btn-primary btn-full">升級</button>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:var(--space-4)">
+        <button class="btn btn-ghost">完整比較 ↗</button>
+      </div>
+      <p class="annotation">Lite 用戶：Free 顯示「降級」Ghost，Lite 顯示「目前方案」disabled，Pro/Enterprise 顯示「升級」Primary</p>
+    </div>
+  </div>
+
+  <!-- Pro 用戶視角 -->
+  <div class="state-view" id="b-pro">
+    <div class="screen-frame">
+      <div style="margin-bottom:var(--space-6)">
+        <div style="font-size:24px;font-weight:700;margin-bottom:var(--space-2)">選擇最適合你的方案</div>
+        <div class="text-sm text-muted">隨時升級或降級，靈活調整</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-bottom:var(--space-6)">
+        <span class="text-sm" style="color:var(--wf-text-muted)">月繳</span>
+        <div style="width:44px;height:24px;background:var(--wf-btn-primary);border-radius:12px;position:relative;cursor:pointer">
+          <div style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;right:2px"></div>
+        </div>
+        <span class="text-sm" style="font-weight:600">年繳</span>
+        <span class="text-sm" style="color:var(--wf-success-text);font-weight:600">省下最多 22%</span>
+      </div>
+      <div class="plan-grid">
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Free</div><div class="plan-price">$0<span>/mo</span></div></div>
+          <ul class="plan-features"><li><span class="check">✓</span> 基礎功能</li></ul>
+          <div class="plan-cta"><button class="btn btn-ghost btn-full" onclick="goToScreen('screen-d1')">降級</button></div>
+        </div>
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Lite</div><div class="plan-price">$7<span>/mo</span></div><div class="text-xs text-muted">(月繳 $9) 省 22%</div></div>
+          <ul class="plan-features"><li><span class="check">✓</span> 下載報表、Flink</li></ul>
+          <div class="plan-cta"><button class="btn btn-ghost btn-full" onclick="goToScreen('screen-d1')">降級</button></div>
+        </div>
+        <div class="card-elevated plan-card" style="border:2px solid var(--wf-btn-secondary);">
+          <div class="plan-header">
+            <span class="badge badge-popular">最多人選擇</span>
+            <div class="plan-name" style="margin-top:var(--space-2)">Pro</div><div class="plan-price">$15<span>/mo</span></div><div class="text-xs text-muted">(月繳 $19) 省 21%</div>
+          </div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span> 進階數據分析</li>
+            <li><span class="check">✓</span> 移除動態廣告</li>
+            <li><span class="check">✓</span> 抽成調降 3%</li>
+          </ul>
+          <div class="plan-cta"><button class="btn btn-disabled btn-full">目前方案</button></div>
+        </div>
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Enterprise</div><div class="plan-price">$159<span>/mo</span></div><div class="text-xs text-muted">(月繳 $199) 省 20%</div></div>
+          <ul class="plan-features"><li><span class="check">✓</span> 全部功能 + 無限節目</li></ul>
+          <div class="plan-cta"><button class="btn btn-primary btn-full">升級</button></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:var(--space-4)">
+        <button class="btn btn-ghost">完整比較 ↗</button>
+      </div>
+      <p class="annotation">Pro 用戶：Free/Lite 顯示「降級」Ghost，Pro 顯示「目前方案」disabled，Enterprise 顯示「升級」Primary</p>
+    </div>
+  </div>
+
+  <!-- Enterprise 用戶視角 -->
+  <div class="state-view" id="b-enterprise">
+    <div class="screen-frame">
+      <div style="margin-bottom:var(--space-6)">
+        <div style="font-size:24px;font-weight:700;margin-bottom:var(--space-2)">選擇最適合你的方案</div>
+        <div class="text-sm text-muted">隨時升級或降級，靈活調整</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-bottom:var(--space-6)">
+        <span class="text-sm" style="color:var(--wf-text-muted)">月繳</span>
+        <div style="width:44px;height:24px;background:var(--wf-btn-primary);border-radius:12px;position:relative;cursor:pointer">
+          <div style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;right:2px"></div>
+        </div>
+        <span class="text-sm" style="font-weight:600">年繳</span>
+        <span class="text-sm" style="color:var(--wf-success-text);font-weight:600">省下最多 22%</span>
+      </div>
+      <div class="plan-grid">
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Free</div><div class="plan-price">$0<span>/mo</span></div></div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-ghost btn-full" onclick="goToScreen('screen-d1')">降級</button></div>
+        </div>
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Lite</div><div class="plan-price">$7<span>/mo</span></div><div class="text-xs text-muted">(月繳 $9) 省 22%</div></div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-ghost btn-full" onclick="goToScreen('screen-d1')">降級</button></div>
+        </div>
+        <div class="card-elevated plan-card">
+          <div class="plan-header">
+            <span class="badge badge-popular">最多人選擇</span>
+            <div class="plan-name" style="margin-top:var(--space-2)">Pro</div><div class="plan-price">$15<span>/mo</span></div><div class="text-xs text-muted">(月繳 $19) 省 21%</div>
+          </div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-ghost btn-full" onclick="goToScreen('screen-d1')">降級</button></div>
+        </div>
+        <div class="card plan-card" style="border:2px solid var(--wf-btn-secondary);">
+          <div class="plan-header"><div class="plan-name">Enterprise</div><div class="plan-price">$159<span>/mo</span></div><div class="text-xs text-muted">(月繳 $199) 省 20%</div></div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-disabled btn-full">目前方案</button></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:var(--space-4)">
+        <button class="btn btn-ghost">完整比較 ↗</button>
+      </div>
+      <p class="annotation">Enterprise 用戶：Free/Lite/Pro 全部顯示「降級」Ghost</p>
+    </div>
+  </div>
+
+  <!-- Legacy 用戶視角 -->
+  <div class="state-view" id="b-legacy">
+    <div class="screen-frame">
+      <div style="margin-bottom:var(--space-6)">
+        <div style="font-size:24px;font-weight:700;margin-bottom:var(--space-2)">選擇最適合你的方案</div>
+        <div class="text-sm text-muted">隨時升級或降級，靈活調整</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-bottom:var(--space-6)">
+        <span class="text-sm" style="color:var(--wf-text-muted)">月繳</span>
+        <div style="width:44px;height:24px;background:var(--wf-btn-primary);border-radius:12px;position:relative;cursor:pointer">
+          <div style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;right:2px"></div>
+        </div>
+        <span class="text-sm" style="font-weight:600">年繳</span>
+        <span class="text-sm" style="color:var(--wf-success-text);font-weight:600">省下最多 22%</span>
+      </div>
+      <div class="plan-grid">
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Free</div><div class="plan-price">$0<span>/mo</span></div></div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-primary btn-full">升級</button></div>
+        </div>
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Lite</div><div class="plan-price">$7<span>/mo</span></div><div class="text-xs text-muted">(月繳 $9) 省 22%</div></div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-primary btn-full">升級</button></div>
+        </div>
+        <div class="card-elevated plan-card">
+          <div class="plan-header">
+            <span class="badge badge-popular">最多人選擇</span>
+            <div class="plan-name" style="margin-top:var(--space-2)">Pro</div><div class="plan-price">$15<span>/mo</span></div><div class="text-xs text-muted">(月繳 $19) 省 21%</div>
+          </div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-primary btn-full">升級</button></div>
+        </div>
+        <div class="card plan-card">
+          <div class="plan-header"><div class="plan-name">Enterprise</div><div class="plan-price">$159<span>/mo</span></div><div class="text-xs text-muted">(月繳 $199) 省 20%</div></div>
+          <div class="plan-cta" style="margin-top:auto"><button class="btn btn-primary btn-full">升級</button></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:var(--space-4)">
+        <button class="btn btn-ghost">完整比較 ↗</button>
+      </div>
+      <p class="annotation">Legacy 用戶：所有方案都顯示「升級」Primary（不可降回 Legacy）</p>
+    </div>
+  </div>
+
+  <!-- 功能比較表 (所有視角共用) -->
+  <div class="screen-frame" style="margin-top:var(--space-6)">
+    <h3>功能比較表</h3>
+    <table>
+      <thead>
+        <tr><th style="width:30%">功能</th><th>Free</th><th>Lite</th><th>Pro</th><th>Enterprise</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>創立節目上限</td><td>1 檔</td><td>1 檔</td><td>1 檔</td><td><strong>無限</strong></td></tr>
+        <tr><td>進階數據分析</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+        <tr><td>下載數據報表</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+        <tr><td>單集 Flink 萬用連結</td><td>✗</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><td>AI 內容萃取</td><td>1 集/月</td><td>3 集/月</td><td>6 集/月</td><td>25 集/月</td></tr>
+        <tr><td>移除動態廣告</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+        <tr><td>提高廣告分潤</td><td>✗</td><td>✗</td><td>✗</td><td>100%</td></tr>
+        <tr><td>調降經營會員抽成</td><td>✗</td><td>✗</td><td>3%</td><td>5%</td></tr>
+      </tbody>
+    </table>
+    <p class="annotation">Table 元件 → 表頭 bg: --secondary, text-xs</p>
+  </div>
+</section>
+
+<!-- ==================== SCREEN C ==================== -->
+<section class="screen" id="screen-c">
+  <h2>C — Paywall Modal</h2>
+  <h3>觸發功能切換</h3>
+  <div class="state-toggle" data-group="c">
+    <button class="state-btn active" onclick="toggleState('c','c-analytics')">進階數據分析</button>
+    <button class="state-btn" onclick="toggleState('c','c-report')">下載數據報表</button>
+    <button class="state-btn" onclick="toggleState('c','c-flink')">單集 Flink</button>
+    <button class="state-btn" onclick="toggleState('c','c-ad')">移除動態廣告</button>
+  </div>
+
+  <!-- 進階數據分析 -->
+  <div class="state-view active" id="c-analytics">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-lock">🔒</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">此功能需要 Pro 方案</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-6)">深入了解聽眾行為與互動數據，優化你的內容策略</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)">升級到 Pro</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-b')">查看所有方案</button>
+      </div>
+    </div>
+    <p class="annotation">Modal sm (480px) → Lock icon 48px → Button Primary (lg) full-width → Button Ghost (lg) full-width<br/>※ 若用戶 has_ever_subscribed=false，CTA 文案改為「14 天免費試用 {plan}」</p>
+  </div>
+
+  <!-- 下載數據報表 -->
+  <div class="state-view" id="c-report">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-lock">🔒</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">此功能需要 Pro 方案</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-6)">將數據匯出為報表，方便分析與簡報使用</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)">升級到 Pro</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-b')">查看所有方案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 單集 Flink -->
+  <div class="state-view" id="c-flink">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-lock">🔒</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">此功能需要 Lite 方案</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-6)">為每集建立專屬短連結，追蹤各管道成效</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)">升級到 Lite</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-b')">查看所有方案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 移除動態廣告 -->
+  <div class="state-view" id="c-ad">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-lock">🔒</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">此功能需要 Pro 方案</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-6)">移除系統自動插入的廣告，提供乾淨的收聽體驗</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)">升級到 Pro</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-b')">查看所有方案</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCREEN D1 ==================== -->
+<section class="screen" id="screen-d1">
+  <h2>D1 — 軟邊界勸退 Modal（Phase 1）</h2>
+  <h3>降級路徑切換</h3>
+  <div class="state-toggle" data-group="d1">
+    <button class="state-btn active" onclick="toggleState('d1','d1-pro-free')">Pro → Free</button>
+    <button class="state-btn" onclick="toggleState('d1','d1-pro-lite')">Pro → Lite</button>
+    <button class="state-btn" onclick="toggleState('d1','d1-ent-pro')">Enterprise → Pro</button>
+    <button class="state-btn" onclick="toggleState('d1','d1-ent-free')">Enterprise → Free</button>
+    <button class="state-btn" onclick="toggleState('d1','d1-lite-free')">Lite → Free</button>
+  </div>
+
+  <!-- Pro → Free -->
+  <div class="state-view active" id="d1-pro-free">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-warning">⚠</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">確定要降級嗎？</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">降級後您將失去以下功能：</div>
+        <ul class="loss-list">
+          <li>− 總計 156 條單集 Flink 萬用連結失效</li>
+          <li>− 每月失去 5 集 AI 內容萃取</li>
+          <li>− 自動幫所有 82 集單集插入廣告</li>
+          <li>− 每筆經營會員抽成漲價 3%</li>
+        </ul>
+        <div class="text-xs text-muted" style="margin-bottom:var(--space-6)">降級將於當期結束後（2026-03-09）生效。</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)" onclick="goToScreen('screen-b')">取消</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-d2')">仍要降級</button>
+      </div>
+    </div>
+    <p class="annotation">Phase 1 軟邊界：用戶按「仍要降級」→ 後端檢核硬邊界 → 若有觸發項目則進入 D2，否則直接 Stripe</p>
+  </div>
+
+  <!-- Pro → Lite -->
+  <div class="state-view" id="d1-pro-lite">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-warning">⚠</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">確定要降級嗎？</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">降級後您將失去以下功能：</div>
+        <ul class="loss-list">
+          <li>− 總計 156 條單集 Flink 萬用連結失效</li>
+          <li>− 每月失去 3 集 AI 內容萃取</li>
+          <li>− 每筆經營會員抽成漲價 3%</li>
+        </ul>
+        <div class="text-xs text-muted" style="margin-bottom:var(--space-6)">降級將於當期結束後（2026-03-09）生效。</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)" onclick="goToScreen('screen-b')">取消</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-d2')">仍要降級</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enterprise → Pro -->
+  <div class="state-view" id="d1-ent-pro">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-warning">⚠</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">確定要降級嗎？</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">降級後您將失去以下功能：</div>
+        <ul class="loss-list">
+          <li>− 每月失去 19 集 AI 內容萃取</li>
+          <li>− 每筆廣告分潤減少 100%</li>
+          <li>− 每筆經營會員抽成漲價 2%</li>
+        </ul>
+        <div class="text-xs text-muted" style="margin-bottom:var(--space-6)">降級將於當期結束後（2026-03-09）生效。</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)" onclick="goToScreen('screen-b')">取消</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-d2')">仍要降級</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enterprise → Free -->
+  <div class="state-view" id="d1-ent-free">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-warning">⚠</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">確定要降級嗎？</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">降級後您將失去以下功能：</div>
+        <ul class="loss-list">
+          <li>− 總計 156 條單集 Flink 萬用連結失效</li>
+          <li>− 每月失去 24 集 AI 內容萃取</li>
+          <li>− 自動幫所有 82 集單集插入廣告</li>
+          <li>− 每筆廣告分潤減少 100%</li>
+          <li>− 每筆經營會員抽成漲價 5%</li>
+        </ul>
+        <div class="text-xs text-muted" style="margin-bottom:var(--space-6)">降級將於當期結束後（2026-03-09）生效。</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)" onclick="goToScreen('screen-b')">取消</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-d2')">仍要降級</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lite → Free -->
+  <div class="state-view" id="d1-lite-free">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-warning">⚠</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">確定要降級嗎？</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">降級後您將失去以下功能：</div>
+        <ul class="loss-list">
+          <li>− 每月失去 2 集 AI 內容萃取</li>
+          <li>− 自動幫所有 82 集單集插入廣告</li>
+        </ul>
+        <div class="text-xs text-muted" style="margin-bottom:var(--space-6)">降級將於當期結束後（2026-03-09）生效。</div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)" onclick="goToScreen('screen-b')">取消</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-d2')">仍要降級</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCREEN D2 ==================== -->
+<section class="screen" id="screen-d2">
+  <h2>D2 — 硬邊界攔截 Modal（Phase 2）</h2>
+  <h3>情境切換</h3>
+  <div class="state-toggle" data-group="d2">
+    <button class="state-btn active" onclick="toggleState('d2','d2-ent-pro')">Enterprise → Pro（全部觸發）</button>
+    <button class="state-btn" onclick="toggleState('d2','d2-pro-free')">Pro → Free（部分觸發）</button>
+    <button class="state-btn" onclick="toggleState('d2','d2-none')">檢核全通過（不出現）</button>
+  </div>
+
+  <!-- Enterprise → Pro: 全部觸發 -->
+  <div class="state-view active" id="d2-ent-pro">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div style="margin-bottom:var(--space-4)">
+          <span style="display:inline-block;padding:6px 16px;border-radius:9999px;background:var(--wf-btn-primary);color:white;font-size:14px;font-weight:600;">Enterprise → Pro</span>
+        </div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:var(--space-2)">降級前需要完成的事</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-4)">請完整截圖本頁，並傳送至右下角客服對話框。</div>
+        <div style="border:2px dashed var(--wf-border);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-6)">
+          <div style="font-size:14px;font-weight:600;margin-bottom:var(--space-3)">以下事項因危險性較高，將有客服專員為您處理：</div>
+          <ul class="loss-list" style="background:transparent;padding:0">
+            <li>− 移除部分節目</li>
+            <li>− 移除法人銀行提領</li>
+            <li>− 移除部分免費追蹤會員</li>
+            <li>− 關閉 Discord 群組</li>
+            <li>− 關閉 Zapier 會員自動信</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)" onclick="goToScreen('screen-b')">保留目前方案</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-b')">我已截圖並傳至對話框</button>
+      </div>
+    </div>
+    <p class="annotation">Phase 2 硬邊界：5 項全部觸發 → 用戶須截圖聯繫客服。Badge 使用 Primary pill (border-radius: full)，檢核清單使用 dashed border card。</p>
+  </div>
+
+  <!-- Pro → Free: 部分觸發 (Discord + Zapier) -->
+  <div class="state-view" id="d2-pro-free">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div style="margin-bottom:var(--space-4)">
+          <span style="display:inline-block;padding:6px 16px;border-radius:9999px;background:var(--wf-btn-primary);color:white;font-size:14px;font-weight:600;">Pro → Free</span>
+        </div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:var(--space-2)">降級前需要完成的事</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-4)">請完整截圖本頁，並傳送至右下角客服對話框。</div>
+        <div style="border:2px dashed var(--wf-border);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-6)">
+          <div style="font-size:14px;font-weight:600;margin-bottom:var(--space-3)">以下事項因危險性較高，將有客服專員為您處理：</div>
+          <ul class="loss-list" style="background:transparent;padding:0">
+            <li>− 關閉 Discord 群組</li>
+            <li>− 關閉 Zapier 會員自動信</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-bottom:var(--space-2)" onclick="goToScreen('screen-b')">保留目前方案</button>
+        <button class="btn btn-ghost btn-lg btn-full" onclick="goToScreen('screen-b')">我已截圖並傳至對話框</button>
+      </div>
+    </div>
+    <p class="annotation">僅觸發 Discord + Zapier 兩項（其他檢核通過，不顯示）</p>
+  </div>
+
+  <!-- 全部通過 -->
+  <div class="state-view" id="d2-none">
+    <div style="text-align:center;padding:var(--space-8);color:var(--wf-text-muted)">
+      <div style="font-size:48px;margin-bottom:var(--space-4)">✓</div>
+      <div style="font-size:18px;font-weight:600;margin-bottom:var(--space-2)">硬邊界檢核全部通過</div>
+      <div class="text-sm">此情境下 D2 Modal 不會出現，用戶直接從 D1 進入 Stripe Checkout。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCREEN D3 ==================== -->
+<section class="screen" id="screen-d3">
+  <h2>D3 — 強制降級暫停上傳 Modal</h2>
+  <h3>情境切換</h3>
+  <div class="state-toggle" data-group="d3">
+    <button class="state-btn active" onclick="toggleState('d3','d3-full')">全部觸發</button>
+    <button class="state-btn" onclick="toggleState('d3','d3-partial')">部分觸發</button>
+  </div>
+
+  <!-- 全部觸發 -->
+  <div class="state-view active" id="d3-full">
+    <!-- 全站 Banner 示意 -->
+    <div style="background:var(--wf-error-bg);color:var(--wf-error-text);padding:var(--space-3) var(--space-4);font-size:14px;font-weight:600;text-align:center;cursor:pointer;border:2px solid var(--wf-error-text);border-radius:var(--radius-sm);margin-bottom:var(--space-4);">
+      ❌ 上傳功能已暫停，請點此聯繫客服處理
+      <div style="font-size:11px;font-weight:400;color:var(--wf-text-muted);margin-top:2px;">▲ 全站 Error Banner — 固定於所有頁面頂部，不可關閉</div>
+    </div>
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div style="margin-bottom:var(--space-4)">
+          <span style="display:inline-block;padding:6px 16px;border-radius:9999px;background:var(--wf-error-text);color:white;font-size:14px;font-weight:600;">Pro → Free</span>
+        </div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:var(--space-2)">降級後需要處理的事</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-4)"><strong>上傳功能已暫停。</strong>請完整截圖本頁，並傳送至右下角客服對話框。</div>
+        <div style="border:2px dashed var(--wf-border);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-6)">
+          <div style="font-size:14px;font-weight:600;margin-bottom:var(--space-3)">以下事項因危險性較高，將有客服專員為您處理：</div>
+          <ul class="loss-list" style="background:transparent;padding:0">
+            <li>− 移除部分節目</li>
+            <li>− 移除法人銀行提領</li>
+            <li>− 移除部分免費追蹤會員</li>
+            <li>− 關閉 Discord 群組</li>
+            <li>− 關閉 Zapier 會員自動信</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary btn-lg btn-full">我已截圖並傳至對話框</button>
+      </div>
+    </div>
+    <p class="annotation">D3 Modal：佈局類似 D2，但 Badge 為 error 色、標題為「降級後需要處理的事」、副標含「上傳功能已暫停」、僅一個按鈕（無「保留目前方案」）</p>
+  </div>
+
+  <!-- 部分觸發 -->
+  <div class="state-view" id="d3-partial">
+    <div style="background:var(--wf-error-bg);color:var(--wf-error-text);padding:var(--space-3) var(--space-4);font-size:14px;font-weight:600;text-align:center;cursor:pointer;border:2px solid var(--wf-error-text);border-radius:var(--radius-sm);margin-bottom:var(--space-4);">
+      ❌ 上傳功能已暫停，請點此聯繫客服處理
+    </div>
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div style="margin-bottom:var(--space-4)">
+          <span style="display:inline-block;padding:6px 16px;border-radius:9999px;background:var(--wf-error-text);color:white;font-size:14px;font-weight:600;">Pro → Free</span>
+        </div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:var(--space-2)">降級後需要處理的事</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-4)"><strong>上傳功能已暫停。</strong>請完整截圖本頁，並傳送至右下角客服對話框。</div>
+        <div style="border:2px dashed var(--wf-border);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-6)">
+          <div style="font-size:14px;font-weight:600;margin-bottom:var(--space-3)">以下事項因危險性較高，將有客服專員為您處理：</div>
+          <ul class="loss-list" style="background:transparent;padding:0">
+            <li>− 關閉 Discord 群組</li>
+            <li>− 關閉 Zapier 會員自動信</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary btn-lg btn-full">我已截圖並傳至對話框</button>
+      </div>
+    </div>
+    <p class="annotation">部分觸發：僅顯示 Discord + Zapier 兩項</p>
+  </div>
+</section>
+
+<!-- ==================== SCREEN E ==================== -->
+<section class="screen" id="screen-e">
+  <h2>E — 升級成功 Modal</h2>
+  <h3>升級目標切換</h3>
+  <div class="state-toggle" data-group="e">
+    <button class="state-btn active" onclick="toggleState('e','e-lite')">升級至 Lite</button>
+    <button class="state-btn" onclick="toggleState('e','e-pro')">升級至 Pro</button>
+    <button class="state-btn" onclick="toggleState('e','e-enterprise')">升級至 Enterprise</button>
+  </div>
+
+  <!-- 升級至 Lite -->
+  <div class="state-view active" id="e-lite">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-success">✓</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">升級成功！</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">你已升級至 Lite 方案，以下功能已解鎖：</div>
+        <ul class="unlock-list">
+          <li>✓ 下載數據報表</li>
+          <li>✓ 單集 Flink 萬用連結</li>
+          <li>✓ AI 內容萃取 3 集/月</li>
+        </ul>
+        <div style="margin-top:var(--space-6)">
+          <button class="btn btn-primary btn-lg btn-full">立即體驗</button>
+        </div>
+      </div>
+    </div>
+    <p class="annotation">Modal sm (480px) → CheckCircle 48px → 解鎖清單 (success-bg + Check icon) → Button Primary「立即體驗」</p>
+  </div>
+
+  <!-- 升級至 Pro -->
+  <div class="state-view" id="e-pro">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-success">✓</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">升級成功！</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">你已升級至 Pro 方案，以下功能已解鎖：</div>
+        <ul class="unlock-list">
+          <li>✓ 創立 5 檔節目</li>
+          <li>✓ 進階數據分析</li>
+          <li>✓ 下載數據報表</li>
+          <li>✓ 單集 Flink 萬用連結</li>
+          <li>✓ AI 內容萃取 6 集/月</li>
+          <li>✓ 移除動態廣告</li>
+          <li>✓ 調降經營會員抽成 3%</li>
+        </ul>
+        <div style="margin-top:var(--space-6)">
+          <button class="btn btn-primary btn-lg btn-full">立即體驗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 升級至 Enterprise -->
+  <div class="state-view" id="e-enterprise">
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close">×</button>
+        <div class="modal-icon icon-success">✓</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:var(--space-2)">升級成功！</div>
+        <div class="text-sm text-muted" style="margin-bottom:var(--space-3)">你已升級至 Enterprise 方案，以下功能已解鎖：</div>
+        <ul class="unlock-list">
+          <li>✓ 創立節目無限</li>
+          <li>✓ 進階數據分析</li>
+          <li>✓ 下載數據報表</li>
+          <li>✓ 單集 Flink 萬用連結</li>
+          <li>✓ AI 內容萃取 25 集/月</li>
+          <li>✓ 移除動態廣告</li>
+          <li>✓ 提高廣告分潤 100%</li>
+          <li>✓ 調降經營會員抽成 5%</li>
+        </ul>
+        <div style="margin-top:var(--space-6)">
+          <button class="btn btn-primary btn-lg btn-full">立即體驗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COMPONENT MAP ==================== -->
+<section id="components" class="screen" id="screen-map">
+  <h2>Design System 元件對照表</h2>
+  <table>
+    <thead>
+      <tr><th>畫面</th><th>Wireframe 元素</th><th>Design System 元件</th><th>Token / 備註</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>A 帳戶資訊頁</td><td>方案資訊卡</td><td>Card default</td><td>padding: --space-6, border: --border, radius: --radius-md</td></tr>
+      <tr><td>A</td><td>狀態標籤</td><td>Badge success / warning</td><td>--success / --warning tokens</td></tr>
+      <tr><td>A</td><td>變更方案按鈕</td><td>Button Primary (lg)</td><td>height: 48px, bg: --primary</td></tr>
+      <tr><td>A</td><td>待降級提示</td><td>Alert Info (left-border)</td><td>bg: --info, border-left: 3px --info-foreground</td></tr>
+      <tr><td>A</td><td>強制降級警告</td><td>Alert Warning (left-border)</td><td>bg: --warning, border-left: 3px --warning-foreground</td></tr>
+      <tr><td>B 方案選擇頁</td><td>方案卡片</td><td>Card default / elevated</td><td>Pro 用 elevated + --shadow-md</td></tr>
+      <tr><td>B</td><td>推薦標籤</td><td>Badge</td><td>bg: --primary-muted, text: --primary</td></tr>
+      <tr><td>B</td><td>升級按鈕</td><td>Button Primary</td><td>full-width</td></tr>
+      <tr><td>B</td><td>降級按鈕</td><td>Button Ghost</td><td>text: --muted-foreground, underline</td></tr>
+      <tr><td>B</td><td>目前方案按鈕</td><td>Button disabled</td><td>bg: --placeholder, cursor: default</td></tr>
+      <tr><td>B</td><td>功能比較表</td><td>Table</td><td>thead bg: --secondary, text-xs</td></tr>
+      <tr><td>C Paywall Modal</td><td>Modal 容器</td><td>Modal sm (480px)</td><td>radius: --radius-xl (16px), shadow: --shadow-xl</td></tr>
+      <tr><td>C</td><td>鎖頭圖標</td><td>Lucide Lock</td><td>48px, color: --primary</td></tr>
+      <tr><td>C</td><td>升級 CTA</td><td>Button Primary (lg)</td><td>full-width</td></tr>
+      <tr><td>C</td><td>查看所有方案</td><td>Button Ghost (lg)</td><td>full-width</td></tr>
+      <tr><td>D1 軟邊界 Modal</td><td>Modal 容器</td><td>Modal sm (480px)</td><td>同上</td></tr>
+      <tr><td>D1</td><td>警告圖標</td><td>Lucide AlertTriangle</td><td>48px, color: --warning-foreground</td></tr>
+      <tr><td>D1</td><td>失去功能清單</td><td>Card filled (error)</td><td>bg: --error (低透明度), Lucide Minus 16px</td></tr>
+      <tr><td>D1</td><td>取消按鈕 (主 CTA)</td><td>Button Primary (lg)</td><td>full-width，鼓勵用戶留下</td></tr>
+      <tr><td>D1</td><td>仍要降級</td><td>Button Ghost (lg)</td><td>full-width → 觸發硬邊界檢核</td></tr>
+      <tr><td>D2 硬邊界 Modal</td><td>Modal 容器</td><td>Modal sm (480px)</td><td>同上</td></tr>
+      <tr><td>D2</td><td>方案轉換 Badge</td><td>Badge (Primary pill)</td><td>bg: --primary, border-radius: full</td></tr>
+      <tr><td>D2</td><td>檢核清單容器</td><td>Card outlined (dashed)</td><td>border: 2px dashed --border</td></tr>
+      <tr><td>D2</td><td>危險項目清單</td><td>List + Lucide Minus</td><td>text: --error-foreground, 僅顯示觸發項目</td></tr>
+      <tr><td>D2</td><td>保留目前方案 (主 CTA)</td><td>Button Primary (lg)</td><td>full-width</td></tr>
+      <tr><td>D2</td><td>已截圖傳至對話框</td><td>Button Ghost (lg)</td><td>full-width → 客服處理流程</td></tr>
+      <tr><td>E 升級成功 Modal</td><td>Modal 容器</td><td>Modal sm (480px)</td><td>同上</td></tr>
+      <tr><td>E</td><td>成功圖標</td><td>Lucide CheckCircle</td><td>48px, color: --success-foreground</td></tr>
+      <tr><td>E</td><td>解鎖功能清單</td><td>Card filled (success)</td><td>bg: --success (低透明度), Lucide Check 16px</td></tr>
+      <tr><td>E</td><td>立即體驗</td><td>Button Primary (lg)</td><td>full-width → 導向首頁</td></tr>
+      <tr><td>全站 Error Banner</td><td>暫停上傳提示</td><td>Alert Error (Global)</td><td>bg: --error, position: fixed, top: 0, 不可關閉, onclick → D3</td></tr>
+      <tr><td>D3 強制降級 Modal</td><td>Modal 容器</td><td>Modal sm (480px)</td><td>同 D2，radius: --radius-xl</td></tr>
+      <tr><td>D3</td><td>方案轉換 Badge</td><td>Badge (Error pill)</td><td>bg: --error, border-radius: full</td></tr>
+      <tr><td>D3</td><td>檢核清單容器</td><td>Card outlined (dashed)</td><td>同 D2</td></tr>
+      <tr><td>D3</td><td>我已截圖傳至對話框</td><td>Button Primary (lg)</td><td>full-width，僅此一個按鈕</td></tr>
+      <tr><td>A</td><td>暫停中 Badge</td><td>Badge error</td><td>bg: --error, 強制降級暫停時顯示</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ==================== NAV ==================== -->
+<nav class="nav-container">
+  <button class="nav-btn" data-screen="flow" onclick="goToScreen('flow')">Flow</button>
+  <button class="nav-btn active" data-screen="screen-a" onclick="goToScreen('screen-a')">A 帳戶</button>
+  <button class="nav-btn" data-screen="screen-b" onclick="goToScreen('screen-b')">B 方案選擇</button>
+  <button class="nav-btn" data-screen="screen-c" onclick="goToScreen('screen-c')">C Paywall</button>
+  <button class="nav-btn" data-screen="screen-d1" onclick="goToScreen('screen-d1')">D1 軟邊界</button>
+  <button class="nav-btn" data-screen="screen-d2" onclick="goToScreen('screen-d2')">D2 硬邊界</button>
+  <button class="nav-btn" data-screen="screen-d3" onclick="goToScreen('screen-d3')">D3 強制降級</button>
+  <button class="nav-btn" data-screen="screen-e" onclick="goToScreen('screen-e')">E 升級成功</button>
+  <button class="nav-btn" data-screen="components" onclick="goToScreen('components')">元件對照</button>
+</nav>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+  function goToScreen(screenId) {
+    // flow section is always visible, toggle screens
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    if (screenId === 'flow') {
+      document.getElementById('flow').scrollIntoView({ behavior: 'smooth' });
+      document.querySelector('[data-screen="flow"]').classList.add('active');
+      return;
+    }
+
+    const el = document.getElementById(screenId);
+    if (el) {
+      el.classList.add('active');
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+    const btn = document.querySelector(`[data-screen="${screenId}"]`);
+    if (btn) btn.classList.add('active');
+    history.pushState(null, '', '#' + screenId);
+  }
+
+  function toggleState(group, stateId) {
+    // find all state-toggles for this group
+    const toggleContainer = document.querySelector(`[data-group="${group}"]`);
+    if (!toggleContainer) return;
+
+    // deactivate all buttons in this group
+    toggleContainer.querySelectorAll('.state-btn').forEach(b => b.classList.remove('active'));
+    // activate clicked
+    event.target.classList.add('active');
+
+    // find parent section
+    const section = toggleContainer.closest('section') || toggleContainer.closest('.screen');
+    if (!section) return;
+
+    // toggle state views
+    section.querySelectorAll('.state-view').forEach(v => v.classList.remove('active'));
+    const target = document.getElementById(stateId);
+    if (target) target.classList.add('active');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.slice(1);
+    if (hash) goToScreen(hash);
+  });
+
+  window.addEventListener('popstate', () => {
+    const hash = window.location.hash.slice(1) || 'screen-a';
+    goToScreen(hash);
+  });
+</script>
+
+</body>
+</html>

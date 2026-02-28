@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS 方案升降級 Wireframe v1.0</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --wf-bg: #F5F5F5;
+      --wf-card: #FFFFFF;
+      --wf-border: #CCCCCC;
+      --wf-text: #333333;
+      --wf-text-muted: #888888;
+      --wf-placeholder: #E0E0E0;
+      --wf-btn-primary: #666666;
+      --wf-btn-secondary: #999999;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--wf-bg);
+      color: var(--wf-text);
+      line-height: 1.5;
+      padding: var(--space-8);
+      padding-bottom: 80px;
+    }
+
+    h1, h2, h3 { margin-bottom: var(--space-4); }
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; border-bottom: 1px solid var(--wf-border); padding-bottom: var(--space-2); }
+    h3 { font-size: 16px; color: var(--wf-text-muted); }
+
+    section {
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .screen-frame {
+      border: 2px dashed var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin: var(--space-4) 0;
+      background: var(--wf-card);
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+    }
+    .btn-primary { background: var(--wf-btn-primary); color: white; }
+    .btn-secondary { background: transparent; border: 1px solid var(--wf-btn-secondary); color: var(--wf-text); }
+    .btn-ghost { background: transparent; border: none; color: var(--wf-text-muted); text-decoration: underline; cursor: pointer; font-size: 14px; }
+    .btn-destructive { background: transparent; border: 1px solid #aaa; color: var(--wf-text-muted); font-size: 13px; }
+    .btn-lg { padding: var(--space-3) var(--space-6); font-size: 16px; }
+    .btn:hover { opacity: 0.85; }
+
+    .card {
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin: var(--space-3) 0;
+    }
+
+    .placeholder {
+      background: var(--wf-placeholder);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--wf-text-muted);
+      font-size: 12px;
+    }
+
+    .placeholder-text {
+      width: 100%;
+      height: 14px;
+      background: var(--wf-placeholder);
+      border-radius: 2px;
+      margin: var(--space-1) 0;
+    }
+    .placeholder-text.short { width: 50%; }
+    .placeholder-text.medium { width: 75%; }
+
+    table { width: 100%; border-collapse: collapse; margin: var(--space-4) 0; }
+    th, td { border: 1px solid var(--wf-border); padding: var(--space-2) var(--space-3); text-align: left; font-size: 14px; }
+    th { background: var(--wf-placeholder); font-weight: 600; }
+
+    .mermaid { background: var(--wf-card); padding: var(--space-4); border-radius: var(--radius-md); }
+
+    .nav-container {
+      position: fixed;
+      bottom: var(--space-4);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2) var(--space-4);
+      display: flex;
+      gap: var(--space-2);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+      flex-wrap: wrap;
+      max-width: 90vw;
+      justify-content: center;
+    }
+
+    .nav-btn {
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-sm);
+      background: var(--wf-card);
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .nav-btn:hover { background: var(--wf-placeholder); }
+    .nav-btn.active { background: var(--wf-btn-primary); color: white; border-color: var(--wf-btn-primary); }
+
+    /* Layout helpers */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .gap-2 { gap: var(--space-2); }
+    .gap-3 { gap: var(--space-3); }
+    .gap-4 { gap: var(--space-4); }
+    .gap-6 { gap: var(--space-6); }
+    .mt-4 { margin-top: var(--space-4); }
+    .mt-6 { margin-top: var(--space-6); }
+    .mb-2 { margin-bottom: var(--space-2); }
+    .mb-4 { margin-bottom: var(--space-4); }
+    .mb-6 { margin-bottom: var(--space-6); }
+    .p-4 { padding: var(--space-4); }
+    .p-6 { padding: var(--space-6); }
+    .text-center { text-align: center; }
+    .text-sm { font-size: 14px; }
+    .text-xs { font-size: 12px; }
+    .text-muted { color: var(--wf-text-muted); }
+    .w-full { width: 100%; }
+    .flex-1 { flex: 1; }
+
+    /* Sidebar layout */
+    .layout-sidebar {
+      display: flex;
+      gap: 0;
+      min-height: 600px;
+    }
+    .sidebar {
+      width: 220px;
+      background: #EBEBEB;
+      border-right: 1px solid var(--wf-border);
+      padding: var(--space-4);
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+      flex-shrink: 0;
+    }
+    .sidebar-item {
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--wf-text-muted);
+      margin-bottom: var(--space-1);
+      cursor: pointer;
+    }
+    .sidebar-item.active {
+      background: var(--wf-card);
+      color: var(--wf-text);
+      font-weight: 500;
+    }
+    .sidebar-item:hover { background: rgba(255,255,255,0.5); }
+    .main-content {
+      flex: 1;
+      padding: var(--space-6);
+    }
+
+    /* Plan card grid */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    @media (max-width: 768px) {
+      .plan-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .plan-card {
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      background: var(--wf-card);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .plan-card.current {
+      border: 2px solid var(--wf-btn-primary);
+    }
+    .plan-card.recommended {
+      border: 2px solid #555;
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--wf-btn-primary);
+      color: white;
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .current-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #555;
+      color: white;
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: var(--space-4) 0;
+      flex: 1;
+    }
+    .feature-list li {
+      padding: var(--space-1) 0;
+      font-size: 13px;
+      color: var(--wf-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .feature-list li::before {
+      content: "✓";
+      color: #888;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .feature-list li.disabled {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+    .feature-list li.disabled::before {
+      content: "—";
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal-overlay.visible { display: flex; }
+
+    .modal-box {
+      background: var(--wf-card);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-3);
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--wf-text-muted);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+    .modal-close:hover { background: var(--wf-placeholder); }
+
+    /* Lock icon */
+    .lock-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: #ddd;
+      border-radius: 3px;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .lock-icon:hover { background: #ccc; }
+
+    /* Notification bar */
+    .notice-bar {
+      background: #f0f0f0;
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3) var(--space-4);
+      font-size: 13px;
+      color: var(--wf-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--wf-border);
+      margin: var(--space-4) 0;
+    }
+
+    /* Annotation */
+    .annotation {
+      background: #FFFDE7;
+      border: 1px solid #E0D68A;
+      border-radius: var(--radius-sm);
+      padding: var(--space-2) var(--space-3);
+      font-size: 12px;
+      color: #665;
+      margin-top: var(--space-3);
+    }
+
+    .lost-feature {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      font-size: 14px;
+      color: var(--wf-text);
+      border-bottom: 1px solid #eee;
+    }
+    .lost-feature::before {
+      content: "✕";
+      color: #999;
+      font-size: 12px;
+      flex-shrink: 0;
+      width: 20px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--wf-placeholder);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto var(--space-4);
+    }
+
+    .unlocked-feature {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      font-size: 14px;
+      color: var(--wf-text);
+    }
+    .unlocked-feature::before {
+      content: "★";
+      color: #888;
+      font-size: 12px;
+      flex-shrink: 0;
+      width: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>SaaS 方案升降級流程 Wireframe</h1>
+  <p class="text-muted mb-6">
+    版本：v1.0 | 日期：2026-02-09 | 類型：低保真灰階
+  </p>
+
+  <!-- ===== User Flow ===== -->
+  <section id="user-flow">
+    <h2>User Flow</h2>
+    <div class="mermaid">
+graph TD
+    A["帳戶資訊頁 A"] -- "變更方案" --> B["方案選擇頁 B"]
+    Content["內容頁 / 紅鎖頭"] -- "點擊紅鎖頭" --> C["Modal C: Paywall"]
+    C -- "查看所有方案" --> B
+    C -- "點擊升級" --> Stripe(("Stripe Checkout"))
+    B -- "點擊升級" --> Stripe
+    B -- "點擊降級" --> D["Modal D: 降級勸退"]
+    D -- "仍要降級" --> Stripe
+    D -- "取消" --> B
+    Stripe -- "升級成功" --> E["Modal E: 升級成功"]
+    Stripe -- "降級成功" --> A
+    Stripe -- "取消/失敗" --> B
+    E -- "關閉/立即體驗" --> Homepage["首頁"]
+    </div>
+  </section>
+
+  <!-- ===== Screen A: 帳戶資訊頁 ===== -->
+  <section class="screen active" id="screen-a">
+    <h2>A. 帳戶資訊頁</h2>
+    <h3>入口一：用戶從帳戶頁開始方案變更</h3>
+
+    <div class="screen-frame">
+      <div class="layout-sidebar">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div style="height:32px; background:var(--wf-placeholder); border-radius:var(--radius-sm); margin-bottom:var(--space-6);"></div>
+          <div class="sidebar-item">節目管理</div>
+          <div class="sidebar-item">單集列表</div>
+          <div class="sidebar-item">數據分析</div>
+          <div class="sidebar-item">變現管理</div>
+          <div class="sidebar-item active">帳戶設定</div>
+        </div>
+
+        <!-- Main -->
+        <div class="main-content">
+          <h3 style="font-size:20px; color:var(--wf-text); margin-bottom:var(--space-6);">帳戶設定</h3>
+
+          <!-- Pending downgrade notice -->
+          <div class="notice-bar mb-4" id="pending-notice" style="display:none;">
+            <span>ℹ</span>
+            <span>您的方案將於 2026-03-09 變更為 Lite</span>
+          </div>
+
+          <!-- Plan Info Card -->
+          <div class="card">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <div class="text-xs text-muted mb-2">目前方案</div>
+                <div style="font-size:18px; font-weight:600;">Pro</div>
+              </div>
+              <button class="btn btn-primary btn-lg" onclick="goToScreen('screen-b')">變更方案</button>
+            </div>
+            <hr class="divider">
+            <div class="flex gap-6 mt-4">
+              <div>
+                <div class="text-xs text-muted">計費週期</div>
+                <div class="text-sm" style="margin-top:4px;">月繳</div>
+              </div>
+              <div>
+                <div class="text-xs text-muted">下次扣款日</div>
+                <div class="text-sm" style="margin-top:4px;">2026-03-09</div>
+              </div>
+              <div>
+                <div class="text-xs text-muted">金額</div>
+                <div class="text-sm" style="margin-top:4px;">NT$ 590 / 月</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Other settings placeholder -->
+          <div class="card mt-4">
+            <div class="text-sm" style="font-weight:500; margin-bottom:var(--space-3);">付款方式</div>
+            <div class="flex items-center gap-3">
+              <div class="placeholder" style="width:40px; height:28px;">VISA</div>
+              <span class="text-sm text-muted">**** **** **** 4242</span>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="text-sm" style="font-weight:500; margin-bottom:var(--space-3);">帳戶資訊</div>
+            <div class="placeholder-text medium"></div>
+            <div class="placeholder-text short" style="margin-top:8px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>互動說明：</strong>點擊「變更方案」→ 前往方案選擇頁 B。
+      <br>若有待生效降級，上方出現黃色通知列。
+      <button class="btn-ghost" style="margin-left:8px;" onclick="toggleNotice()">切換降級通知</button>
+    </div>
+  </section>
+
+  <!-- ===== Screen B: 方案選擇頁 ===== -->
+  <section class="screen" id="screen-b">
+    <h2>B. 方案選擇頁</h2>
+    <h3>所有方案並排比較，當前方案標記</h3>
+
+    <div class="screen-frame">
+      <div class="layout-sidebar">
+        <div class="sidebar">
+          <div style="height:32px; background:var(--wf-placeholder); border-radius:var(--radius-sm); margin-bottom:var(--space-6);"></div>
+          <div class="sidebar-item">節目管理</div>
+          <div class="sidebar-item">單集列表</div>
+          <div class="sidebar-item">數據分析</div>
+          <div class="sidebar-item">變現管理</div>
+          <div class="sidebar-item active">帳戶設定</div>
+        </div>
+
+        <div class="main-content">
+          <div class="flex justify-between items-center mb-6">
+            <h3 style="font-size:20px; color:var(--wf-text); margin-bottom:0;">選擇方案</h3>
+            <button class="btn-ghost" onclick="goToScreen('screen-a')">← 返回帳戶設定</button>
+          </div>
+
+          <!-- Plan Cards -->
+          <div class="plan-grid">
+            <!-- Free -->
+            <div class="plan-card">
+              <div class="text-sm" style="font-weight:600; margin-bottom:var(--space-2);">Free</div>
+              <div style="font-size:24px; font-weight:700; margin-bottom:var(--space-1);">NT$ 0</div>
+              <div class="text-xs text-muted mb-4">永久免費</div>
+              <ul class="feature-list">
+                <li>基本託管</li>
+                <li>RSS 發布</li>
+                <li>基礎數據</li>
+                <li class="disabled">進階數據</li>
+                <li class="disabled">AI 自動化</li>
+                <li class="disabled">自訂品牌</li>
+                <li class="disabled">優先支援</li>
+              </ul>
+              <button class="btn btn-destructive w-full" onclick="showModal('modal-d')">降級</button>
+            </div>
+
+            <!-- Lite -->
+            <div class="plan-card">
+              <div class="text-sm" style="font-weight:600; margin-bottom:var(--space-2);">Lite</div>
+              <div style="font-size:24px; font-weight:700; margin-bottom:var(--space-1);">NT$ 190</div>
+              <div class="text-xs text-muted mb-4">/ 月</div>
+              <ul class="feature-list">
+                <li>基本託管</li>
+                <li>RSS 發布</li>
+                <li>基礎數據</li>
+                <li>進階數據</li>
+                <li class="disabled">AI 自動化</li>
+                <li class="disabled">自訂品牌</li>
+                <li class="disabled">優先支援</li>
+              </ul>
+              <button class="btn btn-destructive w-full" onclick="showModal('modal-d')">降級</button>
+            </div>
+
+            <!-- Pro (Current) -->
+            <div class="plan-card current">
+              <div class="current-badge">目前方案</div>
+              <div class="text-sm" style="font-weight:600; margin-bottom:var(--space-2);">Pro</div>
+              <div style="font-size:24px; font-weight:700; margin-bottom:var(--space-1);">NT$ 590</div>
+              <div class="text-xs text-muted mb-4">/ 月</div>
+              <ul class="feature-list">
+                <li>基本託管</li>
+                <li>RSS 發布</li>
+                <li>基礎數據</li>
+                <li>進階數據</li>
+                <li>AI 自動化</li>
+                <li>自訂品牌</li>
+                <li class="disabled">優先支援</li>
+              </ul>
+              <button class="btn btn-secondary w-full" disabled style="opacity:0.5;">目前方案</button>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="plan-card recommended">
+              <div class="plan-badge">Most Popular</div>
+              <div class="text-sm" style="font-weight:600; margin-bottom:var(--space-2);">Enterprise</div>
+              <div style="font-size:24px; font-weight:700; margin-bottom:var(--space-1);">NT$ 1,490</div>
+              <div class="text-xs text-muted mb-4">/ 月</div>
+              <ul class="feature-list">
+                <li>基本託管</li>
+                <li>RSS 發布</li>
+                <li>基礎數據</li>
+                <li>進階數據</li>
+                <li>AI 自動化</li>
+                <li>自訂品牌</li>
+                <li>優先支援</li>
+              </ul>
+              <button class="btn btn-primary w-full" onclick="showModal('modal-stripe-up')">升級</button>
+            </div>
+          </div>
+
+          <div class="annotation mt-6">
+            <strong>互動說明：</strong>
+            <ul style="margin-top:4px; padding-left:16px; font-size:12px;">
+              <li>當前方案 = Pro，按鈕 disabled</li>
+              <li>比當前高的方案 → Primary「升級」按鈕 → Stripe Checkout</li>
+              <li>比當前低的方案 → Secondary「降級」按鈕 → 降級勸退 Modal D</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Screen C: Paywall Modal（含內容頁背景） ===== -->
+  <section class="screen" id="screen-c">
+    <h2>C. Paywall Modal</h2>
+    <h3>入口二：用戶在內容頁點擊紅鎖頭觸發</h3>
+
+    <div class="screen-frame" style="position:relative; min-height:500px;">
+      <!-- Background: content page -->
+      <div class="layout-sidebar" style="opacity:0.4; pointer-events:none;">
+        <div class="sidebar">
+          <div style="height:32px; background:var(--wf-placeholder); border-radius:var(--radius-sm); margin-bottom:var(--space-6);"></div>
+          <div class="sidebar-item">節目管理</div>
+          <div class="sidebar-item active">單集列表</div>
+          <div class="sidebar-item">數據分析</div>
+        </div>
+        <div class="main-content">
+          <h3 style="font-size:20px; color:var(--wf-text); margin-bottom:var(--space-4);">單集管理</h3>
+          <div class="card">
+            <div class="flex items-center gap-3">
+              <div class="placeholder" style="width:48px; height:48px;">IMG</div>
+              <div class="flex-1">
+                <div class="text-sm" style="font-weight:500;">EP.42 如何突破流量瓶頸</div>
+                <div class="text-xs text-muted">2026-02-01</div>
+              </div>
+              <span class="lock-icon" title="需要 Pro 方案">🔒</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-3">
+              <div class="placeholder" style="width:48px; height:48px;">IMG</div>
+              <div class="flex-1">
+                <div class="text-sm" style="font-weight:500;">EP.41 AI 工具實測</div>
+                <div class="text-xs text-muted">2026-01-25</div>
+              </div>
+              <span class="lock-icon" title="需要 Pro 方案">🔒</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal C overlay (inline for wireframe) -->
+      <div style="position:absolute; inset:0; background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; border-radius:var(--radius-md);">
+        <div class="modal-box">
+          <button class="modal-close">×</button>
+          <div class="text-center mb-4">
+            <div class="placeholder" style="width:48px; height:48px; border-radius:50%; margin:0 auto var(--space-3);">🔒</div>
+            <div style="font-size:18px; font-weight:600; margin-bottom:var(--space-2);">此功能需要 Pro 方案</div>
+            <div class="text-sm text-muted">「AI 自動化」可幫你一鍵完成降噪、逐字稿與社群文案生成，將 3 小時後製壓縮至 15 分鐘。</div>
+          </div>
+          <hr class="divider">
+          <div class="flex flex-col gap-3 mt-4">
+            <button class="btn btn-primary btn-lg w-full" onclick="showModal('modal-stripe-up')">升級到 Pro — NT$ 590/月</button>
+            <button class="btn-ghost text-center w-full" onclick="goToScreen('screen-b')">查看所有方案</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>互動說明：</strong>
+      <ul style="margin-top:4px; padding-left:16px; font-size:12px;">
+        <li>紅鎖頭點擊 → 彈出 Paywall Modal</li>
+        <li>「升級到 Pro」→ 直接跳轉 Stripe Checkout</li>
+        <li>「查看所有方案」→ 前往方案選擇頁 B</li>
+        <li>關閉按鈕 → 回到內容頁</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Screen D: 降級勸退 Modal ===== -->
+  <section class="screen" id="screen-d">
+    <h2>D. 降級勸退 Modal</h2>
+    <h3>用戶選擇降級時，顯示將失去的功能</h3>
+
+    <div class="screen-frame" style="position:relative; min-height:500px;">
+      <!-- Background: plan page (dimmed) -->
+      <div style="opacity:0.3; pointer-events:none;">
+        <div style="font-size:20px; font-weight:500; margin-bottom:var(--space-4);">選擇方案</div>
+        <div class="plan-grid">
+          <div class="plan-card" style="padding:var(--space-4);"><div class="text-sm" style="font-weight:600;">Free</div><div class="placeholder-text mt-4"></div></div>
+          <div class="plan-card" style="padding:var(--space-4);"><div class="text-sm" style="font-weight:600;">Lite</div><div class="placeholder-text mt-4"></div></div>
+          <div class="plan-card" style="padding:var(--space-4); border:2px solid #999;"><div class="text-sm" style="font-weight:600;">Pro</div><div class="placeholder-text mt-4"></div></div>
+          <div class="plan-card" style="padding:var(--space-4);"><div class="text-sm" style="font-weight:600;">Enterprise</div><div class="placeholder-text mt-4"></div></div>
+        </div>
+      </div>
+
+      <!-- Modal D overlay -->
+      <div style="position:absolute; inset:0; background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; border-radius:var(--radius-md);">
+        <div class="modal-box">
+          <button class="modal-close" onclick="goToScreen('screen-b')">×</button>
+          <div style="font-size:18px; font-weight:600; margin-bottom:var(--space-2);">確定要降級嗎？</div>
+          <div class="text-sm text-muted mb-4">從 Pro 降級到 Lite 後，您將失去以下功能：</div>
+          <hr class="divider">
+          <div class="mb-4">
+            <div class="lost-feature">AI 自動化（降噪、逐字稿、社群文案）</div>
+            <div class="lost-feature">自訂品牌（移除 Firstory Logo）</div>
+            <div class="lost-feature">進階排程發布</div>
+          </div>
+          <div class="notice-bar mb-4" style="font-size:12px;">
+            <span>ℹ</span>
+            <span>降級將於目前計費週期結束後生效（2026-03-09），在此之前您仍可使用所有 Pro 功能。</span>
+          </div>
+          <div class="flex gap-3">
+            <button class="btn btn-primary flex-1" onclick="goToScreen('screen-b')">取消</button>
+            <button class="btn btn-secondary flex-1" onclick="showModal('modal-stripe-down')">仍要降級</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>互動說明：</strong>
+      <ul style="margin-top:4px; padding-left:16px; font-size:12px;">
+        <li>失去功能清單根據「當前方案 vs 目標方案」動態生成</li>
+        <li>「取消」= Primary CTA（鼓勵留下）→ 關閉 Modal 回到 B</li>
+        <li>「仍要降級」= Secondary CTA → Stripe Checkout 處理降級</li>
+        <li>不提供折扣優惠，僅列出失去功能</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Screen E: 升級成功 Modal ===== -->
+  <section class="screen" id="screen-e">
+    <h2>E. 升級成功 Modal</h2>
+    <h3>升級完成後的慶祝畫面</h3>
+
+    <div class="screen-frame" style="position:relative; min-height:500px;">
+      <!-- Background: dimmed content -->
+      <div style="opacity:0.3; pointer-events:none;">
+        <div class="layout-sidebar">
+          <div class="sidebar" style="width:220px;">
+            <div style="height:32px; background:var(--wf-placeholder); border-radius:var(--radius-sm); margin-bottom:var(--space-6);"></div>
+            <div class="sidebar-item">節目管理</div>
+            <div class="sidebar-item">單集列表</div>
+          </div>
+          <div class="main-content">
+            <div class="placeholder-text"></div>
+            <div class="placeholder-text medium" style="margin-top:12px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal E overlay -->
+      <div style="position:absolute; inset:0; background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; border-radius:var(--radius-md);">
+        <div class="modal-box text-center">
+          <button class="modal-close">×</button>
+          <div class="success-icon">✓</div>
+          <div style="font-size:20px; font-weight:600; margin-bottom:var(--space-2);">升級成功！</div>
+          <div class="text-sm text-muted mb-4">恭喜！您已升級至 Pro 方案，以下功能已解鎖：</div>
+          <div style="text-align:left; margin-bottom:var(--space-4);">
+            <div class="unlocked-feature">AI 自動化（降噪、逐字稿、社群文案）</div>
+            <div class="unlocked-feature">自訂品牌（移除 Firstory Logo）</div>
+            <div class="unlocked-feature">進階排程發布</div>
+          </div>
+          <button class="btn btn-primary btn-lg w-full">立即體驗</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>互動說明：</strong>
+      <ul style="margin-top:4px; padding-left:16px; font-size:12px;">
+        <li>「立即體驗」和關閉按鈕都導向首頁</li>
+        <li>新解鎖功能清單根據升級前後方案差異動態生成</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Screen F: 系統強制降級狀態 ===== -->
+  <section class="screen" id="screen-f">
+    <h2>F. 系統強制降級 — 功能鎖定狀態</h2>
+    <h3>扣款失敗後，受限功能立即上鎖</h3>
+
+    <div class="screen-frame">
+      <div class="layout-sidebar">
+        <div class="sidebar">
+          <div style="height:32px; background:var(--wf-placeholder); border-radius:var(--radius-sm); margin-bottom:var(--space-6);"></div>
+          <div class="sidebar-item">節目管理</div>
+          <div class="sidebar-item active">單集列表</div>
+          <div class="sidebar-item">數據分析</div>
+          <div class="sidebar-item">變現管理</div>
+          <div class="sidebar-item">帳戶設定</div>
+        </div>
+
+        <div class="main-content">
+          <!-- Warning banner -->
+          <div class="notice-bar mb-4" style="background:#f5e6e6; border-color:#daa;">
+            <span>⚠</span>
+            <span style="color:#844;">您的方案已因扣款失敗降級為 Free。部分功能已鎖定。</span>
+            <button class="btn btn-primary" style="margin-left:auto; font-size:12px; padding:4px 12px;" onclick="goToScreen('screen-b')">重新升級</button>
+          </div>
+
+          <h3 style="font-size:20px; color:var(--wf-text); margin-bottom:var(--space-4);">單集管理</h3>
+
+          <div class="card">
+            <div class="flex items-center gap-3">
+              <div class="placeholder" style="width:48px; height:48px;">IMG</div>
+              <div class="flex-1">
+                <div class="text-sm" style="font-weight:500;">EP.42 如何突破流量瓶頸</div>
+                <div class="text-xs text-muted">2026-02-01 · 已發佈</div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <span class="text-xs text-muted">AI 自動化</span>
+                <span class="lock-icon" onclick="goToScreen('screen-c')" title="需升級">🔒</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-3">
+              <div class="placeholder" style="width:48px; height:48px;">IMG</div>
+              <div class="flex-1">
+                <div class="text-sm" style="font-weight:500;">EP.41 AI 工具實測</div>
+                <div class="text-xs text-muted">2026-01-25 · 已發佈</div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <span class="text-xs text-muted">AI 自動化</span>
+                <span class="lock-icon" onclick="goToScreen('screen-c')" title="需升級">🔒</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-3">
+              <div class="placeholder" style="width:48px; height:48px;">IMG</div>
+              <div class="flex-1">
+                <div class="text-sm" style="font-weight:500;">EP.40 專訪：品牌顧問分享</div>
+                <div class="text-xs text-muted">2026-01-18 · 已發佈</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>互動說明：</strong>
+      <ul style="margin-top:4px; padding-left:16px; font-size:12px;">
+        <li>系統強制降級 = 立即生效，頂部出現警告 Banner</li>
+        <li>受限功能旁顯示紅鎖頭 → 點擊觸發 Paywall Modal C</li>
+        <li>Banner 內含「重新升級」CTA → 前往方案選擇頁 B</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Stripe placeholder screens ===== -->
+  <section class="screen" id="screen-stripe">
+    <h2>Stripe Checkout（外部頁面）</h2>
+    <h3>Stripe 託管結帳頁 — 非本產品範圍</h3>
+
+    <div class="screen-frame text-center" style="min-height:400px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+      <div class="placeholder" style="width:120px; height:40px; margin-bottom:var(--space-4);">Stripe</div>
+      <div class="text-sm text-muted mb-4">此頁面由 Stripe Checkout 託管</div>
+      <div style="border:1px dashed var(--wf-border); border-radius:var(--radius-md); padding:var(--space-6); max-width:400px; width:100%;">
+        <div class="placeholder-text mb-2"></div>
+        <div class="placeholder-text medium mb-4"></div>
+        <div style="height:40px; background:var(--wf-placeholder); border-radius:var(--radius-sm); margin-bottom:var(--space-3);"></div>
+        <div style="height:40px; background:var(--wf-placeholder); border-radius:var(--radius-sm); margin-bottom:var(--space-4);"></div>
+        <div class="flex gap-3">
+          <button class="btn btn-secondary flex-1" onclick="goToScreen('screen-b')">取消</button>
+          <button class="btn btn-primary flex-1" onclick="goToScreen('screen-e')">付款</button>
+        </div>
+      </div>
+      <div class="text-xs text-muted mt-4">模擬用途 — 實際頁面由 Stripe 提供</div>
+    </div>
+  </section>
+
+  <!-- ===== Component Mapping ===== -->
+  <section id="components">
+    <h2>Design System 元件對照</h2>
+    <table>
+      <thead>
+        <tr><th>畫面</th><th>Wireframe 元素</th><th>Design System 元件</th><th>備註</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>A 帳戶頁</td><td>方案資訊卡片</td><td>Card default</td><td>含標題、數據欄位</td></tr>
+        <tr><td>A 帳戶頁</td><td>變更方案按鈕</td><td>Button Primary (lg)</td><td>主要 CTA</td></tr>
+        <tr><td>A 帳戶頁</td><td>降級待生效通知</td><td>Alert / Info Banner</td><td>左側 info icon</td></tr>
+        <tr><td>B 方案選擇頁</td><td>方案比較卡片 x4</td><td>Card default / outlined</td><td>grid 4 欄</td></tr>
+        <tr><td>B 方案選擇頁</td><td>升級按鈕</td><td>Button Primary</td><td>深色實心</td></tr>
+        <tr><td>B 方案選擇頁</td><td>降級按鈕</td><td>Button Secondary</td><td>低調但可見</td></tr>
+        <tr><td>B 方案選擇頁</td><td>推薦/當前標籤</td><td>Status Badge</td><td>絕對定位 top</td></tr>
+        <tr><td>C Paywall Modal</td><td>Modal 容器</td><td>Modal (sm: 480px)</td><td>含 overlay</td></tr>
+        <tr><td>C Paywall Modal</td><td>升級 CTA</td><td>Button Primary (lg)</td><td>全寬</td></tr>
+        <tr><td>C Paywall Modal</td><td>查看所有方案</td><td>Button Ghost</td><td>文字連結樣式</td></tr>
+        <tr><td>D 勸退 Modal</td><td>Modal 容器</td><td>Modal (sm: 480px)</td><td>含 overlay</td></tr>
+        <tr><td>D 勸退 Modal</td><td>失去功能清單</td><td>List (custom)</td><td>前置 ✕ icon</td></tr>
+        <tr><td>D 勸退 Modal</td><td>取消按鈕</td><td>Button Primary</td><td>鼓勵留下</td></tr>
+        <tr><td>D 勸退 Modal</td><td>仍要降級按鈕</td><td>Button Secondary</td><td>低調</td></tr>
+        <tr><td>D 勸退 Modal</td><td>生效時間提示</td><td>Alert / Info Banner</td><td>告知到期日</td></tr>
+        <tr><td>E 成功 Modal</td><td>Modal 容器</td><td>Modal (sm: 480px)</td><td>含 overlay</td></tr>
+        <tr><td>E 成功 Modal</td><td>成功圖示</td><td>Empty State icon</td><td>✓ 圓形</td></tr>
+        <tr><td>E 成功 Modal</td><td>立即體驗按鈕</td><td>Button Primary (lg)</td><td>全寬</td></tr>
+        <tr><td>F 強制降級</td><td>警告 Banner</td><td>Alert / Warning Banner</td><td>含 CTA</td></tr>
+        <tr><td>F 強制降級</td><td>紅鎖頭圖示</td><td>Icon Button (custom)</td><td>點擊觸發 Modal C</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== Bottom Navigation ===== -->
+  <nav class="nav-container">
+    <button class="nav-btn active" data-screen="screen-a" onclick="goToScreen('screen-a')">A. 帳戶頁</button>
+    <button class="nav-btn" data-screen="screen-b" onclick="goToScreen('screen-b')">B. 方案選擇</button>
+    <button class="nav-btn" data-screen="screen-c" onclick="goToScreen('screen-c')">C. Paywall</button>
+    <button class="nav-btn" data-screen="screen-d" onclick="goToScreen('screen-d')">D. 降級勸退</button>
+    <button class="nav-btn" data-screen="screen-e" onclick="goToScreen('screen-e')">E. 升級成功</button>
+    <button class="nav-btn" data-screen="screen-f" onclick="goToScreen('screen-f')">F. 強制降級</button>
+    <button class="nav-btn" data-screen="screen-stripe" onclick="goToScreen('screen-stripe')">Stripe</button>
+  </nav>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      const screen = document.getElementById(screenId);
+      if (screen) {
+        screen.classList.add('active');
+        screen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      const navBtn = document.querySelector(`[data-screen="${screenId}"]`);
+      if (navBtn) navBtn.classList.add('active');
+      history.pushState(null, '', '#' + screenId);
+    }
+
+    function toggleNotice() {
+      const notice = document.getElementById('pending-notice');
+      notice.style.display = notice.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function showModal(id) {
+      // For wireframe, just navigate to the relevant screen
+      if (id === 'modal-d') goToScreen('screen-d');
+      else if (id === 'modal-stripe-up' || id === 'modal-stripe-down') goToScreen('screen-stripe');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.slice(1);
+      if (hash) goToScreen(hash);
+    });
+
+    window.addEventListener('popstate', () => {
+      const hash = window.location.hash.slice(1) || 'screen-a';
+      goToScreen(hash);
+    });
+  </script>
+</body>
+</html>

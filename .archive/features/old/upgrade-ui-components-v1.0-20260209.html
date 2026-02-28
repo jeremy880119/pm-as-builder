@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>升降級 UI 元件系統 Wireflow v1.0</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --wf-bg: #F5F5F5;
+      --wf-card: #FFFFFF;
+      --wf-border: #CCCCCC;
+      --wf-text: #333333;
+      --wf-text-muted: #888888;
+      --wf-placeholder: #E0E0E0;
+      --wf-btn-primary: #666666;
+      --wf-btn-secondary: #999999;
+      --wf-btn-danger: #DC2626;
+      --wf-success: #22C55E;
+      --wf-info: #3B82F6;
+      --wf-warning: #F59E0B;
+      --wf-error: #EF4444;
+      --wf-lock-red: #FEE2E2;
+      --wf-star-gold: #FEF3C7;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--wf-bg);
+      color: var(--wf-text);
+      line-height: 1.5;
+      padding: var(--space-8);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 { font-size: 24px; margin-bottom: var(--space-4); }
+    h2 { font-size: 20px; border-bottom: 2px solid var(--wf-border); padding-bottom: var(--space-2); margin-top: var(--space-8); margin-bottom: var(--space-4); }
+    h3 { font-size: 16px; color: var(--wf-text-muted); margin-bottom: var(--space-4); }
+
+    section {
+      background: var(--wf-card);
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+
+    .screen {
+      border: 2px dashed var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin: var(--space-6) 0;
+      background: var(--wf-card);
+    }
+
+    .screen-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--wf-text-muted);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--wf-placeholder);
+    }
+
+    .mermaid {
+      background: var(--wf-card);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+    }
+
+    .annotation {
+      background: #FEF9C3;
+      border: 1px solid #FDE047;
+      border-radius: var(--radius-sm);
+      padding: var(--space-2) var(--space-3);
+      font-size: 12px;
+      margin-top: var(--space-4);
+      color: #854D0E;
+    }
+
+    /* ===== Matrix Layout ===== */
+    .tier-matrix {
+      display: grid;
+      grid-template-columns: 140px repeat(5, 1fr);
+      gap: 0;
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    .tier-header {
+      font-weight: 700;
+      font-size: 18px;
+      padding: var(--space-4);
+      text-align: center;
+      background: var(--wf-placeholder);
+      border-bottom: 2px solid var(--wf-border);
+    }
+
+    .tier-header:not(:last-child) {
+      border-right: 1px solid var(--wf-border);
+    }
+
+    .row-label {
+      padding: var(--space-3) var(--space-4);
+      font-weight: 600;
+      background: #FAFAFA;
+      border-right: 1px solid var(--wf-border);
+      border-bottom: 1px solid var(--wf-border);
+      display: flex;
+      align-items: flex-start;
+      color: var(--wf-text-muted);
+      font-size: 13px;
+    }
+
+    .section-label {
+      grid-column: 1 / -1;
+      padding: var(--space-3) var(--space-4);
+      font-weight: 700;
+      font-size: 15px;
+      background: #F0F0F0;
+      border-bottom: 1px solid var(--wf-border);
+      border-top: 2px solid var(--wf-border);
+    }
+
+    .tier-cell {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--wf-border);
+      border-right: 1px solid var(--wf-border);
+    }
+
+    .tier-cell:last-child {
+      border-right: none;
+    }
+
+    /* ===== Container Box (for b/c sections) ===== */
+    .container-box {
+      border: 1px solid var(--wf-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      background: var(--wf-card);
+    }
+
+    .container-title {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--wf-text-muted);
+      margin-bottom: var(--space-2);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 3px 0;
+      font-size: 13px;
+    }
+
+    .icon-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #DCFCE7;
+      color: #166534;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .icon-x {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #FEE2E2;
+      color: #991B1B;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .icon-neutral {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #F3F4F6;
+      color: #9CA3AF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .no-downgrade {
+      color: var(--wf-text-muted);
+      font-style: italic;
+      font-size: 13px;
+      padding: var(--space-3);
+    }
+
+    /* ===== 5-Column Grid ===== */
+    .five-col {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-4);
+    }
+
+    .col-header {
+      font-weight: 700;
+      font-size: 20px;
+      text-align: center;
+      padding: var(--space-4) 0;
+      border-bottom: 2px solid var(--wf-border);
+      margin-bottom: var(--space-4);
+    }
+
+    .section-row-label {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--wf-text);
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-3);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--wf-placeholder);
+    }
+
+    /* ===== Other Components ===== */
+    .card { background: var(--wf-card); border: 1px solid var(--wf-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; }
+    .card.highlight { border: 2px solid var(--wf-btn-primary); background: #FAFAFA; }
+    .card-title { font-weight: 600; margin-bottom: var(--space-2); }
+    .card-desc { font-size: 14px; color: var(--wf-text-muted); margin-bottom: var(--space-4); }
+
+    .btn { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); font-size: 14px; cursor: pointer; border: none; font-weight: 500; }
+    .btn-primary { background: var(--wf-btn-primary); color: white; }
+    .btn-secondary { background: transparent; border: 1px solid var(--wf-btn-secondary); color: var(--wf-text); }
+    .btn-ghost { background: transparent; color: var(--wf-btn-primary); padding: var(--space-1) var(--space-2); border: 1px solid var(--wf-border); }
+    .btn-danger { background: transparent; color: var(--wf-btn-danger); border: 1px solid var(--wf-border); }
+    .btn-disabled { background: var(--wf-placeholder); color: var(--wf-text-muted); cursor: not-allowed; }
+
+    .badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px var(--space-2); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; }
+    .badge-success { background: #DCFCE7; color: #166534; }
+    .badge-info { background: #DBEAFE; color: #1E40AF; }
+    .badge-warning { background: #FEF3C7; color: #92400E; }
+    .badge-neutral { background: #F3F4F6; color: #4B5563; }
+
+    .lock-icon { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px var(--space-2); background: var(--wf-lock-red); border-radius: var(--radius-sm); font-size: 12px; color: #991B1B; }
+    .star-icon { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px var(--space-2); background: var(--wf-star-gold); border-radius: var(--radius-sm); font-size: 12px; color: #92400E; }
+
+    .sidebar-nav { background: #FAFAFA; border: 1px solid var(--wf-border); border-radius: var(--radius-md); padding: var(--space-4); width: 250px; }
+    .nav-item { padding: var(--space-2) var(--space-3); margin-bottom: var(--space-1); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between; font-size: 14px; cursor: pointer; }
+    .nav-item:hover { background: var(--wf-card); }
+
+    .modal-overlay { position: relative; background: rgba(0,0,0,0.3); padding: var(--space-8); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; min-height: 300px; }
+    .modal { background: var(--wf-card); border-radius: var(--radius-xl); padding: var(--space-6); width: 100%; max-width: 480px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); position: relative; }
+    .modal-close { position: absolute; top: var(--space-4); right: var(--space-4); width: 24px; height: 24px; background: var(--wf-placeholder); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--wf-text-muted); }
+    .modal-icon { width: 60px; height: 60px; background: var(--wf-lock-red); border-radius: 50%; margin: 0 auto var(--space-4); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .modal-title { font-size: 18px; font-weight: 600; margin-bottom: var(--space-3); text-align: center; }
+    .modal-subtitle { font-size: 14px; color: var(--wf-text-muted); text-align: center; margin-bottom: var(--space-6); }
+    .modal-actions { display: flex; flex-direction: column; gap: var(--space-3); }
+    .mini-plan-card { border: 1px solid var(--wf-border); border-radius: var(--radius-md); padding: var(--space-4); background: #FAFAFA; margin-bottom: var(--space-4); }
+    .mini-plan-name { font-weight: 600; margin-bottom: var(--space-1); }
+    .mini-plan-price { font-size: 18px; font-weight: 700; color: var(--wf-btn-primary); margin-bottom: var(--space-3); }
+
+    .flex { display: flex; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .gap-4 { gap: var(--space-4); }
+    .mt-4 { margin-top: var(--space-4); }
+    .mb-4 { margin-bottom: var(--space-4); }
+
+    .subscription-info { display: flex; flex-direction: column; gap: var(--space-2); }
+    .info-row { display: flex; justify-content: space-between; font-size: 14px; }
+    .info-label { color: var(--wf-text-muted); }
+    .info-value { font-weight: 500; }
+
+    .toggle { display: inline-flex; gap: var(--space-2); background: var(--wf-placeholder); padding: var(--space-1); border-radius: var(--radius-md); }
+    .toggle-item { padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; }
+    .toggle-item.active { background: var(--wf-card); font-weight: 500; }
+
+    .component-showcase { display: flex; flex-direction: column; gap: var(--space-6); }
+    .component-group { padding: var(--space-4); border: 1px solid var(--wf-border); border-radius: var(--radius-md); }
+    .component-group-title { font-weight: 600; margin-bottom: var(--space-4); font-size: 14px; color: var(--wf-text-muted); }
+    .component-samples { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  </style>
+</head>
+<body>
+  <h1>升降級 UI 元件系統 Wireflow</h1>
+  <p style="color: var(--wf-text-muted); margin-bottom: var(--space-6);">
+    版本：v1.0 | 日期：2026-02-09 | 靜態版
+  </p>
+
+  <!-- 1. User Flow -->
+  <section id="user-flow">
+    <h2>User Flow</h2>
+    <div class="mermaid">
+      graph LR
+        A[帳戶資訊頁 A] -->|變更方案| B[方案選擇頁 B]
+        Lock[紅鎖頭] -->|點擊| C[Paywall C]
+        C -->|升級| Checkout[結帳]
+        C -->|查看所有方案| B
+        B -->|升級| Checkout
+        B -->|降級| D[降級勸退 D]
+        D -->|維持目前方案| B
+        D -->|仍要降級| Confirm[確認降級]
+    </div>
+  </section>
+
+  <!-- 2. Wireframes -->
+  <section id="wireframes">
+    <h2>Wireframes</h2>
+
+    <!-- 畫面 1: 付費狀態指示元件 -->
+    <article class="screen" id="screen-1">
+      <div class="screen-title">畫面 1: 付費狀態指示元件</div>
+      <h3>功能選單中的鎖定/解鎖狀態</h3>
+      <div class="sidebar-nav">
+        <div class="nav-item"><span>基本分析</span></div>
+        <div class="nav-item"><span>AI 逐字稿</span><span class="lock-icon">🔒</span></div>
+        <div class="nav-item"><span>進階數據分析</span><span class="lock-icon">🔒 Pro</span></div>
+        <div class="nav-item"><span>自訂品牌頁</span><span class="star-icon">⭐</span></div>
+        <div class="nav-item"><span>RSS 託管</span><span class="star-icon">⭐ Pro</span></div>
+        <div class="nav-item"><span>設定</span></div>
+      </div>
+      <div class="annotation">紅鎖頭 (🔒) 表示未解鎖功能，黃星星 (⭐) 表示已解鎖的進階功能。</div>
+    </article>
+
+    <!-- 畫面 2: 變體 A - 帳戶資訊頁 -->
+    <article class="screen" id="screen-2">
+      <div class="screen-title">畫面 2: 變體 A — 帳戶資訊頁 (/account)</div>
+      <h3>訂閱資訊區塊（原子設計 = 畫面 3 方案特色 Container）</h3>
+
+      <div style="max-width: 320px;">
+        <div class="plan-card-a">
+          <!-- Header -->
+          <div class="flex-between mb-4">
+            <div>
+              <div style="font-size: 18px; font-weight: 700;">Firstory Enterprise</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-2);">
+              <span class="badge badge-success">進行中</span>
+              <button class="btn btn-primary" style="font-size: 12px; padding: 4px 12px;">管理方案</button>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div style="font-size: 14px; color: var(--wf-text-muted); margin-bottom: var(--space-3);">
+            無限生產力，企業級資產管理
+          </div>
+
+          <!-- Payment info -->
+          <div style="font-size: 14px; margin-bottom: var(--space-4);">
+            下個付款週期：2025-12-25
+          </div>
+
+          <!-- 方案特色 Container（與畫面 3 共用原子元件） -->
+          <div class="container-box" style="border: 2px solid #EF4444;">
+            <div class="container-title">方案特色</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：25 集／月</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 提高廣告分潤 100%</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 調降經營會員抽成 5%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        變體 A 帳戶頁：方案特色區塊直接複用畫面 3 的 Container 原子元件。紅框 = 當前方案 highlight。
+      </div>
+    </article>
+
+    <!-- 畫面 3: 方案內容矩陣 (a. 方案內容) -->
+    <article class="screen" id="screen-3">
+      <div class="screen-title">畫面 3: a. 方案內容 — 各 Tier 功能對照</div>
+
+      <div class="five-col">
+        <!-- Headers -->
+        <div class="col-header">Legacy</div>
+        <div class="col-header">Free</div>
+        <div class="col-header">Lite</div>
+        <div class="col-header">Pro</div>
+        <div class="col-header">Enterprise</div>
+
+        <!-- Legacy -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">方案特色</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 創立節目上限：1 檔</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：1 集／月</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 提高廣告分潤</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 調降經營會員抽成</div>
+          </div>
+        </div>
+
+        <!-- Free -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">方案特色</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 創立節目上限：1 億</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：1 集／月</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 提高廣告分潤</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 調降經營會員抽成</div>
+          </div>
+        </div>
+
+        <!-- Lite -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">方案特色</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 創立節目上限：1 億</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：3 集／月</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-neutral">&#8211;</span> 提高廣告分潤</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 調降經營會員抽成 3%</div>
+          </div>
+        </div>
+
+        <!-- Pro -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">方案特色</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 創立節目上限：1 億</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：6 集／月</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 提高廣告分潤</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 調降經營會員抽成 3%</div>
+          </div>
+        </div>
+
+        <!-- Enterprise -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">方案特色</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 創立節目上限：無限</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：25 集／月</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 提高廣告分潤 100%</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 調降經營會員抽成 5%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">a. 方案內容：綠色圓圈為該方案包含的功能，灰色圓圈為未包含。</div>
+    </article>
+
+    <!-- 畫面 4: b. 升級到該方案 -->
+    <article class="screen" id="screen-4">
+      <div class="screen-title">畫面 4: b. 升級到該方案 — 升級後獲得的新功能</div>
+
+      <div class="five-col">
+        <div class="col-header">Legacy</div>
+        <div class="col-header">Free</div>
+        <div class="col-header">Lite</div>
+        <div class="col-header">Pro</div>
+        <div class="col-header">Enterprise</div>
+
+        <!-- Legacy: no upgrade to Legacy -->
+        <div></div>
+
+        <!-- Free: no upgrade content (base tier) -->
+        <div></div>
+
+        <!-- Lite: gains from Free -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：6 集／月</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 調降經營會員抽成 3%</div>
+          </div>
+        </div>
+
+        <!-- Pro: gains from Lite -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：6 集／月</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 調降經營會員抽成 3%</div>
+          </div>
+        </div>
+
+        <!-- Enterprise: gains from Pro -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 進階數據分析</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 下載數據報表</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 單集 Flink 萬用連結</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> AI 內容萃取：25 集／月</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 移除動態廣告</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 提高廣告分潤 100%</div>
+            <div class="feature-item"><span class="icon-check">&#10003;</span> 調降經營會員抽成 5%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">b. 升級到該方案：顯示升級後新增的功能（與前一個 tier 相比）。</div>
+    </article>
+
+    <!-- 畫面 5: c1. 降級到該方案（從 Enterprise 降） -->
+    <article class="screen" id="screen-5">
+      <div class="screen-title">畫面 5: c1. 降級到該方案 — 從 Enterprise 降</div>
+
+      <div class="five-col">
+        <div class="col-header">Legacy</div>
+        <div class="col-header">Free</div>
+        <div class="col-header">Lite</div>
+        <div class="col-header">Pro</div>
+        <div class="col-header">Enterprise</div>
+
+        <!-- Legacy -->
+        <div><div class="no-downgrade">降不回 Legacy</div></div>
+
+        <!-- Free: lose from Enterprise -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 總計 {156} 條單集 Flink 萬用連結失效</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每月失去 24 集 AI 內容萃取</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 自動幫所有 {82} 集單集插入廣告</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每單廣告分潤減少 100%</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每筆經營會員抽成漲價 5%</div>
+          </div>
+        </div>
+
+        <!-- Lite: lose from Enterprise -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 總計 {156} 條單集 Flink 萬用連結失效</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每月失去 22 集 AI 內容萃取</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每單廣告分潤減少 100%</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每筆經營會員抽成漲價 5%</div>
+          </div>
+        </div>
+
+        <!-- Pro: lose from Enterprise -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每月失去 19 集 AI 內容萃取</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每單廣告分潤減少 100%</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每筆經營會員抽成漲價 2%</div>
+          </div>
+        </div>
+
+        <!-- Enterprise: current -->
+        <div></div>
+      </div>
+
+      <div class="annotation">c1. 從 Enterprise 降級：紅色圓圈標示降級後將失去的功能與影響數量。{} 為動態數值。</div>
+    </article>
+
+    <!-- 畫面 6: c2. 降級到該方案（從 Pro 降） -->
+    <article class="screen" id="screen-6">
+      <div class="screen-title">畫面 6: c2. 降級到該方案 — 從 Pro 降</div>
+
+      <div class="five-col">
+        <div class="col-header">Legacy</div>
+        <div class="col-header">Free</div>
+        <div class="col-header">Lite</div>
+        <div class="col-header">Pro</div>
+        <div class="col-header">Enterprise</div>
+
+        <!-- Legacy -->
+        <div><div class="no-downgrade">降不回 Legacy</div></div>
+
+        <!-- Free: lose from Pro -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 總計 {156} 條單集 Flink 萬用連結失效</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每月失去 5 集 AI 內容萃取</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 自動幫所有 {82} 集單集插入廣告</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每筆經營會員抽成漲價 3%</div>
+          </div>
+        </div>
+
+        <!-- Lite: lose from Pro -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 總計 {156} 條單集 Flink 萬用連結失效</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每月失去 3 集 AI 內容萃取</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每筆經營會員抽成漲價 3%</div>
+          </div>
+        </div>
+
+        <!-- Pro: current -->
+        <div></div>
+
+        <!-- Enterprise -->
+        <div></div>
+      </div>
+
+      <div class="annotation">c2. 從 Pro 降級：顯示降至各低階方案時的功能損失。</div>
+    </article>
+
+    <!-- 畫面 7: c3. 降級到該方案（從 Lite 降） -->
+    <article class="screen" id="screen-7">
+      <div class="screen-title">畫面 7: c3. 降級到該方案 — 從 Lite 降</div>
+
+      <div class="five-col">
+        <div class="col-header">Legacy</div>
+        <div class="col-header">Free</div>
+        <div class="col-header">Lite</div>
+        <div class="col-header">Pro</div>
+        <div class="col-header">Enterprise</div>
+
+        <!-- Legacy -->
+        <div><div class="no-downgrade">降不回 Legacy</div></div>
+
+        <!-- Free: lose from Lite -->
+        <div>
+          <div class="container-box">
+            <div class="container-title">Container</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 每月失去 2 集 AI 內容萃取</div>
+            <div class="feature-item"><span class="icon-x">&#10005;</span> 自動幫所有 {82} 集單集插入廣告</div>
+          </div>
+        </div>
+
+        <!-- Lite: current -->
+        <div></div>
+
+        <!-- Pro -->
+        <div></div>
+
+        <!-- Enterprise -->
+        <div></div>
+      </div>
+
+      <div class="annotation">c3. 從 Lite 降級：僅降至 Free 有影響，Legacy 不可回退。</div>
+    </article>
+
+    <!-- 畫面 8: 變體 C - Paywall Modal -->
+    <article class="screen" id="screen-8">
+      <div class="screen-title">畫面 8: 變體 C — Paywall Modal</div>
+      <div class="modal-overlay">
+        <div class="modal">
+          <div class="modal-close">&#10005;</div>
+          <div class="modal-icon">🔒</div>
+          <div class="modal-title">AI 逐字稿</div>
+          <div class="modal-subtitle">此功能需要 Pro 方案</div>
+          <div class="mini-plan-card">
+            <div class="mini-plan-name">Pro 方案</div>
+            <div class="mini-plan-price">NT$299<span style="font-size: 14px; font-weight: 400; color: var(--wf-text-muted);">/月</span></div>
+            <ul style="font-size: 13px; color: var(--wf-text-muted); padding-left: 20px; margin: 0;">
+              <li>AI 內容萃取：6 集／月</li>
+              <li>進階數據分析</li>
+              <li>移除動態廣告</li>
+            </ul>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-primary" style="width: 100%;">升級至 Pro</button>
+            <button class="btn btn-ghost" style="width: 100%; justify-content: center;">查看所有方案</button>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">Paywall Modal 在用戶點擊鎖定功能時顯示。</div>
+    </article>
+
+    <!-- 畫面 9: 共用原子元件總覽 -->
+    <article class="screen" id="screen-9">
+      <div class="screen-title">畫面 9: 共用原子元件總覽</div>
+      <div class="component-showcase">
+        <div class="component-group">
+          <div class="component-group-title">Button Variants</div>
+          <div class="component-samples">
+            <button class="btn btn-primary">升級</button>
+            <button class="btn btn-secondary">變更方案</button>
+            <button class="btn btn-ghost">降級</button>
+            <button class="btn btn-danger">仍要降級</button>
+            <button class="btn btn-disabled">目前方案</button>
+            <button class="btn btn-secondary">聯絡我們</button>
+          </div>
+        </div>
+        <div class="component-group">
+          <div class="component-group-title">Badge Variants</div>
+          <div class="component-samples">
+            <span class="badge badge-success">活躍</span>
+            <span class="badge badge-info">試用中</span>
+            <span class="badge badge-warning">最受歡迎</span>
+            <span class="badge badge-neutral">目前方案</span>
+          </div>
+        </div>
+        <div class="component-group">
+          <div class="component-group-title">Status Icons</div>
+          <div class="component-samples">
+            <span class="icon-check" style="width: 24px; height: 24px; font-size: 14px;">&#10003;</span> <span style="font-size: 13px;">功能包含</span>
+            &nbsp;&nbsp;
+            <span class="icon-x" style="width: 24px; height: 24px; font-size: 14px;">&#10005;</span> <span style="font-size: 13px;">功能失去</span>
+            &nbsp;&nbsp;
+            <span class="icon-neutral" style="width: 24px; height: 24px; font-size: 14px;">&#8211;</span> <span style="font-size: 13px;">功能未包含</span>
+            &nbsp;&nbsp;
+            <span class="lock-icon">🔒 Pro</span>
+            &nbsp;
+            <span class="star-icon">⭐ Pro</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

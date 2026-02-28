@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>廣告授權全域設定 - Wireflow</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding: 40px; color: #333; }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    .subtitle { color: #666; margin-bottom: 40px; }
+
+    /* Flow Layout */
+    .flow-container { display: flex; flex-direction: column; gap: 60px; }
+    .flow-section { background: white; border-radius: 8px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .flow-section h2 { font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
+
+    /* Wireframe Screens */
+    .screen { border: 2px solid #333; border-radius: 4px; background: #fafafa; position: relative; }
+    .screen-label { position: absolute; top: -28px; left: 0; font-size: 12px; font-weight: 600; color: #666; }
+    .screen-header { background: #e0e0e0; padding: 12px 16px; border-bottom: 1px solid #ccc; }
+    .screen-title { font-weight: 600; font-size: 14px; }
+    .screen-body { padding: 16px; }
+
+    /* Wireframe Elements */
+    .wf-box { background: #e0e0e0; border-radius: 2px; }
+    .wf-text { background: #ccc; height: 8px; border-radius: 2px; }
+    .wf-text.short { width: 60px; }
+    .wf-text.medium { width: 120px; }
+    .wf-text.long { width: 200px; }
+
+    /* Radio Options */
+    .wf-radio { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px; }
+    .wf-radio.selected { border-color: #333; background: #f0f0f0; }
+    .wf-radio.destructive { border-color: #c00; }
+    .wf-radio-circle { width: 16px; height: 16px; border: 2px solid #999; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+    .wf-radio.selected .wf-radio-circle { border-color: #333; background: #333; }
+    .wf-radio-content { flex: 1; }
+    .wf-radio-label { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+    .wf-radio.destructive .wf-radio-label { color: #c00; }
+    .wf-radio-desc { font-size: 11px; color: #888; }
+
+    /* Table */
+    .wf-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .wf-table th { background: #e8e8e8; padding: 8px; text-align: left; font-weight: 500; border-bottom: 1px solid #ccc; }
+    .wf-table td { padding: 8px; border-bottom: 1px solid #eee; }
+
+    /* Badge */
+    .wf-badge { display: inline-block; padding: 2px 8px; border-radius: 2px; font-size: 10px; font-weight: 500; }
+    .wf-badge.success { background: #d4edda; color: #155724; }
+    .wf-badge.info { background: #cce5ff; color: #004085; }
+    .wf-badge.warning { background: #fff3cd; color: #856404; }
+    .wf-badge.neutral { background: #e9e9e9; color: #666; }
+
+    /* Tabs */
+    .wf-tabs { display: flex; gap: 24px; border-bottom: 1px solid #ddd; margin-bottom: 16px; }
+    .wf-tab { padding-bottom: 8px; font-size: 12px; color: #888; }
+    .wf-tab.active { color: #333; font-weight: 500; border-bottom: 2px solid #333; margin-bottom: -1px; }
+
+    /* Modal */
+    .wf-modal { border: 2px solid #333; border-radius: 8px; background: white; width: 320px; }
+    .wf-modal-header { padding: 16px; border-bottom: 1px solid #eee; }
+    .wf-modal-title { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+    .wf-modal-desc { font-size: 11px; color: #666; line-height: 1.5; }
+    .wf-modal-footer { padding: 12px 16px; display: flex; justify-content: flex-end; gap: 8px; background: #f9f9f9; border-radius: 0 0 6px 6px; }
+    .wf-btn { padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 500; border: 1px solid #ccc; background: white; }
+    .wf-btn.primary { background: #333; color: white; border-color: #333; }
+    .wf-btn.danger { background: #c00; color: white; border-color: #c00; }
+
+    /* Flow Arrows */
+    .flow-row { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
+    .flow-arrow { display: flex; align-items: center; color: #999; font-size: 12px; gap: 8px; padding: 20px 0; }
+    .flow-arrow::before { content: '→'; font-size: 20px; }
+    .flow-arrow.down { flex-direction: column; padding: 12px 20px; }
+    .flow-arrow.down::before { content: '↓'; }
+
+    /* Annotations */
+    .annotation { background: #fffde7; border: 1px solid #ffd54f; border-radius: 4px; padding: 8px 12px; font-size: 11px; color: #666; margin-top: 12px; }
+    .annotation strong { color: #333; }
+
+    /* State indicator */
+    .state-tag { display: inline-block; background: #e3f2fd; color: #1565c0; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 2px; margin-bottom: 8px; }
+
+    /* Divider */
+    .divider { border-top: 1px dashed #ccc; margin: 16px 0; }
+
+    /* Popover */
+    .wf-popover { border: 1px solid #333; border-radius: 4px; background: white; width: 140px; font-size: 11px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .wf-popover-item { padding: 8px 12px; border-bottom: 1px solid #eee; }
+    .wf-popover-item:last-child { border-bottom: none; }
+    .wf-popover-item:hover { background: #f5f5f5; }
+
+    /* Alert */
+    .wf-alert { border-left: 3px solid; padding: 12px; margin-bottom: 16px; font-size: 11px; }
+    .wf-alert.warning { border-color: #f59e0b; background: #fffbeb; }
+    .wf-alert.error { border-color: #ef4444; background: #fef2f2; }
+
+    /* Toast */
+    .wf-toast { border: 1px solid #ddd; border-radius: 4px; padding: 12px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 11px; display: flex; align-items: center; gap: 8px; }
+    .wf-toast-icon { width: 20px; height: 20px; background: #d4edda; border-radius: 50%; }
+  </style>
+</head>
+<body>
+
+<h1>廣告授權全域設定 - Wireflow</h1>
+<p class="subtitle">PRD: ad-authorization-global-settings-v1.0-20260204</p>
+
+<div class="flow-container">
+
+  <!-- ========== FLOW 1: 主頁面結構 ========== -->
+  <section class="flow-section">
+    <h2>1. 主頁面結構</h2>
+
+    <div class="screen" style="width: 600px;">
+      <span class="screen-label">盈利功能 > 開啟廣告</span>
+      <div class="screen-header">
+        <div class="screen-title">盈利功能</div>
+      </div>
+      <div class="screen-body">
+
+        <!-- Main Tabs -->
+        <div class="wf-tabs">
+          <div class="wf-tab active">開啟廣告</div>
+          <div class="wf-tab">經營會員</div>
+          <div class="wf-tab">會員經營指南 ↗</div>
+        </div>
+
+        <!-- Ad Type Tabs -->
+        <div class="wf-tabs" style="margin-bottom: 24px;">
+          <div class="wf-tab active">片頭廣告 (Pre-roll)</div>
+          <div class="wf-tab">中段廣告 (Mid-roll)</div>
+        </div>
+
+        <!-- Global Settings Card -->
+        <div style="border: 1px solid #ddd; border-radius: 4px; padding: 16px; margin-bottom: 24px;">
+          <div style="font-weight: 600; font-size: 13px; margin-bottom: 4px;">廣告投放設定</div>
+          <div style="font-size: 11px; color: #888; margin-bottom: 16px;">設定廣告插入策略</div>
+
+          <div class="wf-radio selected">
+            <div class="wf-radio-circle"></div>
+            <div class="wf-radio-content">
+              <div class="wf-radio-label">全面開啟</div>
+              <div class="wf-radio-desc">每集皆插入片頭廣告，獲取最大收益</div>
+            </div>
+          </div>
+
+          <div class="wf-radio">
+            <div class="wf-radio-circle"></div>
+            <div class="wf-radio-content">
+              <div class="wf-radio-label">僅開啟長尾流量</div>
+              <div class="wf-radio-desc">僅 30 天以上舊集開放廣告</div>
+            </div>
+          </div>
+
+          <div class="wf-radio">
+            <div class="wf-radio-circle"></div>
+            <div class="wf-radio-content">
+              <div class="wf-radio-label">自訂設定</div>
+              <div class="wf-radio-desc">前至下方列表個別調整</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="wf-radio destructive">
+            <div class="wf-radio-circle"></div>
+            <div class="wf-radio-content">
+              <div class="wf-radio-label">全面關閉並下架所有廣告</div>
+              <div class="wf-radio-desc">完全關閉片頭廣告</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Episode List Card -->
+        <div style="border: 1px solid #ddd; border-radius: 4px;">
+          <div style="padding: 12px 16px; border-bottom: 1px solid #ddd; font-weight: 600; font-size: 13px;">單集授權概況</div>
+          <table class="wf-table">
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>標題</th>
+                <th>時長</th>
+                <th>廣告授權</th>
+                <th></th>
+                <th>廣告狀態</th>
+                <th>編輯</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2026-01-25</td>
+                <td>EP99: 最新一集</td>
+                <td>28:10</td>
+                <td><span class="wf-badge success">已授權 ✋</span></td>
+                <td><span style="color: #666; font-size: 10px; text-decoration: underline; cursor: pointer;">恢復連動</span></td>
+                <td><span class="wf-badge success">投放中</span></td>
+                <td>✏️</td>
+              </tr>
+              <tr>
+                <td>2026-01-20</td>
+                <td>EP98: 上週回顧</td>
+                <td>35:22</td>
+                <td><span class="wf-badge neutral">未授權</span></td>
+                <td></td>
+                <td><span class="wf-badge neutral">已停止</span></td>
+                <td>✏️</td>
+              </tr>
+              <tr>
+                <td>2025-12-15</td>
+                <td>EP90: 經典回顧</td>
+                <td>61:05</td>
+                <td><span class="wf-badge success">已授權</span></td>
+                <td></td>
+                <td><span class="wf-badge success">投放中</span></td>
+                <td>✏️</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="padding: 12px; text-align: center; font-size: 11px; color: #888;">
+            ‹ 1 - 20 of 54 ›
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>欄位說明：</strong><br>
+      • 廣告授權：可點擊切換（彈出 Popover）<br>
+      • ✋ 圖示：表示手動覆蓋（非遵循全域策略）<br>
+      • 恢復連動：僅在手動覆蓋時顯示<br>
+      • 廣告狀態：唯讀，顯示系統投放現況
+    </div>
+  </section>
+
+  <!-- ========== FLOW 2: 切換策略流程 ========== -->
+  <section class="flow-section">
+    <h2>2. User Flow: 切換全域策略</h2>
+
+    <div class="flow-row">
+
+      <!-- Step 1 -->
+      <div>
+        <div class="state-tag">STEP 1</div>
+        <div class="screen" style="width: 280px;">
+          <span class="screen-label">選擇新策略</span>
+          <div class="screen-body">
+            <div class="wf-radio">
+              <div class="wf-radio-circle"></div>
+              <div class="wf-radio-content">
+                <div class="wf-radio-label">全面開啟</div>
+              </div>
+            </div>
+            <div class="wf-radio selected">
+              <div class="wf-radio-circle"></div>
+              <div class="wf-radio-content">
+                <div class="wf-radio-label">僅開啟長尾流量</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">用戶點擊切換策略</div>
+      </div>
+
+      <div class="flow-arrow">觸發確認</div>
+
+      <!-- Step 2 -->
+      <div>
+        <div class="state-tag">STEP 2</div>
+        <div class="wf-modal">
+          <div class="wf-modal-header">
+            <div class="wf-modal-title">切換廣告策略</div>
+            <div class="wf-modal-desc">此操作將停止 <strong>3 集</strong>新集數的廣告投放，30 天後將自動開啟。</div>
+          </div>
+          <div class="wf-modal-footer">
+            <button class="wf-btn">取消</button>
+            <button class="wf-btn primary">確認切換</button>
+          </div>
+        </div>
+        <div class="annotation">二次確認 Modal<br>顯示影響範圍</div>
+      </div>
+
+      <div class="flow-arrow">確認</div>
+
+      <!-- Step 3 -->
+      <div>
+        <div class="state-tag">STEP 3</div>
+        <div class="wf-toast">
+          <div class="wf-toast-icon"></div>
+          已切換至長尾流量策略
+        </div>
+        <div class="annotation" style="margin-top: 24px;">Toast 通知成功<br>列表自動更新</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== FLOW 3: 全面關閉流程 ========== -->
+  <section class="flow-section">
+    <h2>3. User Flow: 全面關閉廣告（Destructive）</h2>
+
+    <div class="flow-row">
+
+      <!-- Step 1 -->
+      <div>
+        <div class="state-tag">STEP 1</div>
+        <div class="screen" style="width: 280px;">
+          <span class="screen-label">選擇全面關閉</span>
+          <div class="screen-body">
+            <div class="divider"></div>
+            <div class="wf-radio destructive selected">
+              <div class="wf-radio-circle"></div>
+              <div class="wf-radio-content">
+                <div class="wf-radio-label">全面關閉並下架所有廣告</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">觸發警告</div>
+
+      <!-- Step 2 -->
+      <div>
+        <div class="state-tag">STEP 2</div>
+        <div class="wf-modal">
+          <div class="wf-modal-header">
+            <div style="width: 32px; height: 32px; background: #fef2f2; border-radius: 50%; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; color: #c00;">⚠</div>
+            <div class="wf-modal-title">確定要關閉所有廣告？</div>
+            <div class="wf-modal-desc">此操作將移除所有集數的廣告授權，廣告將立即停止投放。您可以隨時重新開啟。</div>
+          </div>
+          <div class="wf-modal-footer">
+            <button class="wf-btn">取消</button>
+            <button class="wf-btn danger">確認關閉</button>
+          </div>
+        </div>
+        <div class="annotation">Destructive Modal<br>紅色警告 + 確認按鈕</div>
+      </div>
+
+      <div class="flow-arrow">確認</div>
+
+      <!-- Step 3 -->
+      <div>
+        <div class="state-tag">STEP 3</div>
+        <div class="screen" style="width: 320px;">
+          <span class="screen-label">唯讀模式</span>
+          <div class="screen-body">
+            <div class="wf-alert warning">
+              ⚠ 所有廣告已關閉。如需重新開啟，請選擇其他策略。
+            </div>
+            <table class="wf-table">
+              <thead><tr><th>標題</th><th>授權</th><th>狀態</th></tr></thead>
+              <tbody>
+                <tr><td style="color: #999;">EP99</td><td><span class="wf-badge neutral">未授權</span></td><td><span class="wf-badge neutral">已停止</span></td></tr>
+                <tr><td style="color: #999;">EP98</td><td><span class="wf-badge neutral">未授權</span></td><td><span class="wf-badge neutral">已停止</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="annotation">Alert 警告提示<br>列表進入唯讀（不可編輯）</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== FLOW 4: 手動覆蓋流程 ========== -->
+  <section class="flow-section">
+    <h2>4. User Flow: 手動覆蓋單集授權</h2>
+
+    <div class="flow-row">
+
+      <!-- Step 1 -->
+      <div>
+        <div class="state-tag">STEP 1</div>
+        <div style="display: flex; align-items: flex-start; gap: 8px;">
+          <table class="wf-table" style="width: 200px;">
+            <tbody>
+              <tr>
+                <td>EP99</td>
+                <td><span class="wf-badge neutral" style="cursor: pointer; text-decoration: underline;">未授權 ▾</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="annotation">點擊授權 Badge</div>
+      </div>
+
+      <div class="flow-arrow">彈出選單</div>
+
+      <!-- Step 2 -->
+      <div>
+        <div class="state-tag">STEP 2</div>
+        <div class="wf-popover">
+          <div class="wf-popover-item" style="color: #888; font-size: 10px;">此集將不再遵循全域策略</div>
+          <div class="wf-popover-item" style="cursor: pointer;">● 已授權</div>
+          <div class="wf-popover-item" style="cursor: pointer;">○ 未授權</div>
+        </div>
+        <div class="annotation">Popover 選單<br>附帶提示文字</div>
+      </div>
+
+      <div class="flow-arrow">選擇已授權</div>
+
+      <!-- Step 3 -->
+      <div>
+        <div class="state-tag">STEP 3</div>
+        <table class="wf-table" style="width: 340px;">
+          <tbody>
+            <tr>
+              <td>EP99</td>
+              <td><span class="wf-badge success">已授權 ✋</span></td>
+              <td><span style="color: #666; font-size: 10px; text-decoration: underline;">恢復連動</span></td>
+              <td><span class="wf-badge info">更新中</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation">顯示手動標記 (✋)<br>出現「恢復連動」按鈕<br>狀態變更為「更新中」</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== FLOW 5: 恢復連動流程 ========== -->
+  <section class="flow-section">
+    <h2>5. User Flow: 恢復連動</h2>
+
+    <div class="flow-row">
+
+      <!-- Step 1 -->
+      <div>
+        <div class="state-tag">BEFORE</div>
+        <table class="wf-table" style="width: 340px;">
+          <tbody>
+            <tr>
+              <td>EP99 (< 30天)</td>
+              <td><span class="wf-badge success">已授權 ✋</span></td>
+              <td><span style="color: #666; font-size: 10px; text-decoration: underline; cursor: pointer;">恢復連動</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation">全域策略：僅長尾<br>EP99 被手動開啟</div>
+      </div>
+
+      <div class="flow-arrow">點擊恢復連動</div>
+
+      <!-- Step 2 -->
+      <div>
+        <div class="state-tag">AFTER</div>
+        <table class="wf-table" style="width: 280px;">
+          <tbody>
+            <tr>
+              <td>EP99 (< 30天)</td>
+              <td><span class="wf-badge neutral">未授權</span></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation">恢復遵循全域策略<br>因 < 30 天 → 未授權<br>按鈕消失</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== FLOW 6: 狀態機 ========== -->
+  <section class="flow-section">
+    <h2>6. 狀態對照表</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+
+      <!-- 廣告授權狀態 -->
+      <div>
+        <h3 style="font-size: 13px; margin-bottom: 16px;">廣告授權 (4 種)</h3>
+        <table class="wf-table">
+          <thead>
+            <tr><th>狀態</th><th>Badge</th><th>說明</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>已授權</td>
+              <td><span class="wf-badge success">已授權</span></td>
+              <td>符合全域策略</td>
+            </tr>
+            <tr>
+              <td>已授權 (手動)</td>
+              <td><span class="wf-badge success">已授權 ✋</span></td>
+              <td>用戶手動開啟</td>
+            </tr>
+            <tr>
+              <td>未授權</td>
+              <td><span class="wf-badge neutral">未授權</span></td>
+              <td>符合全域策略</td>
+            </tr>
+            <tr>
+              <td>未授權 (手動)</td>
+              <td><span class="wf-badge neutral">未授權 ✋</span></td>
+              <td>用戶手動關閉</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 廣告狀態 -->
+      <div>
+        <h3 style="font-size: 13px; margin-bottom: 16px;">廣告狀態 (4 種)</h3>
+        <table class="wf-table">
+          <thead>
+            <tr><th>狀態</th><th>Badge</th><th>說明</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>投放中</td>
+              <td><span class="wf-badge success">投放中</span></td>
+              <td>成功配對並播放</td>
+            </tr>
+            <tr>
+              <td>更新中</td>
+              <td><span class="wf-badge info">更新中</span></td>
+              <td>狀態切換同步中</td>
+            </tr>
+            <tr>
+              <td>待配對</td>
+              <td><span class="wf-badge warning">待配對</span></td>
+              <td>已開放但無廣告</td>
+            </tr>
+            <tr>
+              <td>已停止</td>
+              <td><span class="wf-badge neutral">已停止</span></td>
+              <td>未授權時的狀態</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== FLOW 7: 錯誤處理 ========== -->
+  <section class="flow-section">
+    <h2>7. Edge Cases: 錯誤處理</h2>
+
+    <div class="flow-row">
+
+      <div>
+        <div class="state-tag">API 失敗</div>
+        <div class="screen" style="width: 400px;">
+          <div class="screen-body">
+            <div class="wf-alert error">
+              ✕ 設定儲存失敗，請稍後再試。如問題持續，請聯繫客服。
+            </div>
+            <div class="wf-radio selected">
+              <div class="wf-radio-circle"></div>
+              <div class="wf-radio-content">
+                <div class="wf-radio-label">全面開啟</div>
+                <div class="wf-radio-desc">（恢復原選項）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">頁面頂部顯示 Error Alert<br>UI 回滾至原設定</div>
+      </div>
+
+      <div style="margin-left: 48px;">
+        <div class="state-tag">空狀態</div>
+        <div class="screen" style="width: 300px;">
+          <div class="screen-body" style="text-align: center; padding: 40px;">
+            <div style="width: 48px; height: 48px; background: #e0e0e0; border-radius: 8px; margin: 0 auto 16px;"></div>
+            <div style="font-weight: 500; margin-bottom: 8px;">還沒有任何單集</div>
+            <div style="font-size: 11px; color: #888; margin-bottom: 16px;">上傳你的第一集，開始你的 Podcast 旅程</div>
+            <button class="wf-btn primary">+ 上傳單集</button>
+          </div>
+        </div>
+        <div class="annotation">無集數時顯示<br>Empty State + CTA</div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
