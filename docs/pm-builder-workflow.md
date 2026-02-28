@@ -129,7 +129,7 @@ PR body 指向 handoff.md：
 ```markdown
 ## Summary
 PM prototype for <feature>. Mock data, no real API.
-👉 完整交付文件：`docs/plans/YYYY-MM-DD-<feature>/handoff.md`
+👉 完整交付文件：[handoff.md](../blob/<branch>/docs/plans/YYYY-MM-DD-<feature>/handoff.md)
 
 ## This PR is a prototype — 工程師請參考但另行實作
 ```
