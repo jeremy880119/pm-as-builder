@@ -7,26 +7,20 @@
 ## 流程總覽
 
 ```
-Branch → 資料夾 → Brainstorm → Plan → Build → Iterate → Verify → QA → Handoff → PR
+Worktree(dev) → Brainstorm → Plan → Build → Iterate → Verify → Handoff → PR
 ```
 
 ---
 
-## Step 1: Branch
+## Step 1: Worktree
 
-```bash
-git checkout dev && git checkout -b feature/pm-prototype-<feature>
+```
+/superpowers:using-git-worktrees
 ```
 
-命名用 `pm-prototype-` 前綴，讓工程師一看就知道這是 prototype。
+從 `dev` 開 worktree，命名 `pm-prototype-<feature>`。功能資料夾 `docs/plans/YYYY-MM-DD-<feature>/` 在 Brainstorm 階段自然建立。
 
-## Step 2: 開功能資料夾
-
-```bash
-mkdir docs/plans/YYYY-MM-DD-<feature>/
-```
-
-## Step 3: Brainstorm
+## Step 2: Brainstorm
 
 ```
 /superpowers:brainstorming
@@ -34,24 +28,36 @@ mkdir docs/plans/YYYY-MM-DD-<feature>/
 
 產出 `design.md`，放進功能資料夾。釐清需求、探索方案、確定設計方向。
 
-## Step 4: Plan
+## Step 3: Plan
 
 ```
 /superpowers:writing-plans
 ```
 
-產出 `plan.md`，放進功能資料夾。拆解實作步驟、定義驗收標準。
+產出 `plan.md`，放進功能資料夾。拆解實作步驟，並新增「驗收標準」區塊：
 
-## Step 5: Build Prototype
+```markdown
+## 驗收標準
+- [ ] 畫面：列出要看到哪些頁面 / 元件
+- [ ] 操作：列出要能執行哪些互動
+- [ ] Edge cases：空狀態、超長文字、錯誤狀態等
+```
+
+Build 和 Verify 階段對照此清單執行。
+
+## Step 4: Build Prototype
 
 ```
-/superpowers:executing-plans
 /ui-ux-pro-max
 ```
 
+搭配以下 skill 之一：
+- **3+ 獨立頁面/組件** → `/superpowers:subagent-driven-development`
+- **否則** → `/superpowers:executing-plans`
+
 用 mock data 建構完整 UI/UX prototype。目標是「看得到、點得到」的產品樣貌。
 
-## Step 6: Iterate
+## Step 5: Iterate
 
 ```
 （直接對話修改，例如：「把這個按鈕改成藍色」「新增一個空狀態畫面」）
@@ -59,27 +65,18 @@ mkdir docs/plans/YYYY-MM-DD-<feature>/
 
 多次迭代直到滿意。不需要特殊指令，直接跟 Claude 說要改什麼。
 
-## Step 7: Verify
+## Step 6: Verify
 
 ```
 /superpowers:verification-before-completion
 ```
 
-逐項確認 plan.md 中所有項目都已實作，包含 edge cases：
-- 空狀態
-- 超長文字
-- 大量資料
-- 錯誤狀態 UI
+逐項確認 plan.md 驗收標準都已實作，加上手動操作確認：
+- 自己跑一輪所有 user flow
+- Happy path + edge cases 都正常
+- 可請 Claude 截圖關鍵畫面輔助
 
-## Step 8: QA
-
-```
-「幫我跑一輪所有 user flow，截圖關鍵畫面」
-```
-
-自己也手動操作一輪，確認 happy path + edge case 都正常。
-
-## Step 9: Handoff
+## Step 7: Handoff
 
 ```
 「根據 handoff 模板寫 handoff.md，放進功能資料夾」
@@ -126,7 +123,7 @@ mkdir docs/plans/YYYY-MM-DD-<feature>/
 ## Notes / 開放問題
 ```
 
-## Step 10: PR
+## Step 8: PR
 
 ```
 /commit-commands:commit-push-pr
