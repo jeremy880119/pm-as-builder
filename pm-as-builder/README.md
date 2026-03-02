@@ -117,17 +117,9 @@ graph LR
 
 ## 頁面 A — 列表頁
 
-<table><tr>
-<td width="45%">
-
-**預設狀態**
-![列表頁-預設](screenshots/list-default.png)
-
-**空狀態**
-![列表頁-空](screenshots/list-empty.png)
-
-</td>
-<td width="55%">
+| 預設狀態 | 空狀態 |
+|:---:|:---:|
+| ![列表頁-預設](screenshots/list-default.png) | ![列表頁-空](screenshots/list-empty.png) |
 
 ### 欄位規格
 | 欄位 | 類型 | 必填 | 限制 | 特殊狀況 |
@@ -143,9 +135,6 @@ graph LR
 | 狀態 | 條件 | 顯示 |
 |------|------|------|
 | 空狀態 | 無資料 | 插圖+提示文字 |
-
-</td>
-</tr></table>
 
 ---
 
