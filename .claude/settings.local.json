@@ -40,7 +40,10 @@
       "WebFetch(domain:api.github.com)",
       "Bash(pnpm lint:*)",
       "Bash(python3:*)",
-      "Skill(claude-hud:configure)"
+      "Skill(claude-hud:configure)",
+      "Bash(rm:*)",
+      "Bash(ln:*)",
+      "WebFetch(domain:medium.com)"
     ]
   }
 }
