@@ -18,7 +18,7 @@ Branch/Worktree → Brainstorm → Plan → Build → Iterate → Verify → Han
 我想做一個 <功能方向>
 ```
 
-確認在 `dev`，Claude 會依功能方向命名 branch `pm-prototype-<feature>`，再依情況選擇：
+確認目前所在的 base branch（通常是 `dev`），依功能方向命名新 branch `pm-prototype-<feature>`，再依情況選擇：
 - **只做這件事** → `git checkout -b pm-prototype-<feature>`
 - **同時還有其他工作沒做完，或需要平行開發多個功能** → `/superpowers:using-git-worktrees`（每個功能各建一個獨立目錄）
 
@@ -182,7 +182,7 @@ graph LR
 /commit-commands:commit-push-pr
 ```
 
-PR body 指向 spec.md：
+PR 預設 merge 回 Step 1 的 base branch。PR body 指向 spec.md：
 
 ```markdown
 ## Summary
