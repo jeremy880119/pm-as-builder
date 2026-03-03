@@ -102,10 +102,20 @@ Build 和 Verify 階段對照此清單執行。
 「根據 spec 模板寫 spec.md，放進功能資料夾」
 ```
 
-搭配截圖 script 產生各頁面截圖後，依模板撰寫：
+搭配截圖 script 產生各頁面截圖後，依模板撰寫。
+
+**前置條件**：截圖前必須先啟動目標專案的 dev server（例如 `pnpm dev`），確認 `<url>` 可以正常開啟。
+
+若有提供 `--session`，腳本會自動開啟瀏覽器檢查登入狀態：
+- Session 有效 → 自動儲存並繼續截圖
+- Session 過期 → 瀏覽器停在登入頁，請手動登入，登入後腳本自動儲存新 session 並繼續
 
 ```
-npx tsx pm-as-builder/scripts/screenshot-pages.ts --config <pages-config.json> --base-url <url> --out-dir <功能資料夾>/screenshots
+npx tsx pm-as-builder/scripts/screenshot-pages.ts \
+  --config <pages-config.json> \
+  --base-url <url> \
+  --out-dir <功能資料夾>/screenshots \
+  --session auth.json          # 可選，需登入的專案才加
 ```
 
 模板結構如下：
