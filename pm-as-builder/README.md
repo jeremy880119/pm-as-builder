@@ -42,6 +42,15 @@ Worktree(dev) → Brainstorm → Plan → Build → Iterate → Verify → Hando
 - [ ] 操作：列出要能執行哪些互動
 - [ ] Edge cases：空狀態、超長文字、錯誤狀態等
 
+## Success Metrics（草稿）
+如何衡量這個功能是否成功？依功能性質選擇合適的指標，例如：
+- 採用率、使用頻率
+- 漏斗轉換率
+- 完成效率（時間、步驟數）
+- 錯誤率、重試率
+- 用戶滿意度 / 回饋
+- 業務指標（營收、轉換）
+
 ## 頁面規格草稿
 （每頁一個區塊，供 Build 階段參考，Handoff 時精確化）
 
@@ -93,10 +102,20 @@ Build 和 Verify 階段對照此清單執行。
 「根據 spec 模板寫 spec.md，放進功能資料夾」
 ```
 
-搭配截圖 script 產生各頁面截圖後，依模板撰寫：
+搭配截圖 script 產生各頁面截圖後，依模板撰寫。
+
+**前置條件**：截圖前必須先啟動目標專案的 dev server（例如 `pnpm dev`），確認 `<url>` 可以正常開啟。
+
+若有提供 `--session`，腳本會自動開啟瀏覽器檢查登入狀態：
+- Session 有效 → 自動儲存並繼續截圖
+- Session 過期 → 瀏覽器停在登入頁，請手動登入，登入後腳本自動儲存新 session 並繼續
 
 ```
-npx tsx pm-as-builder/scripts/screenshot-pages.ts --config <pages-config.json> --base-url <url> --out-dir <功能資料夾>/screenshots
+npx tsx pm-as-builder/scripts/screenshot-pages.ts \
+  --config <pages-config.json> \
+  --base-url <url> \
+  --out-dir <功能資料夾>/screenshots \
+  --session auth.json          # 可選，需登入的專案才加
 ```
 
 模板結構如下：
@@ -117,17 +136,9 @@ graph LR
 
 ## 頁面 A — 列表頁
 
-<table><tr>
-<td width="45%">
-
-**預設狀態**
-![列表頁-預設](screenshots/list-default.png)
-
-**空狀態**
-![列表頁-空](screenshots/list-empty.png)
-
-</td>
-<td width="55%">
+| 預設狀態 | 空狀態 |
+|:---:|:---:|
+| ![列表頁-預設](screenshots/list-default.png) | ![列表頁-空](screenshots/list-empty.png) |
 
 ### 欄位規格
 | 欄位 | 類型 | 必填 | 限制 | 特殊狀況 |
@@ -144,12 +155,21 @@ graph LR
 |------|------|------|
 | 空狀態 | 無資料 | 插圖+提示文字 |
 
-</td>
-</tr></table>
-
 ---
 
 （重複每頁...）
+
+## Success Metrics
+
+### 關鍵指標
+（定義衡量功能成效的指標，依功能性質選擇合適類型）
+
+### 事件定義（如需要）
+| 事件 | 維度 | 記錄時機 | 說明 |
+|------|------|----------|------|
+
+### 回饋蒐集（如需要）
+（管道、觸發條件、時機）
 
 ## Notes / 開放問題
 ````
