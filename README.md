@@ -18,10 +18,11 @@ Worktree(dev) → Brainstorm → Plan → Build → Iterate → Verify → Hando
 /superpowers:using-git-worktrees
 ```
 
-從 `dev` 開 worktree，feature 名稱尚未確定時先用暫名（例如 `pm-prototype-temp`），Brainstorm 後再 rename：
+從 `dev` 開 worktree，暫命名 `pm-prototype-temp`。feature 名稱由 Brainstorm 產出後再 rename。
 
-```bash
-git branch -m pm-prototype-temp pm-prototype-<feature>
+Skill 完成後會輸出 worktree 路徑，手動 cd 進去再繼續：
+```
+cd .worktrees/pm-prototype-temp
 ```
 
 ## Step 2: Brainstorm
@@ -32,10 +33,9 @@ git branch -m pm-prototype-temp pm-prototype-<feature>
 
 產出 `design.md`，放進新建的功能資料夾 `docs/plans/YYYY-MM-DD-<feature>/`。釐清需求、探索方案、確定設計方向。
 
-Brainstorm 完成後，若 Step 1 使用了暫名，此時 rename branch：
-
-```bash
-git branch -m pm-prototype-temp pm-prototype-<feature>
+Brainstorm 結束後，請 Claude 執行：
+```
+幫我把 branch rename 成 pm-prototype-<feature>
 ```
 
 ## Step 3: Plan
