@@ -1,8 +1,3 @@
-# Ignore everything
-*
-
-# Allow these
-!.gitignore
-!CLAUDE.md
-!pm-as-builder/
-!pm-as-builder/**
+node_modules/
+auth.json
+*.json.bak
