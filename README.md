@@ -18,7 +18,7 @@ Worktree(dev) → Brainstorm → Plan → Build → Iterate → Verify → Hando
 /superpowers:using-git-worktrees
 ```
 
-從 `dev` 開 worktree，命名 `pm-prototype-<feature>`。功能資料夾 `docs/plans/YYYY-MM-DD-<feature>/` 在 Brainstorm 階段自然建立。
+從 `dev` 開 worktree，命名 `pm-prototype-<feature>`。
 
 ## Step 2: Brainstorm
 
@@ -26,7 +26,7 @@ Worktree(dev) → Brainstorm → Plan → Build → Iterate → Verify → Hando
 /superpowers:brainstorming
 ```
 
-產出 `design.md`，放進功能資料夾。釐清需求、探索方案、確定設計方向。
+產出 `design.md`，放進新建的功能資料夾 `docs/plans/YYYY-MM-DD-<feature>/`。釐清需求、探索方案、確定設計方向。
 
 ## Step 3: Plan
 
