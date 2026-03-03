@@ -7,23 +7,20 @@
 ## 流程總覽
 
 ```
-Worktree(dev) → Brainstorm → Plan → Build → Iterate → Verify → Handoff → PR
+Branch/Worktree → Brainstorm → Plan → Build → Iterate → Verify → Handoff → PR
 ```
 
 ---
 
-## Step 1: Worktree
+## Step 1: 建立隔離環境
 
 ```
-/superpowers:using-git-worktrees
+我想做一個 <功能方向>
 ```
 
-從 `dev` 開 worktree，暫命名 `pm-prototype-temp`。feature 名稱由 Brainstorm 產出後再 rename。
-
-Skill 完成後會輸出 worktree 路徑，手動 cd 進去再繼續：
-```
-cd .worktrees/pm-prototype-temp
-```
+確認在 `dev`，Claude 會依功能方向命名 branch `pm-prototype-<feature>`，再依情況選擇：
+- **只做這件事** → `git checkout -b pm-prototype-<feature>`
+- **同時還有其他工作沒做完，或需要平行開發多個功能** → `/superpowers:using-git-worktrees`（每個功能各建一個獨立目錄）
 
 ## Step 2: Brainstorm
 
@@ -32,11 +29,6 @@ cd .worktrees/pm-prototype-temp
 ```
 
 產出 `design.md`，放進新建的功能資料夾 `docs/plans/YYYY-MM-DD-<feature>/`。釐清需求、探索方案、確定設計方向。
-
-Brainstorm 結束後，請 Claude 執行：
-```
-幫我把 branch rename 成 pm-prototype-<feature>
-```
 
 ## Step 3: Plan
 
