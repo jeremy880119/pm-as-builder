@@ -58,7 +58,7 @@ Build 和 Verify 階段對照此清單執行。
 ```
 
 搭配以下 skill 之一：
-- **3+ 獨立頁面/組件** → `/superpowers:subage283nt-driven-development`
+- **3+ 獨立頁面/組件** → `/superpowers:subagent-driven-development`
 - **否則** → `/superpowers:executing-plans`
 
 用 mock data 建構完整 UI/UX prototype。目標是「看得到、點得到」的產品樣貌。
