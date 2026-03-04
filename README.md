@@ -90,6 +90,7 @@ Build 和 Verify 階段對照此清單執行。
 2. 用 ~/Documents/pm-as-builder/scripts/save-session-auto.ts 更新 session（--out auth.json），瀏覽器開啟後登入 → 點選節目進到 Dashboard，自動儲存不需按 Enter
 3. 用 ~/Documents/pm-as-builder/scripts/screenshot-pages.ts 對所有頁面截圖，存到功能資料夾的 screenshots/（session 檔在 auth.json）
 4. 讀取 spec 模板 ~/Documents/pm-as-builder/templates/spec.md，搭配截圖寫 spec.md，放進功能資料夾
+5. 遍歷本次所有程式碼變更，找出 spec 未涵蓋的規則（如：排序邏輯、字數限制、狀態轉換條件、權限判斷、格式化規則），補進 spec.md 對應頁面的欄位規格/互動行為/狀態說明表格中
 ```
 
 ## Step 8: PR
