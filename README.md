@@ -86,12 +86,11 @@ Build 和 Verify 階段對照此清單執行。
 
 ```
 截圖並寫 spec：
-1. 在背景啟動 dev server，等它就緒
-2. 讀取截圖 script ~/Documents/pm-as-builder/scripts/screenshot-pages.ts，產生 pages config 並執行截圖，存到功能資料夾的 screenshots/。截圖 script 不要在背景跑，要等它完成
-3. 讀取 spec 模板 ~/Documents/pm-as-builder/templates/spec.md，搭配截圖、design.md、plan.md 寫 spec.md，放進功能資料夾
+1. 啟動 dev server，確認可開啟
+2. 用 ~/Documents/pm-as-builder/scripts/save-session-auto.ts 更新 session（--out auth.json），瀏覽器開啟後登入 → 點選節目進到 Dashboard，自動儲存不需按 Enter
+3. 用 ~/Documents/pm-as-builder/scripts/screenshot-pages.ts 對所有頁面截圖，存到功能資料夾的 screenshots/（session 檔在 auth.json）
+4. 讀取 spec 模板 ~/Documents/pm-as-builder/templates/spec.md，搭配截圖寫 spec.md，放進功能資料夾
 ```
-
-若專案需要登入，加一句「需要登入，session 檔在 auth.json」。截圖 script 會自動開瀏覽器讓你登入，登入後自動繼續，不需要按 enter。
 
 ## Step 8: PR
 
